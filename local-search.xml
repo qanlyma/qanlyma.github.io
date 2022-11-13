@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>「学」 Golang 各种类型相互转换</title>
+    <link href="/Go-typeTransfer/"/>
+    <url>/Go-typeTransfer/</url>
+    
+    <content type="html"><![CDATA[<p>在做 leetcode 和自己写 go 程序的时候，总是会遇到一些类型转换的问题，在这里总结一下。</p><span id="more"></span><h2 id="int"><a href="#int" class="headerlink" title="int"></a>int</h2><ul><li><p>int → int64: <code>i := int64(int)</code></p></li><li><p>int → uint64: <code>ui := uint64(int)</code></p></li><li><p>int → float: <code>f := float64(int)</code></p></li><li><p>int → string: <code>str := strconv.Itoa(int)</code></p></li><li><p>int64 → string: <code>str := strconv.FormatInt(int64, 10)</code></p></li></ul><h2 id="uint"><a href="#uint" class="headerlink" title="uint"></a>uint</h2><ul><li>uint64 → string: <code>str := strconv.FormatUint(uint64, 10)</code></li></ul><h2 id="float"><a href="#float" class="headerlink" title="float"></a>float</h2><ul><li><p>float → int: <code>i := int(float)</code></p></li><li><p>float → string: <code>str := strconv.FormatFloat(float64, &#39;E&#39;, -1, 64)</code></p></li></ul><h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><ul><li><p>string → int: <code>i, err := strconv.Atoi(string)</code></p></li><li><p>string →float: <code>f, err := strconv.ParseFloat(string, 64)</code></p></li><li><p>string → bool: <code>b, err := strconv.ParseBool(&quot;true&quot;)</code></p></li><li><p>string → []byte: <code>b := []byte(string)</code></p></li></ul><h2 id="byte"><a href="#byte" class="headerlink" title="byte"></a>byte</h2><p>[]byte → string: <code>str := string([]byte)</code></p><h2 id="bool"><a href="#bool" class="headerlink" title="bool"></a>bool</h2><ul><li>bool → string: <code>string := strconv.FormatBool(true)</code></li></ul><h2 id="interface"><a href="#interface" class="headerlink" title="interface"></a>interface</h2><ul><li><p>interface→int: <code>interface.(int64)</code></p></li><li><p>interface→string: <code>interface.(string)</code></p></li><li><p>interface→float: <code>interface.(float64)</code></p></li><li><p>interface→bool: <code>interface.(bool)</code></p></li></ul><h2 id="查看类型"><a href="#查看类型" class="headerlink" title="查看类型"></a>查看类型</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-built_in">import</span>(<br><span class="hljs-string">&quot;fmt&quot;</span><br><span class="hljs-string">&quot;reflect&quot;</span><br>)<br> <br> <br>func <span class="hljs-selector-tag">main</span>() &#123;<br> <span class="hljs-selector-tag">a</span> := <span class="hljs-number">1</span><br> fmt<span class="hljs-selector-class">.Println</span>(<span class="hljs-string">&quot;a type by reflect: &quot;</span>, reflect<span class="hljs-selector-class">.TypeOf</span>(a))<br>&#125;<br><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>「学」 Linux 使用教程</title>
     <link href="/Linux-tutorial/"/>
     <url>/Linux-tutorial/</url>
