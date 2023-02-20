@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Fabric/4.png">
 <meta property="og:image" content="https://qanlyma.github.io/Fabric/5.png">
 <meta property="article:published_time" content="2023-02-20T14:20:27.000Z">
-<meta property="article:modified_time" content="2023-02-20T14:41:28.416Z">
+<meta property="article:modified_time" content="2023-02-20T14:46:59.877Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Fabric/1.png">
@@ -263,7 +263,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 分钟前
+                    本文最后更新于：几秒前
                   
                 
               </p>
@@ -296,7 +296,7 @@
 <li>通过共识协议进行 <strong>ordering</strong>，而不考虑交易语义</li>
 <li>根据特定于应用程序的信任假设进行 <strong>validation</strong>，这防止了并发导致的竞争</li>
 </ol>
-<p>该设计结合了两种复制方案：<strong>passive</strong>（当一个事务提交时，领导者副本将该事务的数据变更广播给所有跟随者副本，跟随者按照提交顺序应用这些变更） and <strong>active</strong>（每个副本独立执行相同的确定性交易代码）</p>
+<p>该设计结合了两种复制方案：<strong>passive</strong>（当一个事务提交时，领导者副本将该事务的数据变更广播给所有跟随者副本，跟随者按照提交顺序应用这些变更） 和 <strong>active</strong>（每个副本独立执行相同的确定性交易代码）</p>
 <ul>
 <li>首先 Fabric 使用 passive or primary-backup replication， 每个事务仅由一个对等方的子集执行（认可），这允许<strong>并行执行</strong>。灵活的背书政策规定了哪些对等方或其中多少对等方需要为正确执行给定智能合约提供担保。</li>
 <li>其次 Fabric 结合了 active replication，即每个对等方单独执行的确定性验证步骤中，交易对账本状态的影响只有在总顺序达成共识后才能写入。状态更新的排序被委托给一个模块化组件以实现共识（即 atomic broadcast），该组件是无状态的，并且在逻辑上与执行事务和维护账本的对等方分离。由于共识是模块化的，因此它的实现可以根据特定部署的信任假设进行调整。</li>
