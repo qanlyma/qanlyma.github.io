@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/6.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/7.png">
 <meta property="article:published_time" content="2023-02-18T07:38:59.000Z">
-<meta property="article:modified_time" content="2023-02-20T14:24:55.781Z">
+<meta property="article:modified_time" content="2023-02-20T15:02:15.768Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-1/1.png">
@@ -265,7 +265,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：22 分钟前
+                    本文最后更新于：3 分钟前
                   
                 
               </p>
@@ -318,26 +318,29 @@
 </ol>
 <p><img src="/ByteDance-1/7.png" srcset="/img/loading.gif" lazyload alt="进程信息"></p>
 <h3 id="1-3-项目实战"><a href="#1-3-项目实战" class="headerlink" title="1.3 项目实战"></a>1.3 项目实战</h3><ol>
-<li>猜谜游戏</li>
-</ol>
+<li><p>猜谜游戏</p>
 <ul>
 <li>生成随机数：用时间戳来初始化随机数种子</li>
 </ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs css">func <span class="hljs-selector-tag">main</span>() &#123;<br>    maxNum := <span class="hljs-number">100</span> <br>    rand.<span class="hljs-built_in">Seed</span>(time.<span class="hljs-built_in">Now</span>().<span class="hljs-built_in">UnixNano</span>()) <br>    secretNumber := rand.<span class="hljs-built_in">Intn</span>(maxNum) <br>    fmt.<span class="hljs-built_in">Println</span>(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br>&#125;<br></code></pre></td></tr></table></figure>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs Go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    maxNum := <span class="hljs-number">100</span> <br>    rand.Seed(time.Now().UnixNano()) <br>    secretNumber := rand.Intn(maxNum) <br>    fmt.Println(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>读取用户输入</li>
 </ul>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs stylus">func <span class="hljs-selector-tag">main</span>() &#123;<br>    maxNum := <span class="hljs-number">100</span><br>    rand<span class="hljs-selector-class">.Seed</span>(<span class="hljs-selector-tag">time</span><span class="hljs-selector-class">.Now</span>()<span class="hljs-selector-class">.UnixNano</span>())<br>    secretNumber := rand<span class="hljs-selector-class">.Intn</span>(maxNum)<br>    fmt<span class="hljs-selector-class">.Println</span>(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br><br>    fmt<span class="hljs-selector-class">.Println</span>(<span class="hljs-string">&quot;Please input your guess&quot;</span>)<br>    reader := bufio<span class="hljs-selector-class">.NewReader</span>(os.Stdin)<br><br>    <span class="hljs-comment">//读取一行输入</span><br>    <span class="hljs-selector-tag">input</span>, err := reader<span class="hljs-selector-class">.ReadString</span>(<span class="hljs-string">&#x27;\n&#x27;</span>)<br>    <span class="hljs-keyword">if</span> err != nil &#123;<br>        fmt<span class="hljs-selector-class">.Println</span>(<span class="hljs-string">&quot;An error occured while reading input. Please try again&quot;</span>, err)<br>        return<br>    &#125;<br>    <span class="hljs-comment">//去掉换行符</span><br>    <span class="hljs-selector-tag">input</span> = strings<span class="hljs-selector-class">.Trim</span>(<span class="hljs-selector-tag">input</span>, <span class="hljs-string">&quot;\r\n&quot;</span>)<br>    <span class="hljs-comment">//转换为数字</span><br>    guess, err := strconv<span class="hljs-selector-class">.Atoi</span>(input)<br>    <span class="hljs-keyword">if</span> err != nil &#123;<br>        fmt<span class="hljs-selector-class">.Println</span>(<span class="hljs-string">&quot;Invalid input. Please enter an integer value&quot;</span>)<br>        return<br>    &#125;<br>    fmt<span class="hljs-selector-class">.Println</span>(<span class="hljs-string">&quot;You guess is&quot;</span>, guess)<br>&#125;<br></code></pre></td></tr></table></figure>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs Go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    maxNum := <span class="hljs-number">100</span><br>    rand.Seed(time.Now().UnixNano())<br>    secretNumber := rand.Intn(maxNum)<br>    fmt.Println(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br><br>    fmt.Println(<span class="hljs-string">&quot;Please input your guess&quot;</span>)<br>    reader := bufio.NewReader(os.Stdin)<br><br>    <span class="hljs-comment">//读取一行输入</span><br>    input, err := reader.ReadString(<span class="hljs-string">&#x27;\n&#x27;</span>)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        fmt.Println(<span class="hljs-string">&quot;An error occured while reading input. Please try again&quot;</span>, err)<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    <span class="hljs-comment">//去掉换行符</span><br>    input = strings.Trim(input, <span class="hljs-string">&quot;\r\n&quot;</span>)<br>    <span class="hljs-comment">//转换为数字</span><br>    guess, err := strconv.Atoi(input)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        fmt.Println(<span class="hljs-string">&quot;Invalid input. Please enter an integer value&quot;</span>)<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    fmt.Println(<span class="hljs-string">&quot;You guess is&quot;</span>, guess)<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>逻辑判断 + 游戏循环：略</li>
 </ul>
+</li>
+</ol>
+<hr>
 <ol start="2">
-<li><p>命令行词典</p>
-</li>
-<li><p>SOCKS5 代理</p>
-</li>
+<li>命令行词典</li>
+</ol>
+<hr>
+<ol start="3">
+<li>SOCKS5 代理</li>
 </ol>
 <h2 id="2-Go-语言进阶"><a href="#2-Go-语言进阶" class="headerlink" title="2 Go 语言进阶"></a>2 Go 语言进阶</h2>
                 
