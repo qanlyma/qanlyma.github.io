@@ -16,27 +16,28 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基本协议，也是国际互联网络的基础。TCP&#x2F;IP 是一个协议族，包括多个网络协议，定义了计算机操作系统如何连入互联网，以及数据传输的标准。它是为了解决不同系统的计算机之间的传输通信而提出的一个标准，不同系统的计算机采">
+    <meta name="description" content="本文总结 TCP 的三次握手和四次挥手，以及 TLS&#x2F;SSL 的四次握手过程。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「研」 TCP&#x2F;IP 分层结构">
-<meta property="og:url" content="https://qanlyma.github.io/TCP-IP-fiveLayers/index.html">
+<meta property="og:title" content="「研」 TCP 与 TLS&#x2F;SSL">
+<meta property="og:url" content="https://qanlyma.github.io/TCP-IP-handshake/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基本协议，也是国际互联网络的基础。TCP&#x2F;IP 是一个协议族，包括多个网络协议，定义了计算机操作系统如何连入互联网，以及数据传输的标准。它是为了解决不同系统的计算机之间的传输通信而提出的一个标准，不同系统的计算机采">
+<meta property="og:description" content="本文总结 TCP 的三次握手和四次挥手，以及 TLS&#x2F;SSL 的四次握手过程。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/3.png">
-<meta property="article:published_time" content="2023-02-26T03:35:36.000Z">
-<meta property="article:modified_time" content="2023-02-26T14:25:51.993Z">
+<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-handshake/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-handshake/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-handshake/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-handshake/4.png">
+<meta property="article:published_time" content="2023-02-26T14:22:13.000Z">
+<meta property="article:modified_time" content="2023-02-26T14:30:14.081Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/TCP-IP-handshake/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「研」 TCP/IP 分层结构 - Qanly</title>
+  <title>「研」 TCP 与 TLS/SSL - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -177,7 +178,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「研」 TCP/IP 分层结构"></span>
+            <span id="subtitle" data-typed-text="「研」 TCP 与 TLS/SSL"></span>
           
         </div>
 
@@ -193,8 +194,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-02-26 11:35" pubdate>
-          2023年2月26日 中午
+        <time datetime="2023-02-26 22:22" pubdate>
+          2023年2月26日 晚上
         </time>
       </span>
     
@@ -256,12 +257,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「研」 TCP/IP 分层结构</h1>
+            <h1 style="display: none">「研」 TCP 与 TLS/SSL</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：14 分钟前
+                    本文最后更新于：10 分钟前
                   
                 
               </p>
@@ -269,38 +270,72 @@
             
               <div class="markdown-body">
                 
-                <p>TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基本协议，也是国际互联网络的基础。TCP&#x2F;IP 是一个协议族，包括多个网络协议，定义了计算机操作系统如何连入互联网，以及数据传输的标准。它是为了解决不同系统的计算机之间的传输通信而提出的一个标准，不同系统的计算机采用了同一种协议后，就能相互通信，从而能够建立网络连接，实现资源共享和网络通信。</p>
+                <p>本文总结 TCP 的三次握手和四次挥手，以及 TLS&#x2F;SSL 的四次握手过程。</p>
 <span id="more"></span>
 
-<h2 id="TCP-x2F-IP-的分层结构"><a href="#TCP-x2F-IP-的分层结构" class="headerlink" title="TCP&#x2F;IP 的分层结构"></a>TCP&#x2F;IP 的分层结构</h2><p>目前对计算机网络的分层方式一共有三种：1.OSI 七层模型；2.五层模型；3.TCP&#x2F;IP 四层模型</p>
-<p>OSI 是一种理论模型，实现起来过分复杂，而且运行效率低。OSI 先有模型，后有协议，先有标准，后进行实践，而 TCP&#x2F;IP 则相反。TCI&#x2F;IP 已经被广泛使用，成为网络互连实际上的标准。而五层模型一般只出现在计算机网络学习教学过程中，是对七层模型和四层模型的一个折中。</p>
-<p><img src="/TCP-IP-fiveLayers/1.png" srcset="/img/loading.gif" lazyload alt="三种模型"></p>
+<h2 id="TCP-连接的建立（三次握手）"><a href="#TCP-连接的建立（三次握手）" class="headerlink" title="TCP 连接的建立（三次握手）"></a>TCP 连接的建立（三次握手）</h2><p>最开始的时候客户端和服务器都是处于 CLOSED 状态。主动打开连接的为客户端，被动打开连接的是服务器。</p>
+<p><img src="/TCP-IP-handshake/1.png" srcset="/img/loading.gif" lazyload alt="三次握手"></p>
+<ol>
+<li>TCP 服务器进程先创建传输控制块 TCB，时刻准备接受客户进程的连接请求，此时服务器就进入了 LISTEN（监听）状态。</li>
+<li>TCP 客户进程也是先创建传输控制块 TCB，然后向服务器发出连接请求报文。报文首部中的同部位 SYN&#x3D;1，同时选择一个初始序列号 seq&#x3D;x。此时，TCP 客户端进程进入了 SYN-SENT（同步已发送状态）状态。TCP 规定，SYN 报文段（SYN&#x3D;1 的报文段）不能携带数据，但需要消耗掉一个序号。</li>
+<li>TCP 服务器收到请求报文后，如果同意连接，则发出确认报文。确认报文中 ACK&#x3D;1，SYN&#x3D;1，确认号是 ack&#x3D;x+1，同时也要为自己初始化一个序列号 seq&#x3D;y，此时，TCP 服务器进程进入了 SYN-RCVD（同步收到）状态。这个报文也不能携带数据，但是同样要消耗一个序号。</li>
+<li>TCP 客户进程收到确认后，还要向服务器给出确认。确认报文的 ACK&#x3D;1，ack&#x3D;y+1，自己的序列号 seq&#x3D;x+1，此时，TCP连接建立，客户端进入 ESTABLISHED（已建立连接）状态。TCP 规定，ACK 报文段<strong>可以</strong>携带数据，如果<strong>不携带数据则不消耗序号</strong>。</li>
+<li>当服务器收到客户端的确认后也进入 ESTABLISHED 状态，此后双方就可以开始通信了。</li>
+</ol>
+<blockquote>
+<p><strong>为什么TCP客户端最后还要发送一次确认呢？</strong></p>
+<p>主要防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误。<br>如果使用的是两次握手建立连接，假设有这样一种场景：客户端发送了第一个请求连接并且没有丢失，只是因为在网络结点中滞留的时间太长了，由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送这条报文，此后客户端和服务器经过两次握手完成连接，传输数据，然后关闭连接。此时此前滞留的那一次请求连接，网络通畅了到达了服务器，这个报文本该是失效的，但是，两次握手的机制将会让客户端和服务器再次建立连接，这将导致不必要的错误和资源的浪费。<br>如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</p>
+</blockquote>
+<h2 id="TCP-连接的释放（四次挥手）"><a href="#TCP-连接的释放（四次挥手）" class="headerlink" title="TCP 连接的释放（四次挥手）"></a>TCP 连接的释放（四次挥手）</h2><p>数据传输完毕后，双方都可释放连接。最开始的时候，客户端和服务器都是处于 ESTABLISHED 状态，然后客户端主动关闭，服务器被动关闭。</p>
+<p><img src="/TCP-IP-handshake/2.png" srcset="/img/loading.gif" lazyload alt="四次挥手"></p>
+<ol>
+<li>客户端进程发出连接释放报文，并且停止发送数据。释放数据报文首部 FIN&#x3D;1，其序列号为 seq&#x3D;u（等于前面已经传送过来的数据的最后一个字节的序号加 1），此时，客户端进入 FIN-WAIT-1（终止等待 1）状态。 TCP 规定，FIN 报文段即使不携带数据，也要消耗一个序号。</li>
+<li>服务器收到连接释放报文，发出确认报文，ACK&#x3D;1，ack&#x3D;u+1，并且带上自己的序列号 seq&#x3D;v，此时，服务端就进入了 CLOSE-WAIT（关闭等待）状态。TCP 服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个 CLOSE-WAIT 状态持续的时间。</li>
+<li>客户端收到服务器的确认请求后，此时，客户端就进入 FIN-WAIT-2（终止等待 2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最后的数据）。</li>
+<li>服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN&#x3D;1，ack&#x3D;u+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为 seq&#x3D;w，此时，服务器就进入了 LAST-ACK（最后确认）状态，等待客户端的确认。</li>
+<li>客户端收到服务器的连接释放报文后，必须发出确认，ACK&#x3D;1，ack&#x3D;w+1，而自己的序列号是 seq&#x3D;u+1，此时，客户端就进入了 TIME-WAIT（时间等待）状态。注意此时 TCP 连接还没有释放，必须经过 2?MSL（最长报文段寿命）的时间后，当客户端撤销相应的 TCB 后，才进入 CLOSED 状态。</li>
+<li>服务器只要收到了客户端发出的确认，立即进入 CLOSED 状态。同样，撤销 TCB 后，就结束了这次的 TCP 连接。可以看到，服务器结束 TCP 连接的时间要比客户端早一些。</li>
+</ol>
+<blockquote>
+<p><strong>为什么客户端最后还要等待 2MSL？</strong></p>
+<p>MSL（Maximum Segment Lifetime），TCP 允许不同的实现可以设置不同的 MSL 值。<br>第一，保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，站在服务器的角度看来，我已经发送了 FIN+ACK 报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个 2MSL 时间段内收到这个重传的报文，接着给出回应报文，并且会重启 2MSL 计时器。<br>第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个 2MSL 时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文。</p>
+</blockquote>
+<blockquote>
+<p><strong>为什么建立连接是三次握手，关闭连接确是四次挥手呢？</strong></p>
+<p>建立连接的时候， 服务器在 LISTEN 状态下，收到建立连接请求的 SYN 报文后，把 ACK 和 SYN 放在一个报文里发送给客户端。<br>而关闭连接时，服务器收到对方的 FIN 报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了，所以己方可以立即关闭，也可以发送一些数据给对方后，再发送 FIN 报文给对方来表示同意现在关闭连接，因此，己方 ACK 和 FIN 一般都会分开发送，从而导致多了一次。</p>
+</blockquote>
+<h2 id="TLS-x2F-SSL-握手"><a href="#TLS-x2F-SSL-握手" class="headerlink" title="TLS&#x2F;SSL 握手"></a>TLS&#x2F;SSL 握手</h2><p>SSL（Secure Socket Layer 安全套接层）是 TCP&#x2F;IP 协议中位于 HTTP 之下，TCP 之上的一个可选协议层。起初 HTTP 在传输数据时使用的是明文，是不安全的。为了解决这个隐患，网景（Netscap）公司推出了 SSL。</p>
+<p>HTTPS（HTTP+SSL）的推出受到了很多人的欢迎，在 SSL 更新到 3.0 时， 互联网工程任务组（IETF）对 SSL3.0 进行了标准化，并添加了少数机制，并将其更名为 TLS1.0（Transport Layer Security 安全传输层协议）。</p>
+<p><img src="/TCP-IP-handshake/3.png" srcset="/img/loading.gif" lazyload alt="HTTPS = HTTP + TLS/SSL"></p>
+<p>在 HTTPS 协议中，当客户端与服务器通过三次握手建立 TCP 连接之后，并不会直接传输数据，而是会经过一个 SSL&#x2F;TLS 握手的过程，用于协商、以及验证证书等，之后就可以安全传输数据了。</p>
+<p><img src="/TCP-IP-handshake/4.png" srcset="/img/loading.gif" lazyload alt="TLS/SSL 握手"></p>
+<ol>
+<li><p>Client Hello：由客户端发起，主要包含以下信息：</p>
 <ul>
-<li><strong>应用层</strong>：包含所有的高层协议，比如 Telnet（Telecommunications Network，远程登录协议）、FTP、SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）、DNS（Domain Name Service，域名服务）、NNTP（Net News Transfer Protocol，网络新闻传输协议）和 HTTP 等。Telnet 允许一台机器上的用户登录远程机器进行工作，FTP 提供将文件从一台机器上移到另一台机器上的有效方法，SMTP用于电子邮件的收发，DNS 用于把主机名映射到网络地址，NNTP 用于新闻的发布、检索和获取，HTTP 用于在 WWW 上获取主页。</li>
-<li><strong>传输层</strong>：著名的 TCP 和 UDP（User Datagram Protocol，用户数据报协议）就在这一层。TCP 是面向连接的协议，它提供可靠的报文传输和对上层应用的连接服务。为此，除了基本的数据传输外，它还有可靠性保证、流量控制、多路复用、优先权和安全性控制等功能。UDP 是面向无连接的不可靠传输协议，主要用于不需要 TCP 的排序和流量控制等功能的应用程序。</li>
-<li><strong>网络层</strong>：该层是整个 TCP&#x2F;IP 体系结构的关键部分，其功能是使主机可以把数据报（Packet，或称为分组）发往任何网络，并使分组独立地传向目标。这些分组经由不同的网络到达的顺序和发送的顺序可能不同。网络层使用的协议有 IP。</li>
-<li><strong>数据链路层</strong>：该层是整个体系结构的基础部分，负责接收 IP 层的 IP 数据报，通过网络向外发送，或接收从网络上来的物理帧，抽出 IP 数据报，向 IP 层发送。该层是主机与网络的实际连接层。数据链路层下面就是实体线路（比如以太网络、光纤网络等）。数据链路层有以太网、令牌环网等标准，负责网卡设备的驱动、帧同步（从网线上检测到什么信号算作新帧的开始）、冲突检测（如果检测到冲突就自动重发）、数据差错校验等工作。交换机可以在不同的数据链路层的网络之间（比如十兆以太网和百兆以太网之间、以太网和令牌环网之间）转发数据帧，由于不同数据链路层的帧格式不同，交换机要将进来的数据报拆掉报头重新封装之后再转发。</li>
+<li>客户端生成的随机数 x，用于之后的密钥生成</li>
+<li>客户端支持的加密算法列表（Cipher Suites）</li>
+<li>TLS 版本信息</li>
+<li>客户端支持的压缩算法列表（Compression Methods）</li>
 </ul>
-<p>不同的协议层对数据报有不同的称谓，在传输层叫作段（Segment），在网络层叫作数据报（Datagram），在数据链路层叫作帧（Frame）。数据封装成帧后发送到传输介质上，到达目的主机后，每层协议再剥掉相应的报头，最后将应用层数据交给应用程序处理。</p>
-<p><img src="/TCP-IP-fiveLayers/2.png" srcset="/img/loading.gif" lazyload alt="数据封装"></p>
-<h2 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h2><p>以浏览某个网页为例，看一下浏览网页的过程中 TCP&#x2F;IP 各层做了哪些工作。</p>
-<p>发送方：</p>
-<ol>
-<li>打开浏览器，输入网址 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 按回车键来访问网页，其实就是访问 Web 服务器上的网页，在应用层采用的协议是 HTTP，浏览器将网址等信息组成 HTTP 数据，并将数据传送给传输层。</li>
-<li>传输层在数据前面加上 TCP 报头，并标记端口为 80（Web 服务器的默认端口），将这个数据段给了网络层。</li>
-<li>网络层在这个数据段前面加上自己机器的 IP 和目的 IP，这时该段被称为 IP 数据报，然后将这个 IP 数据报给了数据链路层。</li>
-<li>数据链路层先在 IP 数据报前面加上自己机器的 MAC 地址以及目的 MAC 地址，加上 MAC 地址的数据称为帧，然后通过物理网卡把这个帧以比特流的方式发送到网络上。</li>
+</li>
+<li><p>Server Hello：服务端接收到客户端的 Client Hello 之后，服务端需要将自己的 CA 证书发送给客户端，这个步骤叫 Server Certificate。证书是对服务端的一种认证，是由专门的数字证书认证机构（CA）审核之后颁发的，所以一般人无法伪造。在颁发证书的同时还会产生两把钥匙，一把私钥，一把公钥。私钥由服务端保管不可泄露，公钥则附带在证书中公开。证书本身还附带了一个证书电子签名，这个签名用来验证证书的完整性和真实性，防止证书被人窜改。跟客户端一样，服务端也需要生产一个随机数 y 发送给客户端，客户端和服务端都需要使用这俩随机数生成通信密钥，这个过程叫 Server Key Exchange。最后服务端会发送一个 Server Hello Done 给到客户端，表示 Server Hello 过程结束。综上，由服务端发起的消息内容，主要包含：</p>
+<ul>
+<li>确认使用的加密通信协议版本，比如 TLS 1.2 版本。如果客户端和服务端支持的版本不一致，服务端关闭加密通信</li>
+<li>服务端生成的随机数 y，用于之后的密钥生成</li>
+<li>在客户端发送的加密算法列表里选一个加密算法，比如 RSA 公钥加密</li>
+<li>服务器 CA 证书</li>
+</ul>
+</li>
+<li><p>Certificate Verify：如果服务端需要客户端进行验证，在客户端收到服务端的 Server Hello 消息之后，首先需要向服务端发送客户端的证书，让服务端验证客户端的合法性。这个过程叫 Client Certificate。接着，客户端需要对服务端的证书进行检查，如果证书不是可信机构颁布、或证书中的域名与实际域名不符、或者证书已过期，就会向访问者显示一个警告，由其选择是否还要继续通信。如果证书没问题，客户端就会从服务器证书中取出服务端公钥。这个过程叫 Certificate Verify。客户端用这个服务端的公钥加密一个随机数 z，并把这个加密过的随机数发送给服务端，这个过程叫 Client Key Exchange。由客户端会告诉服务端已经切换到协商好的加密算法的状态了，这个过程叫 Change Cipher Spec。最后由已经协商好的加密算法和之前的随机数 x、y、z，产生的一个密钥就是整个消息加密解密过程的核心所在了。这个过程叫 Encrypted Handshake Message。综上，由客户端发送给服务端的信息如下：</p>
+<ul>
+<li>由服务器公钥加密过的随机数 z，用于生成服务器的密钥</li>
+<li>编码改变通知，表示随后的信息都将由双方协商的加密方法和密钥发送</li>
+<li>客户端 TLS 握手结束通知，这一项也是前面发送所有内容的哈希值，用来供服务器校验</li>
+</ul>
+</li>
+<li><p>Server Finish：服务端在接收到客户端传来的加密过的随机数 z 之后，使用自己的私钥对其进行解密获取随机数 z，并对数据进行验证。验证无误，用协商好的加密算法和之前的随机数 x、y、z 产生服务器密钥，它和客户端生成的密钥是一致的，因为此后的加密都是对称加密了。这个过程叫 Encrypted Handshake Message。等一切完毕之后，会给客户端发送通知，告知客户端已经切换到协商过的加密算法，这个过程叫 Change Cipher Spec。</p>
+</li>
 </ol>
-<p>互联网上有路由器，它会读取比特流中的 IP 地址进行路由操作，到达正确的网段后，这个网段的交换机读取比特流中的 MAC 地址，从而找到要接收的对应机器。</p>
-<p>接收方：</p>
-<ol>
-<li>数据链路层用网卡接收到了比特流，读取比特流中的帧，将帧中的 MAC 地址去掉，就成了 IP 数据报，传递给网络层。</li>
-<li>网络层接收下层传来的 IP 数据报，将 IP 从包的前面拿掉，取出带有 TCP 的数据（数据段）交给传输层。</li>
-<li>传输层拿到了这个数据段，看到 TCP 标记的端口是 80，说明应用层协议是 HTTP，之后将 TCP 头去掉并将数据交给应用层，告诉应用层对方请求的是 HTTP 数据。</li>
-<li>应用层得知发送方请求的是 HTTP 数据，因此调用 Web 服务器程序把 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 的首页文件发送回去。</li>
-</ol>
-<p>如果两台计算机位于不同的网段中，那么数据从一台计算机到另一台计算机传输的过程中要经过一个或多个路由器，如下图所示。</p>
-<p><img src="/TCP-IP-fiveLayers/3.png" srcset="/img/loading.gif" lazyload alt="例子"></p>
 
                 
               </div>
@@ -339,8 +374,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「研」 TCP/IP 分层结构</div>
-      <div>https://qanlyma.github.io/TCP-IP-fiveLayers/</div>
+      <div>「研」 TCP 与 TLS/SSL</div>
+      <div>https://qanlyma.github.io/TCP-IP-handshake/</div>
     </div>
     <div class="license-meta">
       
@@ -368,18 +403,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/TCP-IP-handshake/" title="「研」 TCP 与 TLS/SSL">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「研」 TCP 与 TLS/SSL</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Hyperledger-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains">
-                        <span class="hidden-mobile">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
+                      <a href="/TCP-IP-fiveLayers/" title="「研」 TCP/IP 分层结构">
+                        <span class="hidden-mobile">「研」 TCP/IP 分层结构</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -465,7 +494,7 @@
       
         <a href="/TCP-IP-handshake/" title="「研」 TCP 与 TLS/SSL"
            class="list-group-item list-group-item-action
-           ">
+           active">
           <span class="category-post">「研」 TCP 与 TLS/SSL</span>
         </a>
       
@@ -474,7 +503,7 @@
       
         <a href="/TCP-IP-fiveLayers/" title="「研」 TCP/IP 分层结构"
            class="list-group-item list-group-item-action
-           active">
+           ">
           <span class="category-post">「研」 TCP/IP 分层结构</span>
         </a>
       
