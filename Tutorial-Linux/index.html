@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Tutorial-Linux/3.jpg">
 <meta property="og:image" content="https://qanlyma.github.io/Tutorial-Linux/4.jpg">
 <meta property="article:published_time" content="2022-11-10T14:51:47.000Z">
-<meta property="article:modified_time" content="2023-02-20T14:28:08.752Z">
+<meta property="article:modified_time" content="2023-02-28T15:21:04.086Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Tutorial-Linux/1.png">
@@ -262,7 +262,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：7 天前
+                    本文最后更新于：几秒前
                   
                 
               </p>
@@ -468,7 +468,8 @@
 <p>Shell 的使用方法有两种：1. 直接输入命令； 2. 使用 .sh 脚本。 对于脚本语法感兴趣的同学请学习 <a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-shell.html">Shell 教程</a>。</p>
 <p>Bash (GUN Bourne-Again Shell）是许多 Linux 发行版本默认的 Shell 。</p>
 <h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>我在这篇文章里面列出了我自己认为 Linux 中比较重要的内容，学习它的办法唯有多用，逐渐感受它的强大与可靠，你一定会理解为什么它会受到那么多公司的青睐。 Linux 上手可能会比 Windows 要困难一点，尤其是在没有装图形化界面的服务器上，各位同学不必害怕，熟能生巧，习惯以后真的非常好用。相信不久后你也可以在简历里面加上一句 “熟悉 Linux 开发环境” 了。</p>
-
+<p>附两个我常用的在本地与服务器传文件的命令：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cmd">// 文件从远程系统上用户的主目录复制到本地当前目录<br>scp username@ip_address:/home/username/filename .<br><br>// 将本地文件复制到远程系统上用户名的主目录<br>scp filename username@ip_address:/home/username<br><br>// 也可以复制目录<br>scp -r source_dir username@ip_address:/home/username/target_dir<br></code></pre></td></tr></table></figure>
                 
               </div>
             
