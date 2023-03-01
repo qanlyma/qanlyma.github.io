@@ -7,7 +7,7 @@ categories: 学习笔记
 banner_img:
 ---
 
-Git is very good.
+Git is very good!
 
 <!--more-->
 
