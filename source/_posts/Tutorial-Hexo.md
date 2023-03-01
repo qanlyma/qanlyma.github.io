@@ -59,3 +59,12 @@ $ hexo deploy
 ```
 
 More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
+
+### 更换电脑
+
+hexo 目录下的文件和 github 上的文件是不同的，public 文件夹的文件通过 `hexo d` 上传到 github，其他的文件则留在本地目录下。
+
+1. 将本地文件传入 github 新建分支，并设为默认。
+2. 在新电脑上克隆新分支到本地，切换到 username.github.io 目录，执行 `npm install`。
+3. 更改后依次执行 `git add .`、`git commit -m "..."`、`git push`。
+4. 更新前使用 `git pull`。
