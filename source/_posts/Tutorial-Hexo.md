@@ -68,3 +68,5 @@ hexo 目录下的文件和 github 上的文件是不同的，public 文件夹的
 2. 在新电脑上克隆新分支到本地，切换到 username.github.io 目录，执行 `npm install`。
 3. 更改后依次执行 `git add .`、`git commit -m "..."`、`git push`。
 4. 更新前使用 `git pull`。
+
+**.md 文件建议使用 UTF-8，其他格式可能会乱码。**
