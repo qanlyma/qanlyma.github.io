@@ -16,29 +16,28 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Git is very good!">
+    <meta name="description" content="此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「学」 Git 使用教程">
-<meta property="og:url" content="https://qanlyma.github.io/Tutorial-Git/index.html">
+<meta property="og:title" content="「研」 以太坊区块结构和数据存储">
+<meta property="og:url" content="https://qanlyma.github.io/Block/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="Git is very good!">
+<meta property="og:description" content="此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Git/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Git/2.jpg">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Git/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Git/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Git/5.png">
-<meta property="article:published_time" content="2023-03-01T07:09:54.000Z">
-<meta property="article:modified_time" content="2023-03-01T13:25:14.354Z">
+<meta property="og:image" content="https://qanlyma.github.io/Block/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Block/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Block/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Block/4.png">
+<meta property="article:published_time" content="2023-03-03T02:25:26.000Z">
+<meta property="article:modified_time" content="2023-03-03T09:01:38.724Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/Tutorial-Git/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/Block/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「学」 Git 使用教程 - Qanly</title>
+  <title>「研」 以太坊区块结构和数据存储 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -179,7 +178,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「学」 Git 使用教程"></span>
+            <span id="subtitle" data-typed-text="「研」 以太坊区块结构和数据存储"></span>
           
         </div>
 
@@ -195,8 +194,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-01 15:09" pubdate>
-          2023年3月1日 下午
+        <time datetime="2023-03-03 10:25" pubdate>
+          2023年3月3日 上午
         </time>
       </span>
     
@@ -258,12 +257,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「学」 Git 使用教程</h1>
+            <h1 style="display: none">「研」 以太坊区块结构和数据存储</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 天前
+                    本文最后更新于：1 分钟前
                   
                 
               </p>
@@ -271,59 +270,40 @@
             
               <div class="markdown-body">
                 
-                <p>Git is very good!</p>
+                <p>此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。</p>
 <span id="more"></span>
 
-<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><ul>
-<li>克隆 Git 资源作为工作目录。</li>
-<li>在克隆的资源上添加或修改文件。</li>
-<li>如果其他人修改了，你可以更新资源。</li>
-<li>在提交前查看修改。</li>
-<li>提交修改。</li>
-<li>在修改完成后，如果发现错误，可以撤回提交并再次修改并提交。</li>
-</ul>
-<p><img src="/Tutorial-Git/1.png" srcset="/img/loading.gif" lazyload alt="工作流程"></p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><strong>工作区</strong>：就是你在电脑里能看到的目录。</li>
-<li><strong>暂存区</strong>：英文叫 stage 或 index。一般存放在 .git 目录下的 index 文件（.git&#x2F;index）中，所以我们把暂存区有时也叫作索引（index）。</li>
-<li><strong>版本库</strong>：工作区有一个隐藏目录 .git，这个不算工作区，而是 Git 的版本库。</li>
-<li><strong>远程版本库</strong>：一般指的是 Git 服务器上所对应的仓库，如 github 仓库。</li>
-</ul>
-<p><img src="/Tutorial-Git/2.jpg" srcset="/img/loading.gif" lazyload alt="关系"></p>
-<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
-<li><code>git init</code>：初始化仓库</li>
-<li><code>git config</code>：配置开发者用户名和邮箱</li>
-<li><code>git clone</code>：从 git 服务器拉取代码</li>
-<li><code>git status</code>：查看文件变动状态</li>
-<li><code>git add .</code>：添加文件到暂存区</li>
-<li><code>git commit</code>：提交文件变动到版本库</li>
-<li><code>git push</code>：将本地的代码改动推送到服务器</li>
-<li><code>git pull</code>：将服务器上的最新代码拉取到本地</li>
-<li><code>git log</code>：查看版本提交记录</li>
-<li><code>git tag</code>：为项目标记里程碑</li>
-<li><code>git reset</code>：回退版本</li>
-<li>.gitignore：设置哪些内容不需要推送到服务器，这是一个配置文件</li>
-</ul>
-<p>具体参数可参考<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/Q_O0ey4C9tryPZaZeJocbA">这篇文章</a></p>
-<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><ul>
-<li>分支（Branch）：分支是为了将修改记录的整个流程分开存储，让分开的分支不受其它分支的影响，所以在同一个数据库里可以同时进行多个不同的修改。</li>
-<li>主分支（Master&#x2F;Main）：前面提到过 master 是 Git 为我们自动创建的第一个分支，也叫主分支，其它分支开发完成后都要合并到 master。</li>
-<li>HEAD：指向的就是当前分支的最新提交。</li>
-</ul>
-<p><img src="/Tutorial-Git/3.png" srcset="/img/loading.gif" lazyload alt="Branch"></p>
+<h2 id="区块结构"><a href="#区块结构" class="headerlink" title="区块结构"></a>区块结构</h2><p>一个区块由两部分组成：</p>
 <ul>
-<li><code>git branch</code>：创建、重命名、查看、删除项目分支</li>
-<li><code>git checkout</code>：切换分支</li>
-<li><code>git merge</code>：合并分支</li>
+<li>区块头（Header）</li>
+<li>区块体（Body）</li>
 </ul>
-<h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><p>如果你想通过 Git 分享你的代码或者与其他开发人员合作。你就需要将数据放到一台其他开发人员能够连接的服务器上。</p>
-<p>本例使用了 Github 作为远程仓库，可以阅读 <a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/git-guide.html">Github 简明教程</a>。</p>
-<p><img src="/Tutorial-Git/4.png" srcset="/img/loading.gif" lazyload alt="Github"></p>
+<p><img src="/Block/1.png" srcset="/img/loading.gif" lazyload alt="Block"></p>
+<p>轻节点只会存储 Header。</p>
+<p>区块中的三棵树：</p>
 <ul>
-<li><code>git fetch</code>：从远程仓库下载新分支与数据</li>
-<li><code>git merge</code>：从远端仓库提取数据并尝试合并到当前分支</li>
+<li><p><strong>状态树</strong>：状态树是全局的、不断更新的，它的 key 为 keccak256(ethereumAddress)，value 为 rlp(ethereumAccount)。其中 ethereumAddress 表示以太坊账户地址；ethereumAccount 表示以太坊账户，包含四个字段：nonce，balance，storageRoot，codeHash。如果 storageRoot 和 codeHash 不为空，则为合约账户，其中 codeHash 对应合约代码的哈希，storageRoot 对应另一棵树的树根，这棵树我们称为<strong>存储树</strong>。存储树存储了合约的所有状态数据，每个合约有单独的存储树。</p>
+</li>
+<li><p><strong>交易树</strong>：每个区块都有一棵独立的交易树，对应区块头里的交易根。交易树的 key（路径）为 rlp(transactionIndex)，value 为交易序列化后的值。其中 transactionIndex 表示交易在该区块中的下标。</p>
+</li>
+<li><p><strong>回执树</strong>：每个交易对应一个交易回执，交易回执记录了交易执行结果，包括执行状态、Gas 消耗、事件日志等。每个区块有自己的回执树，对应了区块头里的回执根。与交易树类似，key 为 rlp(transactionIndex)，value 为交易回执序列化后的值。</p>
+</li>
 </ul>
-<p><img src="/Tutorial-Git/5.png" srcset="/img/loading.gif" lazyload alt="提取"></p>
+<p><img src="/Block/2.png" srcset="/img/loading.gif" lazyload alt="Trie"></p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>以太坊中的账户状态是用什么数据结构存储的呢？</p>
+<p>有关这个问题<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Vt411X7JF?p=16">肖臻老师的公开课</a>有非常详细的解释。这里直接说结论：</p>
+<p><strong>Merkle Patricia Trie（MPT）</strong></p>
+<p><img src="/Block/3.png" srcset="/img/loading.gif" lazyload alt="World State Trie"></p>
+<p>右上角为简化的 key-value 定义。我们可以看到图中有 2 个拓展节点，2 个分支节点，4 个叶子节点。在最下面的两个叶子节点中，prefix 3 的右边有个格子，有个箭头从 7 指向这个格子，表示 3 和 7 两个 nibble 组成一个字节存储。当一个节点被另一个节点在内部指向时（比如上图中的分支节点内部指向了叶子节点），父节点会存储 H(rlp.encode(x))。<br>其中 H(y) &#x3D; keccak256(y) if len(y) &gt;&#x3D; 32 else y，rlp.encode 为 RLP 编码函数。</p>
+<p>由于 MPT 树是确定性的，所以如果两棵树存储了完全相同的数据，那么这两棵树的节点将完全相同，包括根节点。假设在某一时刻，当其中一个合约修改了某个变量的数据，使得它与另一个合约的数据不同时，会生成一个新的节点，并从新节点开始由下往上直到根节点，整个路径的节点值都会更新，新生成的节点会存储到硬盘，但旧的节点不会从硬盘删除。</p>
+<p><img src="/Block/4.png" srcset="/img/loading.gif" lazyload alt="update data"></p>
+<h2 id="StateDB"><a href="#StateDB" class="headerlink" title="StateDB"></a>StateDB</h2><p>在以太坊中，StateDB 是一个用于管理账户状态数据的内存数据库，它的数据存储在节点的内存中，并且随着区块链的不断增长而不断变化。但是，为了确保数据的可靠性和持久性，StateDB 数据需要被定期持久化到磁盘中。</p>
+<p>为了实现数据的持久化，以太坊节点使用了 LevelDB 这样的键值对存储引擎。当 StateDB 中的数据发生变化时，节点会将这些变化记录在 LevelDB 中，以便在下次启动时从磁盘中重新加载数据。</p>
+<p>需要注意的是，由于 LevelDB 是一种磁盘存储引擎，相比于内存数据库，它的读写速度要慢很多。因此，在以太坊节点中，StateDB 通常被用作内存数据库，而 LevelDB 则用于实现数据的持久化。这种方式可以同时满足节点的高性能和数据的可靠性要求。</p>
+<h2 id="block-go-源码"><a href="#block-go-源码" class="headerlink" title="block.go 源码"></a>block.go 源码</h2><p>研究那么多不如来看一看区块结构的源码：go-ethereum&#x2F;core&#x2F;types&#x2F;block.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Header represents a block header in the Ethereum blockchain.</span><br><span class="hljs-keyword">type</span> Header <span class="hljs-keyword">struct</span> &#123;<br>	ParentHash  common.Hash    <span class="hljs-comment">// 父区块的哈希</span><br>    UncleHash   common.Hash    <span class="hljs-comment">// 所有叔块的哈希（Block.uncles）</span><br>    Coinbase    common.Address <span class="hljs-comment">// 接受出块奖励的地址，矿工出块时在这个字段填入自己的地址</span><br>    Root        common.Hash    <span class="hljs-comment">// 此区块包含的所有交易完成后，state 对象的哈希值</span><br>    TxHash      common.Hash    <span class="hljs-comment">// 此区块包含的所有交易的哈希（Block.transactions）</span><br>    ReceiptHash common.Hash    <span class="hljs-comment">// 此区块所有交易完成后所产生的所有收据的哈希</span><br>    Bloom       Bloom          <span class="hljs-comment">// 用来快速判断一个参数 Log 对象是否存在于一组已知的 Log 集合中</span><br>    Difficulty  *big.Int       <span class="hljs-comment">// 此区块的难度值</span><br>    Number      *big.Int       <span class="hljs-comment">// 此区块的高度</span><br>    GasLimit    <span class="hljs-type">uint64</span>         <span class="hljs-comment">// 此区块所有交易消耗的 gas 值的上限</span><br>    GasUsed     <span class="hljs-type">uint64</span>         <span class="hljs-comment">// 此区块所有交易消耗的 gas 的实际值</span><br>    Time        *big.Int       <span class="hljs-comment">// 区块时间戳</span><br>    Extra       []<span class="hljs-type">byte</span>         <span class="hljs-comment">// 区块的额外数据</span><br>    MixDigest   common.Hash    <span class="hljs-comment">// 以太坊 hashimoto 算法产生的哈希</span><br>    Nonce       BlockNonce     <span class="hljs-comment">// 通过此字段产生符合 Difficulty 值要求的区块哈希</span><br>&#125;<br><br><span class="hljs-keyword">type</span> Body <span class="hljs-keyword">struct</span> &#123;<br>	Transactions []*Transaction<br>	Uncles       []*Header<br>&#125;<br><br><span class="hljs-comment">// Block represents an entire block in the Ethereum blockchain.</span><br><span class="hljs-keyword">type</span> Block <span class="hljs-keyword">struct</span> &#123;<br>	header       *Header<br>	uncles       []*Header<br>	transactions Transactions<br><br>	<span class="hljs-comment">// caches</span><br>	hash atomic.Value<br>	size atomic.Value<br><br>	<span class="hljs-comment">// 从创世块开始，到当前区块截止，累积的所有区块 Difficulty 之和</span><br>	td *big.Int<br><br>	<span class="hljs-comment">// These fields are used by package eth to track</span><br>	<span class="hljs-comment">// inter-peer block relay.</span><br>	ReceivedAt   time.Time<br>	ReceivedFrom <span class="hljs-keyword">interface</span>&#123;&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可见一个区块携带的数据主要是：<strong>Header 中的信息 + 叔块们的头部信息 + 块中包含的所有交易信息</strong>。</p>
 
                 
               </div>
@@ -342,7 +322,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  <a href="/categories/%E7%90%86%E8%AE%BA%E7%A0%94%E7%A9%B6/" class="category-chain-item">理论研究</a>
   
   
 
@@ -362,8 +342,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「学」 Git 使用教程</div>
-      <div>https://qanlyma.github.io/Tutorial-Git/</div>
+      <div>「研」 以太坊区块结构和数据存储</div>
+      <div>https://qanlyma.github.io/Block/</div>
     </div>
     <div class="license-meta">
       
@@ -375,7 +355,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月1日</div>
+          <div>2023年3月3日</div>
         </div>
       
       
@@ -391,18 +371,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Black-words/" title="「学」 Web3.0 黑话">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「学」 Web3.0 黑话</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/QUIC/" title="「研」 QUIC 协议理解">
-                        <span class="hidden-mobile">「研」 QUIC 协议理解</span>
+                      <a href="/Black-words/" title="「学」 Web3.0 黑话">
+                        <span class="hidden-mobile">「学」 Web3.0 黑话</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -467,17 +441,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="学习笔记"
-        id="heading-078425eaf316a180b0989442e53f920b" role="tab" data-toggle="collapse" href="#collapse-078425eaf316a180b0989442e53f920b"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="理论研究"
+        id="heading-8d98e6af91d447f6b771495a010cfe63" role="tab" data-toggle="collapse" href="#collapse-8d98e6af91d447f6b771495a010cfe63"
         aria-expanded="true"
       >
-        学习笔记
-        <span class="list-group-count">(6)</span>
+        理论研究
+        <span class="list-group-count">(5)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-078425eaf316a180b0989442e53f920b"
-           role="tabpanel" aria-labelledby="heading-078425eaf316a180b0989442e53f920b">
+      <div class="category-collapse collapse show" id="collapse-8d98e6af91d447f6b771495a010cfe63"
+           role="tabpanel" aria-labelledby="heading-8d98e6af91d447f6b771495a010cfe63">
         
         
           
@@ -486,55 +460,46 @@
     
       
       
-        <a href="/Tutorial-Docker/" title="「学」 Docker 使用教程"
+        <a href="/QUIC/" title="「研」 QUIC 协议理解"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「学」 Docker 使用教程</span>
+          <span class="category-post">「研」 QUIC 协议理解</span>
         </a>
       
     
       
       
-        <a href="/Tutorial-Git/" title="「学」 Git 使用教程"
+        <a href="/TCP-IP-handshake/" title="「研」 TCP 与 TLS/SSL"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 TCP 与 TLS/SSL</span>
+        </a>
+      
+    
+      
+      
+        <a href="/TCP-IP-fiveLayers/" title="「研」 TCP/IP 分层结构"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 TCP/IP 分层结构</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Block/" title="「研」 以太坊区块结构和数据存储"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「学」 Git 使用教程</span>
+          <span class="category-post">「研」 以太坊区块结构和数据存储</span>
         </a>
       
     
       
       
-        <a href="/Tutorial-Hexo/" title="「学」 Hexo 基础命令"
+        <a href="/Blockchain-scalability/" title="「研」 区块链扩容调研"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「学」 Hexo 基础命令</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Tutorial-Linux/" title="「学」 Linux 使用教程"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Linux 使用教程</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Tutorial-Markdown/" title="「学」 Markdown 使用教程"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Markdown 使用教程</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Black-words/" title="「学」 Web3.0 黑话"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Web3.0 黑话</span>
+          <span class="category-post">「研」 区块链扩容调研</span>
         </a>
       
     
