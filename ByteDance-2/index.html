@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/7.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/8.png">
 <meta property="article:published_time" content="2023-03-05T04:07:42.000Z">
-<meta property="article:modified_time" content="2023-03-06T04:42:41.397Z">
+<meta property="article:modified_time" content="2023-03-06T07:16:49.659Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-2/2.png">
@@ -266,7 +266,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：1 小时前
+                    本文最后更新于：3 分钟前
                   
                 
               </p>
@@ -324,7 +324,7 @@
 <li>空结构体不占据内存空间，可作为占位符使用。比如实现简单的 Set：Go 语言标准库没有提供 Set 的实现，通常使用 map 来代替。对于集合场景，只需要用到 map 的键而不需要值。</li>
 </ul>
 <h2 id="2-性能调优实战"><a href="#2-性能调优实战" class="headerlink" title="2 性能调优实战"></a>2 性能调优实战</h2><h3 id="2-1-分析工具"><a href="#2-1-分析工具" class="headerlink" title="2.1 分析工具"></a>2.1 分析工具</h3><p><img src="/ByteDance-2/5.png" srcset="/img/loading.gif" lazyload alt="pprof"></p>
-<h3 id="2-2-搭建项目"><a href="#2-2-搭建项目" class="headerlink" title="2.2 搭建项目"></a>2.2 搭建项目</h3><p>项目提前埋入了一些炸弹代码，产生可观测的性能问题。</p>
+<h3 id="2-2-搭建项目"><a href="#2-2-搭建项目" class="headerlink" title="2.2 搭建项目"></a>2.2 搭建项目</h3><p><a target="_blank" rel="noopener" href="https://blog.wolfogre.com/posts/go-ppof-practice/">参考教程</a><br>项目提前埋入了一些炸弹代码，产生可观测的性能问题。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;log&quot;</span><br>	<span class="hljs-string">&quot;net/http&quot;</span><br>	_ <span class="hljs-string">&quot;net/http/pprof&quot;</span>  <span class="hljs-comment">// 自动注册 pprof 的 handler 到 http server</span><br>    <span class="hljs-comment">// ...</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	log.SetFlags(log.Lshortfile | log.LstdFlags)<br>	log.SetOutput(os.Stdout)<br><br>	runtime.GOMAXPROCS(<span class="hljs-number">1</span>)                   <span class="hljs-comment">// 限制 CPU 使用数</span><br>	runtime.SetMutexProfileFraction(<span class="hljs-number">1</span>)      <span class="hljs-comment">// 开启锁调用跟踪</span><br>	runtime.SetBlockProfileRate(<span class="hljs-number">1</span>)          <span class="hljs-comment">// 开启阻塞调用跟踪</span><br><br>	<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>        <span class="hljs-comment">// 启动 http server</span><br>		<span class="hljs-keyword">if</span> err := http.ListenAndServe(<span class="hljs-string">&quot;:6060&quot;</span>, <span class="hljs-literal">nil</span>); err != <span class="hljs-literal">nil</span> &#123;<br>			log.Fatal(err)<br>		&#125;<br>		os.Exit(<span class="hljs-number">0</span>)<br>	&#125;()<br><br>	<span class="hljs-keyword">for</span> &#123;<br>		<span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> animal.AllAnimals &#123;<br>			v.Live()<br>		&#125;<br>		time.Sleep(time.Second)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="2-3-浏览器查看指标"><a href="#2-3-浏览器查看指标" class="headerlink" title="2.3 浏览器查看指标"></a>2.3 浏览器查看指标</h3><p><img src="/ByteDance-2/6.png" srcset="/img/loading.gif" lazyload alt="debug"></p>
