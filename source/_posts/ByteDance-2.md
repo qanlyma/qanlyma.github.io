@@ -145,6 +145,7 @@ func ByteBuffer(n int, str string) string {
 
 ### 2.2 搭建项目
 
+[参考教程](https://blog.wolfogre.com/posts/go-ppof-practice/)
 项目提前埋入了一些炸弹代码，产生可观测的性能问题。
 
 ```go

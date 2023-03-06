@@ -43,11 +43,11 @@ banner_img:
     2. 标记：找到所有可达对象
 
     3. 清理：回收所有不可达对象占据的内存空间
-        * Copying GC: 将存活对象从一块内存空间复制到**另外一块内存空间**，原先的空间可以直接进行对象分配
+        * **Copying GC**: 将存活对象从一块内存空间复制到**另外一块内存空间**，原先的空间可以直接进行对象分配
         ![Copying GC](3.png)
-        * Mark-sweep GC: 将死亡对象所在内存块标记为可分配，使用 free list 管理可分配的空间
+        * **Mark-sweep GC**: 将死亡对象所在内存块标记为可分配，使用 free list 管理可分配的空间
         ![Mark-sweep GC](4.png)
-        * Mark-compact GC: 将存活对象复制到同一块内存区域的开头
+        * **Mark-compact GC**: 将存活对象复制到同一块内存区域的开头
         ![Mark-compact GC](5.png)
 
 ### 1.3 分代 GC
