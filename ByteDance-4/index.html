@@ -16,29 +16,23 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="以 leetcode 28 题为例，学习一下 KMP 算法。本文参考 Carl 的教程。">
+    <meta name="description" content="本文介绍 Gorm、Kitex、Hertz 三件套。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「Go」 KMP 算法">
-<meta property="og:url" content="https://qanlyma.github.io/Go-KMP/index.html">
+<meta property="og:title" content="「训」 笔记(4)：框架三件套">
+<meta property="og:url" content="https://qanlyma.github.io/ByteDance-4/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="以 leetcode 28 题为例，学习一下 KMP 算法。本文参考 Carl 的教程。">
+<meta property="og:description" content="本文介绍 Gorm、Kitex、Hertz 三件套。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/Go-KMP/1.gif">
-<meta property="og:image" content="https://qanlyma.github.io/Go-KMP/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/Go-KMP/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/Go-KMP/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/Go-KMP/5.png">
-<meta property="article:published_time" content="2023-03-07T07:13:12.000Z">
-<meta property="article:modified_time" content="2023-03-07T08:33:00.894Z">
+<meta property="article:published_time" content="2023-03-08T07:42:49.000Z">
+<meta property="article:modified_time" content="2023-03-08T08:48:44.586Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/Go-KMP/1.gif">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「Go」 KMP 算法 - Qanly</title>
+  <title>「训」 笔记(4)：框架三件套 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -179,7 +173,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「Go」 KMP 算法"></span>
+            <span id="subtitle" data-typed-text="「训」 笔记(4)：框架三件套"></span>
           
         </div>
 
@@ -195,8 +189,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-07 15:13" pubdate>
-          2023年3月7日 下午
+        <time datetime="2023-03-08 15:42" pubdate>
+          2023年3月8日 下午
         </time>
       </span>
     
@@ -258,12 +252,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「Go」 KMP 算法</h1>
+            <h1 style="display: none">「训」 笔记(4)：框架三件套</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：3 天前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -271,42 +265,15 @@
             
               <div class="markdown-body">
                 
-                <p>以 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string">leetcode 28 题</a>为例，学习一下 KMP 算法。本文参考 <a target="_blank" rel="noopener" href="https://programmercarl.com/0028.%E5%AE%9E%E7%8E%B0strStr.html#_28-%E5%AE%9E%E7%8E%B0-strstr">Carl 的教程</a>。</p>
+                <p>本文介绍 Gorm、Kitex、Hertz 三件套。</p>
 <span id="more"></span>
 
-<h2 id="题目介绍"><a href="#题目介绍" class="headerlink" title="题目介绍"></a>题目介绍</h2><p><code>给你两个字符串 haystack 和 needle，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。如果 needle 不是 haystack 的一部分，则返回 -1 。</code></p>
-<p>举个例子，就是要在<strong>文本串</strong>：aabaabaafa 中查找是否出现过一个<strong>模式串</strong>：aabaaf，并返回出现的地方。</p>
-<p>暴力解法很容易想到，但是时间复杂度是 <strong>O(m*n)</strong> （m 和 n 分别是文本串和模式串长度）</p>
-<p>而 KMP 算法的时间复杂度为 <strong>O(m+n)</strong> （匹配和单独生成 next 数组）</p>
-<h2 id="KMP-算法"><a href="#KMP-算法" class="headerlink" title="KMP 算法"></a>KMP 算法</h2><p>KMP 是由三位学者发明的：Knuth，Morris 和 Pratt，取了三位学者名字的首字母，所以叫做 KMP。</p>
-<p>KMP 主要应用在<strong>字符串匹配</strong>上。</p>
-<p>KMP 的主要思想是<strong>当出现字符串不匹配时，可以知道一部分之前已经匹配的文本内容，可以利用这些信息避免从头再去做匹配了</strong>。</p>
-<p><img src="/Go-KMP/1.gif" srcset="/img/loading.gif" lazyload alt="KMP"></p>
-<p>假设文本串有下标 i，模式串有下标 j。</p>
-<p>可以看到整个 KMP 过程中 i 是不需要回溯的，出现不匹配时 j 会回溯到 next[j-1] 的位置，所以构建 next 是关键。</p>
-<h2 id="next-数组"><a href="#next-数组" class="headerlink" title="next 数组"></a>next 数组</h2><p>next 数组就是一个前缀表（prefix table），记录下标 i 之前（包括 i）的字符串中，有多大长度的<strong>相同前缀后缀</strong>。</p>
-<p>前缀表是用来回退的，它记录了模式串与文本串不匹配的时候，模式串应该从哪里开始重新匹配。</p>
-<h3 id="如何计算前缀表"><a href="#如何计算前缀表" class="headerlink" title="如何计算前缀表"></a>如何计算前缀表</h3><p>如图：</p>
-<p><img src="/Go-KMP/2.png" srcset="/img/loading.gif" lazyload></p>
-<p>长度为前 1 个字符的子串 a，最长相同前后缀的长度为 0。（注意字符串的前缀是指不包含最后一个字符的所有以第一个字符开头的连续子串；后缀是指不包含第一个字符的所有以最后一个字符结尾的连续子串）</p>
-<p><img src="/Go-KMP/3.png" srcset="/img/loading.gif" lazyload></p>
-<p>长度为前 2 个字符的子串 aa，最长相同前后缀的长度为 1。</p>
-<p><img src="/Go-KMP/4.png" srcset="/img/loading.gif" lazyload></p>
-<p>长度为前 3 个字符的子串 aab，最长相同前后缀的长度为 0。</p>
-<p>以此类推：长度为前 4 个字符的子串 aaba，最长相同前后缀的长度为 1。长度为前 5 个字符的子串 aabaa，最长相同前后缀的长度为 2。长度为前 6 个字符的子串 aabaaf，最长相同前后缀的长度为0。</p>
-<p><img src="/Go-KMP/5.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="前缀表与-next-数组"><a href="#前缀表与-next-数组" class="headerlink" title="前缀表与 next 数组"></a>前缀表与 next 数组</h3><p>next 数组就可以是前缀表，但是很多实现都是把前缀表统一减一（右移一位，初始位置为 -1）之后作为 next 数组。</p>
-<p>其实这并不涉及到 KMP 的原理，而是具体实现，next 数组既可以就是前缀表，也可以是前缀表统一减一（右移一位，初始位置为 -1）。</p>
-<h3 id="构造-next-数组"><a href="#构造-next-数组" class="headerlink" title="构造 next 数组"></a>构造 next 数组</h3><p>构造 next 数组主要有如下三步：</p>
-<ol>
-<li>初始化</li>
-<li>处理前后缀不相同的情况</li>
-<li>处理前后缀相同的情况</li>
-</ol>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>这是我自己写的不右移也不减一的版本，总结就是：i 一直往后走，遇到不匹配，j 去找前一位看看回溯到哪里。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">strStr</span><span class="hljs-params">(haystack <span class="hljs-type">string</span>, needle <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>    <span class="hljs-comment">// KMP, i 是文本串指针, j 是模式串指针, i 不回溯 </span><br>    j := <span class="hljs-number">0</span><br>    next := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-built_in">len</span>(needle))<br>    getNext(next, needle)<br>    <br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(haystack); i++ &#123;<br>        <span class="hljs-comment">// 匹配到不同字符</span><br>        <span class="hljs-keyword">for</span> haystack[i] != needle[j] &amp;&amp; j &gt; <span class="hljs-number">0</span> &#123;<br>            <span class="hljs-comment">// j 回溯</span><br>            j = next[j<span class="hljs-number">-1</span>]<br>        &#125;<br><br>        <span class="hljs-comment">// 匹配到相同字符</span><br>        <span class="hljs-keyword">if</span> haystack[i] == needle[j] &#123;<br>            j++<br>            <span class="hljs-keyword">if</span> j == <span class="hljs-built_in">len</span>(needle) &#123;<br>                <span class="hljs-keyword">return</span> i-j+<span class="hljs-number">1</span><br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span><br>&#125;<br><br><span class="hljs-comment">// 构建 next (不减 1)</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">getNext</span><span class="hljs-params">(next []<span class="hljs-type">int</span>, s <span class="hljs-type">string</span>)</span></span> &#123;<br>    <span class="hljs-comment">// 初始化, 定义两个指针 i 和 j, j 指向前缀末尾位置, i 指向后缀末尾位置</span><br>    j := <span class="hljs-number">0</span><br>    next[<span class="hljs-number">0</span>] = j<br>    <br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">1</span>; i &lt; <span class="hljs-built_in">len</span>(s); i++ &#123;<br>        <span class="hljs-comment">// 前后缀不同</span><br>        <span class="hljs-keyword">for</span> j &gt; <span class="hljs-number">0</span> &amp;&amp; s[i] != s[j] &#123;<br>            j = next[j<span class="hljs-number">-1</span>]<br>        &#125;<br><br>        <span class="hljs-comment">// 前后缀相同</span><br>        <span class="hljs-keyword">if</span> s[i] == s[j] &#123;<br>            j++<br>        &#125;<br>        next[i] = j<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文只简单介绍了 KMP 算法的流程，但是关于为什么它可以解决字符串匹配的问题，没有详细讨论。感兴趣的话可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_52622200/article/details/110563434">这篇文章</a>。</p>
+<h2 id="Gorm"><a href="#Gorm" class="headerlink" title="Gorm"></a>Gorm</h2><p>Gorm 是面向 Golang 语言的一种 <strong>ORM（Object Relational Mapping，对象关系映射）框架</strong>，支持多种数据库的接入，例如 MySQL，PostgreSQL，SQLite，SQL Server，Clickhouse。此框架弱化了开发者对于 SQL 语言的掌握程度，使用提供的 API 进行底层数据库的访问。</p>
+<p>快速开始：<a target="_blank" rel="noopener" href="https://gorm.cn/zh_CN/docs/index.html">https://gorm.cn/zh_CN/docs/index.html</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/go-gorm/gorm">https://github.com/go-gorm/gorm</a></p>
+<h2 id="Kitex"><a href="#Kitex" class="headerlink" title="Kitex"></a>Kitex</h2><p>Kitex[kaɪt’eks] 字节跳动内部的 Golang 微服务 <strong>RPC（Remote Procedure Call）框架</strong>，具有高性能、强可扩展的特点，在字节内部已广泛使用。</p>
+<p>快速开始：<a target="_blank" rel="noopener" href="https://www.cloudwego.io/zh/docs/kitex/getting-started">https://www.cloudwego.io/zh/docs/kitex/getting-started</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/cloudwego/kitex">https://github.com/cloudwego/kitex</a></p>
+<h2 id="Hertz"><a href="#Hertz" class="headerlink" title="Hertz"></a>Hertz</h2><p>Hertz[həːts] 是一个 Golang 微服务 <strong>HTTP 框架</strong>，在设计之初参考了其他开源框架 fasthttp、gin、echo 的优势，并结合字节跳动内部的需求，使其具有高易用性、高性能、高扩展性等特点。</p>
+<p>快速开始：<a target="_blank" rel="noopener" href="https://www.cloudwego.io/zh/docs/hertz/getting-started">https://www.cloudwego.io/zh/docs/hertz/getting-started</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/cloudwego/hertz">https://github.com/cloudwego/hertz</a></p>
 
                 
               </div>
@@ -325,7 +292,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  <a href="/categories/%E5%AD%97%E8%8A%82%E9%9D%92%E8%AE%AD/" class="category-chain-item">字节青训</a>
   
   
 
@@ -345,8 +312,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「Go」 KMP 算法</div>
-      <div>https://qanlyma.github.io/Go-KMP/</div>
+      <div>「训」 笔记(4)：框架三件套</div>
+      <div>https://qanlyma.github.io/ByteDance-4/</div>
     </div>
     <div class="license-meta">
       
@@ -358,7 +325,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月7日</div>
+          <div>2023年3月8日</div>
         </div>
       
       
@@ -374,18 +341,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「训」 笔记(4)：框架三件套</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理">
-                        <span class="hidden-mobile">「训」 笔记(3)：内存管理</span>
+                      <a href="/Go-KMP/" title="「Go」 KMP 算法">
+                        <span class="hidden-mobile">「Go」 KMP 算法</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -450,17 +411,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Golang"
-        id="heading-eda14e187a768b38eda999457c9cca1e" role="tab" data-toggle="collapse" href="#collapse-eda14e187a768b38eda999457c9cca1e"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="字节青训"
+        id="heading-984d1428f71819da297f82a6c866640b" role="tab" data-toggle="collapse" href="#collapse-984d1428f71819da297f82a6c866640b"
         aria-expanded="true"
       >
-        Golang
-        <span class="list-group-count">(2)</span>
+        字节青训
+        <span class="list-group-count">(4)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-eda14e187a768b38eda999457c9cca1e"
-           role="tabpanel" aria-labelledby="heading-eda14e187a768b38eda999457c9cca1e">
+      <div class="category-collapse collapse show" id="collapse-984d1428f71819da297f82a6c866640b"
+           role="tabpanel" aria-labelledby="heading-984d1428f71819da297f82a6c866640b">
         
         
           
@@ -469,19 +430,37 @@
     
       
       
-        <a href="/Go-KMP/" title="「Go」 KMP 算法"
+        <a href="/ByteDance-1/" title="「训」 笔记(1)：Go 语言"
            class="list-group-item list-group-item-action
-           active">
-          <span class="category-post">「Go」 KMP 算法</span>
+           ">
+          <span class="category-post">「训」 笔记(1)：Go 语言</span>
         </a>
       
     
       
       
-        <a href="/Go-typeTransfer/" title="「Go」 各种类型相互转换"
+        <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「Go」 各种类型相互转换</span>
+          <span class="category-post">「训」 笔记(2)：性能调优</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(3)：内存管理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「训」 笔记(4)：框架三件套</span>
         </a>
       
     
