@@ -1,5 +1,5 @@
 ---
-title: 「训」 笔记（3）：内存管理
+title: 「训」 笔记(3)：内存管理
 category_bar: true
 date: 2023-03-06 12:13:09
 tags:

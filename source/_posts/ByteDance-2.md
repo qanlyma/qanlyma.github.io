@@ -1,5 +1,5 @@
 ---
-title: 「训」 笔记（2）：性能调优
+title: 「训」 笔记(2)：性能调优
 category_bar: true
 date: 2023-03-05 12:07:42
 tags:
