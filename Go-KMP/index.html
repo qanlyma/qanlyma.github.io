@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Go-KMP/4.png">
 <meta property="og:image" content="https://qanlyma.github.io/Go-KMP/5.png">
 <meta property="article:published_time" content="2023-03-07T07:13:12.000Z">
-<meta property="article:modified_time" content="2023-03-07T08:33:00.894Z">
+<meta property="article:modified_time" content="2023-03-11T02:47:48.150Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Go-KMP/1.gif">
@@ -263,7 +263,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：3 天前
+                    本文最后更新于：3 小时前
                   
                 
               </p>
@@ -303,7 +303,8 @@
 <li>处理前后缀不相同的情况</li>
 <li>处理前后缀相同的情况</li>
 </ol>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>这是我自己写的不右移也不减一的版本，总结就是：i 一直往后走，遇到不匹配，j 去找前一位看看回溯到哪里。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>这是我自己写的不右移也不减一的版本。</p>
+<p>总结就是：i 一直往后走，遇到不匹配，j 去找前一位看看回溯到哪里。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">strStr</span><span class="hljs-params">(haystack <span class="hljs-type">string</span>, needle <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>    <span class="hljs-comment">// KMP, i 是文本串指针, j 是模式串指针, i 不回溯 </span><br>    j := <span class="hljs-number">0</span><br>    next := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-built_in">len</span>(needle))<br>    getNext(next, needle)<br>    <br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(haystack); i++ &#123;<br>        <span class="hljs-comment">// 匹配到不同字符</span><br>        <span class="hljs-keyword">for</span> haystack[i] != needle[j] &amp;&amp; j &gt; <span class="hljs-number">0</span> &#123;<br>            <span class="hljs-comment">// j 回溯</span><br>            j = next[j<span class="hljs-number">-1</span>]<br>        &#125;<br><br>        <span class="hljs-comment">// 匹配到相同字符</span><br>        <span class="hljs-keyword">if</span> haystack[i] == needle[j] &#123;<br>            j++<br>            <span class="hljs-keyword">if</span> j == <span class="hljs-built_in">len</span>(needle) &#123;<br>                <span class="hljs-keyword">return</span> i-j+<span class="hljs-number">1</span><br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span><br>&#125;<br><br><span class="hljs-comment">// 构建 next (不减 1)</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">getNext</span><span class="hljs-params">(next []<span class="hljs-type">int</span>, s <span class="hljs-type">string</span>)</span></span> &#123;<br>    <span class="hljs-comment">// 初始化, 定义两个指针 i 和 j, j 指向前缀末尾位置, i 指向后缀末尾位置</span><br>    j := <span class="hljs-number">0</span><br>    next[<span class="hljs-number">0</span>] = j<br>    <br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">1</span>; i &lt; <span class="hljs-built_in">len</span>(s); i++ &#123;<br>        <span class="hljs-comment">// 前后缀不同</span><br>        <span class="hljs-keyword">for</span> j &gt; <span class="hljs-number">0</span> &amp;&amp; s[i] != s[j] &#123;<br>            j = next[j<span class="hljs-number">-1</span>]<br>        &#125;<br><br>        <span class="hljs-comment">// 前后缀相同</span><br>        <span class="hljs-keyword">if</span> s[i] == s[j] &#123;<br>            j++<br>        &#125;<br>        next[i] = j<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文只简单介绍了 KMP 算法的流程，但是关于为什么它可以解决字符串匹配的问题，没有详细讨论。感兴趣的话可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_52622200/article/details/110563434">这篇文章</a>。</p>
@@ -455,7 +456,7 @@
         aria-expanded="true"
       >
         Golang
-        <span class="list-group-count">(2)</span>
+        <span class="list-group-count">(3)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -482,6 +483,15 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「Go」 各种类型相互转换</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Go-heap/" title="「Go」 堆结构"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「Go」 堆结构</span>
         </a>
       
     

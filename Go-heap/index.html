@@ -16,28 +16,29 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。">
+    <meta name="description" content="本文以 leetcode 347 题为例，介绍一下堆结构，参考 Carl 的教程。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「研」 以太坊区块结构和数据存储">
-<meta property="og:url" content="https://qanlyma.github.io/Block/index.html">
+<meta property="og:title" content="「Go」 堆结构">
+<meta property="og:url" content="https://qanlyma.github.io/Go-heap/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。">
+<meta property="og:description" content="本文以 leetcode 347 题为例，介绍一下堆结构，参考 Carl 的教程。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/Block/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/Block/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/Block/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/Block/4.png">
-<meta property="article:published_time" content="2023-03-03T02:25:26.000Z">
-<meta property="article:modified_time" content="2023-03-03T09:01:38.724Z">
+<meta property="og:image" content="https://qanlyma.github.io/Go-heap/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Go-heap/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Go-heap/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Go-heap/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Go-heap/5.png">
+<meta property="article:published_time" content="2023-03-11T02:02:59.000Z">
+<meta property="article:modified_time" content="2023-03-11T05:31:54.927Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/Block/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/Go-heap/3.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「研」 以太坊区块结构和数据存储 - Qanly</title>
+  <title>「Go」 堆结构 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -178,7 +179,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「研」 以太坊区块结构和数据存储"></span>
+            <span id="subtitle" data-typed-text="「Go」 堆结构"></span>
           
         </div>
 
@@ -194,8 +195,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-03 10:25" pubdate>
-          2023年3月3日 上午
+        <time datetime="2023-03-11 10:02" pubdate>
+          2023年3月11日 上午
         </time>
       </span>
     
@@ -257,12 +258,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「研」 以太坊区块结构和数据存储</h1>
+            <h1 style="display: none">「Go」 堆结构</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：8 天前
+                    本文最后更新于：1 分钟前
                   
                 
               </p>
@@ -270,41 +271,49 @@
             
               <div class="markdown-body">
                 
-                <p>此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。</p>
+                <p>本文以 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/top-k-frequent-elements/">leetcode 347 题</a>为例，介绍一下堆结构，参考 <a target="_blank" rel="noopener" href="https://programmercarl.com/0347.%E5%89%8DK%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0.html">Carl 的教程</a>。</p>
 <span id="more"></span>
 
-<h2 id="区块结构"><a href="#区块结构" class="headerlink" title="区块结构"></a>区块结构</h2><p>一个区块由两部分组成：</p>
-<ul>
-<li>区块头（Header）</li>
-<li>区块体（Body）</li>
-</ul>
-<p><img src="/Block/1.png" srcset="/img/loading.gif" lazyload alt="Block"></p>
-<p>轻节点只会存储 Header。</p>
-<p>区块中的三棵树：</p>
-<ul>
-<li><p><strong>状态树</strong>：状态树是全局的、不断更新的，它的 key 为 keccak256(ethereumAddress)，value 为 rlp(ethereumAccount)。其中 ethereumAddress 表示以太坊账户地址；ethereumAccount 表示以太坊账户，包含四个字段：nonce，balance，storageRoot，codeHash。如果 storageRoot 和 codeHash 不为空，则为合约账户，其中 codeHash 对应合约代码的哈希，storageRoot 对应另一棵树的树根，这棵树我们称为<strong>存储树</strong>。存储树存储了合约的所有状态数据，每个合约有单独的存储树。</p>
-</li>
-<li><p><strong>交易树</strong>：每个区块都有一棵独立的交易树，对应区块头里的交易根。交易树的 key（路径）为 rlp(transactionIndex)，value 为交易序列化后的值。其中 transactionIndex 表示交易在该区块中的下标。</p>
-</li>
-<li><p><strong>回执树</strong>：每个交易对应一个交易回执，交易回执记录了交易执行结果，包括执行状态、Gas 消耗、事件日志等。每个区块有自己的回执树，对应了区块头里的回执根。与交易树类似，key 为 rlp(transactionIndex)，value 为交易回执序列化后的值。</p>
-</li>
-</ul>
-<p><img src="/Block/2.png" srcset="/img/loading.gif" lazyload alt="Trie"></p>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>以太坊中的账户状态是用什么数据结构存储的呢？</p>
-<p>有关这个问题<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Vt411X7JF?p=16">肖臻老师的公开课</a>有非常详细的解释。这里直接说结论：</p>
-<p><strong>Merkle Patricia Trie（MPT）</strong></p>
-<p><img src="/Block/3.png" srcset="/img/loading.gif" lazyload alt="World State Trie"></p>
-<p>右上角为简化的 key-value 定义。我们可以看到图中有 2 个拓展节点，2 个分支节点，4 个叶子节点。在最下面的两个叶子节点中，prefix 3 的右边有个格子，有个箭头从 7 指向这个格子，表示 3 和 7 两个 nibble 组成一个字节存储。当一个节点被另一个节点在内部指向时（比如上图中的分支节点内部指向了叶子节点），父节点会存储 H(rlp.encode(x))。<br>其中 H(y) &#x3D; keccak256(y) if len(y) &gt;&#x3D; 32 else y，rlp.encode 为 RLP 编码函数。</p>
-<p>由于 MPT 树是确定性的，所以如果两棵树存储了完全相同的数据，那么这两棵树的节点将完全相同，包括根节点。假设在某一时刻，当其中一个合约修改了某个变量的数据，使得它与另一个合约的数据不同时，会生成一个新的节点，并从新节点开始由下往上直到根节点，整个路径的节点值都会更新，新生成的节点会存储到硬盘，但旧的节点不会从硬盘删除。</p>
-<p><img src="/Block/4.png" srcset="/img/loading.gif" lazyload alt="update data"></p>
-<h2 id="StateDB"><a href="#StateDB" class="headerlink" title="StateDB"></a>StateDB</h2><p>在以太坊中，StateDB 是一个用于管理账户状态数据的内存数据库，它的数据存储在节点的内存中，并且随着区块链的不断增长而不断变化。但是，为了确保数据的可靠性和持久性，StateDB 数据需要被定期持久化到磁盘中。</p>
-<p>为了实现数据的持久化，以太坊节点使用了 LevelDB 这样的键值对存储引擎。当 StateDB 中的数据发生变化时，节点会将这些变化记录在 LevelDB 中，以便在下次启动时从磁盘中重新加载数据。</p>
-<p>需要注意的是，由于 LevelDB 是一种磁盘存储引擎，相比于内存数据库，它的读写速度要慢很多。因此，在以太坊节点中，StateDB 通常被用作内存数据库，而 LevelDB 则用于实现数据的持久化。这种方式可以同时满足节点的高性能和数据的可靠性要求。</p>
-<h2 id="block-go-源码"><a href="#block-go-源码" class="headerlink" title="block.go 源码"></a>block.go 源码</h2><p>研究那么多不如来看一看区块结构的源码：go-ethereum&#x2F;core&#x2F;types&#x2F;block.go</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Header represents a block header in the Ethereum blockchain.</span><br><span class="hljs-keyword">type</span> Header <span class="hljs-keyword">struct</span> &#123;<br>	ParentHash  common.Hash    <span class="hljs-comment">// 父区块的哈希</span><br>    UncleHash   common.Hash    <span class="hljs-comment">// 所有叔块的哈希（Block.uncles）</span><br>    Coinbase    common.Address <span class="hljs-comment">// 接受出块奖励的地址，矿工出块时在这个字段填入自己的地址</span><br>    Root        common.Hash    <span class="hljs-comment">// 此区块包含的所有交易完成后，state 对象的哈希值</span><br>    TxHash      common.Hash    <span class="hljs-comment">// 此区块包含的所有交易的哈希（Block.transactions）</span><br>    ReceiptHash common.Hash    <span class="hljs-comment">// 此区块所有交易完成后所产生的所有收据的哈希</span><br>    Bloom       Bloom          <span class="hljs-comment">// 用来快速判断一个参数 Log 对象是否存在于一组已知的 Log 集合中</span><br>    Difficulty  *big.Int       <span class="hljs-comment">// 此区块的难度值</span><br>    Number      *big.Int       <span class="hljs-comment">// 此区块的高度</span><br>    GasLimit    <span class="hljs-type">uint64</span>         <span class="hljs-comment">// 此区块所有交易消耗的 gas 值的上限</span><br>    GasUsed     <span class="hljs-type">uint64</span>         <span class="hljs-comment">// 此区块所有交易消耗的 gas 的实际值</span><br>    Time        *big.Int       <span class="hljs-comment">// 区块时间戳</span><br>    Extra       []<span class="hljs-type">byte</span>         <span class="hljs-comment">// 区块的额外数据</span><br>    MixDigest   common.Hash    <span class="hljs-comment">// 以太坊 hashimoto 算法产生的哈希</span><br>    Nonce       BlockNonce     <span class="hljs-comment">// 通过此字段产生符合 Difficulty 值要求的区块哈希</span><br>&#125;<br><br><span class="hljs-keyword">type</span> Body <span class="hljs-keyword">struct</span> &#123;<br>	Transactions []*Transaction<br>	Uncles       []*Header<br>&#125;<br><br><span class="hljs-comment">// Block represents an entire block in the Ethereum blockchain.</span><br><span class="hljs-keyword">type</span> Block <span class="hljs-keyword">struct</span> &#123;<br>	header       *Header<br>	uncles       []*Header<br>	transactions Transactions<br><br>	<span class="hljs-comment">// caches</span><br>	hash atomic.Value<br>	size atomic.Value<br><br>	<span class="hljs-comment">// 从创世块开始，到当前区块截止，累积的所有区块 Difficulty 之和</span><br>	td *big.Int<br><br>	<span class="hljs-comment">// These fields are used by package eth to track</span><br>	<span class="hljs-comment">// inter-peer block relay.</span><br>	ReceivedAt   time.Time<br>	ReceivedFrom <span class="hljs-keyword">interface</span>&#123;&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="题目介绍"><a href="#题目介绍" class="headerlink" title="题目介绍"></a>题目介绍</h2><p><code>给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按任意顺序返回答案。你所设计算法的时间复杂度必须优于 O(n*logn)，其中 n 是数组大小。</code></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题目主要涉及到如下三块内容：</p>
+<ol>
+<li>要统计元素出现频率</li>
+<li>对频率排序</li>
+<li>找出前K个高频元素</li>
+</ol>
+<p>首先统计元素出现的频率，这一类的问题可以使用 map 来进行统计。</p>
+<p>然后是对频率进行排序，这里我们可以使用<strong>堆</strong>。</p>
+<h2 id="堆（heap）"><a href="#堆（heap）" class="headerlink" title="堆（heap）"></a>堆（heap）</h2><p>堆是一棵<strong>完全二叉树</strong>，树中每个结点的值都不小于（或不大于）其左右孩子的值。 如果父亲结点是大于等于左右孩子就是<strong>大顶堆</strong>（根节点最大），小于等于左右孩子就是<strong>小顶堆</strong>（根节点最小）。</p>
+<p><img src="/Go-heap/3.png" srcset="/img/loading.gif" lazyload alt="heap"></p>
+<p>堆本身就是一个数组，因此创建一个数组来创建堆。</p>
+<p><img src="/Go-heap/4.png" srcset="/img/loading.gif" lazyload alt="存储"></p>
+<p>假设当前元素的索引位置为 i，可以得到规律：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs heap">parent(i) = i/2（取整）<br>left child(i) = 2*i<br>right child(i) = 2*i + 1<br></code></pre></td></tr></table></figure>
 
-<p>可见一个区块携带的数据主要是：<strong>Header 中的信息 + 叔块们的头部信息 + 块中包含的所有交易信息</strong>。</p>
+<h3 id="插入元素"><a href="#插入元素" class="headerlink" title="插入元素"></a>插入元素</h3><p><img src="/Go-heap/1.png" srcset="/img/loading.gif" lazyload alt="插入"></p>
+<p>在完全二叉树中，插入的节点与它的父节点相比，如果比父节点小，就交换它们的位置，再往上和父节点相比，如果比父节点小，再交换位置，直到比父节点大为止。</p>
+<p>在数组中，插入的节点与 n&#x2F;2 位置的节点相比，如果比 n&#x2F;2 位置的节点小，就交换它们的位置，再往前与 n&#x2F;4 位置的节点相比，如果比 n&#x2F;4 位置的节点小，再交换位置，直到比 n&#x2F;(2^x) 位置的节点大为止。</p>
+<p>这就是插入元素时进行的堆化，也叫<strong>自下而上的堆化</strong>。</p>
+<p>插入元素的时间复杂度为 O(log n)。</p>
+<h3 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h3><p><img src="/Go-heap/2.png" srcset="/img/loading.gif" lazyload alt="删除"></p>
+<p>在完全二叉树中，移除根节点首先把最后一个节点放到堆顶，然后与左右子节点中<strong>小</strong>的交换位置（因为是小顶堆），依次往下，直到其比左右子节点都小为止。</p>
+<p>在数组中，把最后一个元素移到下标为 1 的位置，然后与下标为 2 和 3 的位置对比，发现 8 比 2 大，且 2 是 2 和 3 中间最小的，所以与 2 交换位置；然后再下标为 4 和 5 的位置对比，发现 8 比 5 大，且 5 是 5 和 7 中最小的，所以与 5 交换位置，没有左右子节点了，堆化结束。即 <code>parent = child; child = parent*2;</code>。</p>
+<p>这就是删除元素时进行的堆化，也叫<strong>自上而下的堆化</strong>。</p>
+<p>删除元素的时间复杂度为 O(log n)。</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>此题使用小顶堆，因为要统计最大前 k 个元素，只有小顶堆每次将最小的元素弹出，最后小顶堆里积累的才是前 k 个最大元素。</p>
+<p><img src="/Go-heap/5.png" srcset="/img/loading.gif" lazyload alt="过程"></p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>使用 go 标准库给我们提供的 heap，需要实现这些接口定义的方法：</p>
+<ul>
+<li>Len() int</li>
+<li>Less(i, j int) bool</li>
+<li>Swap(i, j int)</li>
+<li>Push(x interface{})</li>
+<li>Pop() interface{}</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 方法一：小顶堆</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">topKFrequent</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    map_num := <span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">int</span>&#123;&#125;<br>    <span class="hljs-comment">// 记录每个元素出现的次数</span><br>    <span class="hljs-keyword">for</span> _, item := <span class="hljs-keyword">range</span> nums&#123;<br>        map_num[item]++<br>    &#125;<br><br>    <span class="hljs-comment">// 初始化 heap</span><br>    h := &amp;IHeap&#123;&#125;<br>    heap.Init(h)<br>    <span class="hljs-comment">// 所有元素入堆，堆的长度为 k</span><br>    <span class="hljs-keyword">for</span> key, value := <span class="hljs-keyword">range</span> map_num &#123;<br>        heap.Push(h, [<span class="hljs-number">2</span>]<span class="hljs-type">int</span>&#123;key, value&#125;)<br>        <span class="hljs-keyword">if</span> h.Len() &gt; k &#123;<br>            <span class="hljs-comment">// heap.Pop 并非下方定义的 h.Pop</span><br>            heap.Pop(h)<br>        &#125;<br>    &#125;<br><br>    res := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, k)<br>    <span class="hljs-comment">// 按顺序返回堆中的元素</span><br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; k; i++ &#123;<br>        res[k-i<span class="hljs-number">-1</span>] = heap.Pop(h).([<span class="hljs-number">2</span>]<span class="hljs-type">int</span>)[<span class="hljs-number">0</span>]<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br><br><span class="hljs-comment">// 构建小顶堆</span><br><span class="hljs-keyword">type</span> IHeap [][<span class="hljs-number">2</span>]<span class="hljs-type">int</span><br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Len()<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(h)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Less(i, j <span class="hljs-type">int</span>) <span class="hljs-type">bool</span> &#123;<br>    <span class="hljs-comment">// 如果 h[i][1] &lt; h[j][1] 生成的就是小根堆，h[i][1] &gt; h[j][1] 生成的就是大根堆</span><br>    <span class="hljs-keyword">return</span> h[i][<span class="hljs-number">1</span>] &lt; h[j][<span class="hljs-number">1</span>]<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Swap(i, j <span class="hljs-type">int</span>) &#123;<br>    h[i], h[j] = h[j], h[i]<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h *IHeap)</span></span> Push(x <span class="hljs-keyword">interface</span>&#123;&#125;) &#123;<br>    *h = <span class="hljs-built_in">append</span>(*h, x.([<span class="hljs-number">2</span>]<span class="hljs-type">int</span>))<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h *IHeap)</span></span> Pop() <span class="hljs-keyword">interface</span>&#123;&#125; &#123;<br>    old := *h<br>    n := <span class="hljs-built_in">len</span>(old)<br>    x := old[n<span class="hljs-number">-1</span>]<br>    *h = old[<span class="hljs-number">0</span>:n<span class="hljs-number">-1</span>]<br>    <span class="hljs-keyword">return</span> x<br>&#125;<br></code></pre></td></tr></table></figure>
 
+<p>另一个解法是先使用 map 存储元素与出现次数，然后将元素放入切片，再按照频率对切片排序。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 方法二：利用 O(nlogn) 排序</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">topKFrequent</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    ans := []<span class="hljs-type">int</span>&#123;&#125;<br>    map_num := <span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">int</span>&#123;&#125;<br>    <span class="hljs-keyword">for</span> _, item := <span class="hljs-keyword">range</span> nums &#123;<br>        map_num[item]++<br>    &#125;<br>    <span class="hljs-keyword">for</span> key, _ := <span class="hljs-keyword">range</span> map_num &#123;<br>        ans = <span class="hljs-built_in">append</span>(ans, key)<br>    &#125;<br><br>    <span class="hljs-comment">// 切片排序</span><br>    sort.Slice(ans, <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(a, b <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>        <span class="hljs-comment">// 第一个参数是：待排序数据</span><br>        <span class="hljs-comment">// 第二个参数是：排序判断方法</span><br>        <span class="hljs-comment">// 形参 a 代表后一个元素</span><br>        <span class="hljs-comment">// 形参 b 代表前一元素</span><br>        <span class="hljs-comment">// 返回值：代表 a, b 是否交换，true：交换，false：不交换</span><br>        <span class="hljs-keyword">return</span> map_num[ans[a]] &gt; map_num[ans[b]]<br>        <span class="hljs-comment">// 后一个大于前一个就交换，所以是降序</span><br>    &#125;)<br>    <span class="hljs-keyword">return</span> ans[:k]<br>&#125;<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -322,7 +331,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%90%86%E8%AE%BA%E7%A0%94%E7%A9%B6/" class="category-chain-item">理论研究</a>
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
   
   
 
@@ -342,8 +351,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「研」 以太坊区块结构和数据存储</div>
-      <div>https://qanlyma.github.io/Block/</div>
+      <div>「Go」 堆结构</div>
+      <div>https://qanlyma.github.io/Go-heap/</div>
     </div>
     <div class="license-meta">
       
@@ -355,7 +364,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月3日</div>
+          <div>2023年3月11日</div>
         </div>
       
       
@@ -371,18 +380,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「训」 笔记(2)：性能调优</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Black-words/" title="「学」 Web3.0 黑话">
-                        <span class="hidden-mobile">「学」 Web3.0 黑话</span>
+                      <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套">
+                        <span class="hidden-mobile">「训」 笔记(4)：框架三件套</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -447,17 +450,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="理论研究"
-        id="heading-8d98e6af91d447f6b771495a010cfe63" role="tab" data-toggle="collapse" href="#collapse-8d98e6af91d447f6b771495a010cfe63"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Golang"
+        id="heading-eda14e187a768b38eda999457c9cca1e" role="tab" data-toggle="collapse" href="#collapse-eda14e187a768b38eda999457c9cca1e"
         aria-expanded="true"
       >
-        理论研究
-        <span class="list-group-count">(5)</span>
+        Golang
+        <span class="list-group-count">(3)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-8d98e6af91d447f6b771495a010cfe63"
-           role="tabpanel" aria-labelledby="heading-8d98e6af91d447f6b771495a010cfe63">
+      <div class="category-collapse collapse show" id="collapse-eda14e187a768b38eda999457c9cca1e"
+           role="tabpanel" aria-labelledby="heading-eda14e187a768b38eda999457c9cca1e">
         
         
           
@@ -466,46 +469,28 @@
     
       
       
-        <a href="/QUIC/" title="「研」 QUIC 协议理解"
+        <a href="/Go-KMP/" title="「Go」 KMP 算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「研」 QUIC 协议理解</span>
+          <span class="category-post">「Go」 KMP 算法</span>
         </a>
       
     
       
       
-        <a href="/TCP-IP-handshake/" title="「研」 TCP 与 TLS/SSL"
+        <a href="/Go-typeTransfer/" title="「Go」 各种类型相互转换"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「研」 TCP 与 TLS/SSL</span>
+          <span class="category-post">「Go」 各种类型相互转换</span>
         </a>
       
     
       
       
-        <a href="/TCP-IP-fiveLayers/" title="「研」 TCP/IP 分层结构"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「研」 TCP/IP 分层结构</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Block/" title="「研」 以太坊区块结构和数据存储"
+        <a href="/Go-heap/" title="「Go」 堆结构"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「研」 以太坊区块结构和数据存储</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Blockchain-scalability/" title="「研」 区块链扩容调研"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「研」 区块链扩容调研</span>
+          <span class="category-post">「Go」 堆结构</span>
         </a>
       
     
