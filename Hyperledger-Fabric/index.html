@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Hyperledger-Fabric/4.png">
 <meta property="og:image" content="https://qanlyma.github.io/Hyperledger-Fabric/5.png">
 <meta property="article:published_time" content="2023-02-20T14:20:27.000Z">
-<meta property="article:modified_time" content="2023-03-06T09:10:52.766Z">
+<meta property="article:modified_time" content="2023-03-21T06:37:08.483Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Hyperledger-Fabric/1.png">
@@ -263,7 +263,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：9 天前
+                    本文最后更新于：1 小时前
                   
                 
               </p>
@@ -338,7 +338,7 @@
 <p><img src="/Hyperledger-Fabric/4.png" srcset="/img/loading.gif" lazyload alt="Fabric high level transaction flow"></p>
 <h3 id="3-2-Execution-Phase"><a href="#3-2-Execution-Phase" class="headerlink" title="3.2 Execution Phase"></a>3.2 Execution Phase</h3><p>在执行阶段，客户端签署交易提案（proposal）并发送给背书策略中指定的背书人。背书人根据本地区块链状态模拟执行提案，此时的执行结果并不会与其他节点同步，也不会写入账本中。链码创建的状态仅限于该链码，不能由其他链码直接访问。给定适当的许可，链码可以调用另一个链码来访问同一通道内的状态。</p>
 <p>每一个背书人在模拟执行的时候会生成一个 writeset（模拟执行产生的状态更新，即修改的键和值）和一个 readset（表示提案模拟执行的版本依赖，即模拟过程中所有的键和它的版本号）。模拟结束后，背书人对一条名为背书（endorsement）的消息进行加密签名，该消息包含 writeset 和 readset（以及交易 ID、背书人 ID 和背书人签名等元数据），并在提案响应中将其发送回客户端。客户端收集这些 endorsement 直到满足背书策略的要求，同时所有背书人要产生相同的执行结果（即，相同的 writeset 和 readset）。然后客户端会将交易发送给排序服务。</p>
-<p>这种在排序之前的执行可以容忍非确定性链码，执行结果的不一致会导致它无法收集足够数量的背书。同时背书人若怀疑收到 DoS 攻击，可以根据本地协议单方面终止执行交易。</p>
+<p>这种在排序之前的执行可以容忍非确定性链码，执行结果的不一致会导致它无法收集足够数量的背书。同时背书人若怀疑受到 DoS 攻击，可以根据本地协议单方面终止执行交易。</p>
 <h3 id="3-3-Ordering-Phase"><a href="#3-3-Ordering-Phase" class="headerlink" title="3.3 Ordering Phase"></a>3.3 Ordering Phase</h3><p>当客户端收集到足够的背书时，它组装一个交易并将其提交给排序服务，该交易包含链码操作和参数、交易元数据和一组背书。排序阶段为每个通道（channel，不同的区块链系统可以连接至同一个排序服务，每一个区块链系统都叫做一个通道）提交的交易分别进行总排序。此外，排序服务将多个交易打包成块，并输出块的哈希序列。</p>
 <p>排序服务的节点不维护区块链的状态，也不验证或执行交易。这种架构是 Fabric 的一个关键的特征，使 Fabric 成为第一个将共识与执行和验证完全分离的区块链系统。同时不需要排序服务来防止交易重复，因为在验证阶段节点在读写检查中过滤了重复的交易。</p>
 <h3 id="3-4-Validation-Phase"><a href="#3-4-Validation-Phase" class="headerlink" title="3.4 Validation Phase"></a>3.4 Validation Phase</h3><p>区块直接由排序服务或者 gossip 发送给节点，然后进入验证阶段：</p>
@@ -366,7 +366,18 @@
 <li>从接收到新块的第一个交易起已经过去了一段时间</li>
 </ol>
 <p><strong>该批处理过程是确定性的，因此在所有节点上产生相同的块</strong>（这是由原子广播的特性决定的）。前两点会形成相同区块很容易理解，为了满足第三个条件，节点在收到区块第一个交易时会启动一个计时器，如果到达设定时间还没有成块，节点就会在通道中广播一条 time-to-cut 交易表明要成块的区块号。</p>
-<p>排序服务的实现：Solo、Raft、Kafka</p>
+<p>排序服务的实现：</p>
+<ul>
+<li><p><strong>Raft</strong>（推荐）</p>
+<p>  作为 v1.4.1 的新特性，Raft 是一种基于 etcd 中 Raft 协议实现的崩溃容错（Crash Fault Tolerant，CFT）排序服务。Raft 遵循“领导者跟随者”模型，这个模型中，在每个通道上选举领导者节点，其决策被跟随者复制。Raft 排序服务会比基于 Kafka 的排序服务更容易设置和管理，它的设计允许不同的组织为分布式排序服务贡献节点。</p>
+</li>
+<li><p><strong>Kafka</strong>（在 v2.0 中被弃用）</p>
+<p>  和基于 Raft 的排序类似，Apache Kafka 是一个 CFT 的实现，它使用“领导者和跟随者”节点配置。Kafka 利用一个 ZooKeeper 进行管理。基于 Kafka 的排序服务从 Fabric v1.0 开始就可以使用，但许多用户可能会发现管理 Kafka 集群的额外管理开销令人生畏或不受欢迎。</p>
+</li>
+<li><p><strong>Solo</strong>（在 v2.0 中被弃用）</p>
+<p>  排序服务的 Solo 实现仅仅是为了测试，并且只包含了一个单一的排序节点。它已经被弃用了，可能会在将来的版本中被完全移除。</p>
+</li>
+</ul>
 <h3 id="4-3-Peer-Gossip"><a href="#4-3-Peer-Gossip" class="headerlink" title="4.3 Peer Gossip"></a>4.3 Peer Gossip</h3><p>将执行、排序和验证阶段分离的一个优点是它们可以独立扩展。由于大多数共识算法（在 CFT 和 BFT 模型中）都有带宽限制，排序服务的吞吐量会受到其节点的网络容量的限制。研究表明共识性能不能通过增加节点数量来增强，这样做吞吐量反而会降低。然而，由于排序和验证是分离的，因此在排序阶段之后，可以将执行结果广播给所有节点进行验证；以及向新加入的节点和长期断开连接的节点的状态同步，这正是 gossip 部分的目标。</p>
 <p>Gossip 的通信层基于 gRPC，并利用 TLS 相互认证，其组件维护系统中最新的在线成员视图。</p>
 <p>Fabric gossip 使用两个阶段进行信息传播：</p>
