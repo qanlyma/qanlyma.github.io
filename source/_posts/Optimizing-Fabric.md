@@ -27,11 +27,15 @@ Fabric 提供了许多可配置的参数（block size，endorsement policy，cha
 
 ### A. Key Components in Fabric
 
-* **Peer**：对等节点执行实现用户智能合约的链码，并且在文件系统中维护账本。节点被进一本分为**背书节点**（endorsing peer，具有链码逻辑）和**提交节点**（committing peer，没有链码逻辑）。它们都在键值存储中将当前状态保持为 StateDB，链码可以使用数据库查询语言查询或修改状态。
+* **Peer**：对等节点执行实现用户智能合约的链码，并且在文件系统中维护账本。节点被进一本分为**背书节点**（endorsing peer，具有链码逻辑）和**提交节点**（committing peer，没有链码逻辑）。对等节点在键值存储中将当前状态维护为 StateDB，以便链码可以使用数据库查询语言查询或修改状态。
 
     ***Endorsement Policies***：指定一组节点来模拟执行交易，并对执行结果签名背书。
 
-    ***System chaincodes***：系统链码与普通用户链码具有相同的程序设计模型，并内置于对等节点可执行文件中，这与用户链码不同。**LSCC**（life cycle system chaincode）用于安装/实例化/更新链码；**ESCC**（endorsement system chaincode）通过对响应进行数字签名来背书交易；**VSCC**（validation system chaincode）根据背书策略验证交易的背书签名集；**CSCC**（ configuration system chaincode）管理通道配置。
+    ***System chaincodes***：系统链码与普通用户链码具有相同的程序设计模型，并内置于对等节点可执行文件中，这与用户链码不同。
+    * **LSCC**（life cycle system chaincode）用于安装/实例化/更新链码；
+    * **ESCC**（endorsement system chaincode）通过对响应进行数字签名来背书交易；
+    * **VSCC**（validation system chaincode）根据背书策略验证交易的背书签名集；
+    * **CSCC**（configuration system chaincode）管理通道配置。
 
     ***Channel***：Fabric 引入通道的概念————两个或多个对等节点之间通信的“专用”子网，以提供一定程度的隔离。
 
@@ -55,8 +59,8 @@ OSNs 将交易发布到 kafka 并利用其记录的有序和不可变性来生�
 
 3. **Validation Phase**
     所有节点都会收到区块，首先检查排序者的签名，有效块被解码，并且块中的所有交易在执行 MVCC 验证之前首先经过 VSCC 验证。
-  * VSCC Validation：根据为链码指定的背书策略评估交易中的背书。如果不满足背书策略，则该交易被标记为无效。
-  * MVCC Validation：Multi-Version Concurrency Control **顺序**检查有效交易（VSCC 标记）在背书阶段读取键值的版本与提交时本地账本中的当前状态相同，类似于为并发控制所做的读写冲突检查。
+     * VSCC Validation：根据为链码指定的背书策略评估交易中的背书。如果不满足背书策略，则该交易被标记为无效。
+     * MVCC Validation：Multi-Version Concurrency Control **顺序**检查有效交易（VSCC 标记）在背书阶段读取键值的版本与提交时本地账本中的当前状态是否相同，类似于为并发控制所做的读写冲突检查。
 
 4. **Ledger Update Phase**
     StateDB 使用有效事务（MVCC 验证所标记）的写集进行更新
@@ -77,12 +81,12 @@ OSNs 将交易发布到 kafka 并利用其记录的有序和不可变性来生�
 
 ## IV. EXPERIMENTAL METHODOLOGY
 
-两个性能指标：**Throughput**（交易提交到账本的速率）和 **Latency**（从应用发送提案到交易上链的时间）。
+两个性能指标：**Throughput**（交易提交到账本的速率）和 **Latency**（从客户端发送提案到交易上链的时间）。
 
 延时主要由以下部分组成：
 
 * Endorsement latency：客户端收集提案响应以及背书所花的时间。
-* Broadcast latency：客户端传播交易到排序节点和排序节点确认客户端的时间。
+* Broadcast latency：客户端传播交易到排序节点和排序节点验证客户端的时间。
 * Commit latency：节点验证和提交交易的时间。
 * Ordering latency：交易排序所用的时间（本文未讨论）。
 
