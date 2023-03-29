@@ -16,23 +16,36 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文介绍 Gorm、Kitex、Hertz 三件套。">
+    <meta name="description" content="本文简单介绍关于架构的知识。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「训」 笔记(4)：框架三件套">
-<meta property="og:url" content="https://qanlyma.github.io/ByteDance-4/index.html">
+<meta property="og:title" content="「训」 笔记(6)：架构初探">
+<meta property="og:url" content="https://qanlyma.github.io/ByteDance-6/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="本文介绍 Gorm、Kitex、Hertz 三件套。">
+<meta property="og:description" content="本文简单介绍关于架构的知识。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-03-10T06:00:49.000Z">
-<meta property="article:modified_time" content="2023-03-10T06:49:39.590Z">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/8.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/9.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/10.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/11.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-6/12.png">
+<meta property="article:published_time" content="2023-03-29T00:35:45.000Z">
+<meta property="article:modified_time" content="2023-03-29T02:27:24.985Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-6/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「训」 笔记(4)：框架三件套 - Qanly</title>
+  <title>「训」 笔记(6)：架构初探 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -173,7 +186,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「训」 笔记(4)：框架三件套"></span>
+            <span id="subtitle" data-typed-text="「训」 笔记(6)：架构初探"></span>
           
         </div>
 
@@ -189,8 +202,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-10 14:00" pubdate>
-          2023年3月10日 下午
+        <time datetime="2023-03-29 08:35" pubdate>
+          2023年3月29日 早上
         </time>
       </span>
     
@@ -252,12 +265,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「训」 笔记(4)：框架三件套</h1>
+            <h1 style="display: none">「训」 笔记(6)：架构初探</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：19 天前
+                    本文最后更新于：3 分钟前
                   
                 
               </p>
@@ -265,46 +278,241 @@
             
               <div class="markdown-body">
                 
-                <p>本文介绍 Gorm、Kitex、Hertz 三件套。</p>
+                <p>本文简单介绍关于架构的知识。</p>
 <span id="more"></span>
 
-<h2 id="Gorm"><a href="#Gorm" class="headerlink" title="Gorm"></a>Gorm</h2><p>Gorm 是面向 Golang 语言的一种 <strong>ORM（Object Relational Mapping，对象关系映射）框架</strong>，支持多种数据库的接入，例如 MySQL，PostgreSQL，SQLite，SQL Server，Clickhouse。此框架弱化了开发者对于 SQL 语言的掌握程度，使用提供的 API 进行底层数据库的访问。</p>
-<p>快速开始：<a target="_blank" rel="noopener" href="https://gorm.cn/zh_CN/docs/index.html">https://gorm.cn/zh_CN/docs/index.html</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/go-gorm/gorm">https://github.com/go-gorm/gorm</a></p>
+<h2 id="什么是架构"><a href="#什么是架构" class="headerlink" title="什么是架构"></a>什么是架构</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><strong>Q：如何给架构下定义？</strong></p>
+<p>A：架构，又称软件架构：</p>
 <ul>
-<li><p><strong>基本使用</strong></p>
-  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br><span class="hljs-string">&quot;gorm.io/gorm&quot;</span><br><span class="hljs-string">&quot;gorm.io/driver/sqlite&quot;</span><br>)<br><br><span class="hljs-keyword">type</span> Product <span class="hljs-keyword">struct</span> &#123;<br>    gorm.Model<br>    Code  <span class="hljs-type">string</span><br>    Price <span class="hljs-type">uint</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-comment">// 连接数据库</span><br>    db, err := gorm.Open(sqlite.Open(<span class="hljs-string">&quot;test.db&quot;</span>), &amp;gorm.Config&#123;&#125;)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-built_in">panic</span>(<span class="hljs-string">&quot;failed to connect database&quot;</span>)<br>    &#125;   <br><br>    <span class="hljs-comment">// 迁移 schema</span><br>    db.AutoMigrate(&amp;Product&#123;&#125;)<br><br>    <span class="hljs-comment">// Create</span><br>    db.Create(&amp;Product&#123;Code: <span class="hljs-string">&quot;D42&quot;</span>, Price: <span class="hljs-number">100</span>&#125;)<br><br>    <span class="hljs-comment">// Read</span><br>    <span class="hljs-keyword">var</span> product Product<br>    db.First(&amp;product, <span class="hljs-number">1</span>) <span class="hljs-comment">// 根据整形主键查找</span><br>    db.First(&amp;product, <span class="hljs-string">&quot;code = ?&quot;</span>, <span class="hljs-string">&quot;D42&quot;</span>) <span class="hljs-comment">// 查找 code 字段值为 D42 的记录</span><br><br>    <span class="hljs-comment">// Update - 将 product 的 price 更新为 200</span><br>    db.Model(&amp;product).Update(<span class="hljs-string">&quot;Price&quot;</span>, <span class="hljs-number">200</span>)<br>    <span class="hljs-comment">// Update - 更新多个字段</span><br>    db.Model(&amp;product).Updates(Product&#123;Price: <span class="hljs-number">200</span>, Code: <span class="hljs-string">&quot;F42&quot;</span>&#125;) <span class="hljs-comment">// 仅更新非零值字段</span><br>    db.Model(&amp;product).Updates(<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]<span class="hljs-keyword">interface</span>&#123;&#125;&#123;<span class="hljs-string">&quot;Price&quot;</span>: <span class="hljs-number">200</span>, <span class="hljs-string">&quot;Code&quot;</span>: <span class="hljs-string">&quot;F42&quot;</span>&#125;)<br><br>    <span class="hljs-comment">// Delete - 删除 product</span><br>    db.Delete(&amp;product, <span class="hljs-number">1</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
-</li>
-<li><p><strong>连接数据库</strong></p>
-<p>  GORM 官方支持的数据库类型有： MySQL, PostgreSQL, SQlite, SQL Server。</p>
-  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> (<br>    <span class="hljs-string">&quot;gorm.io/driver/mysql&quot;</span><br>    <span class="hljs-string">&quot;gorm.io/gorm&quot;</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-comment">// 参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name 获取详情</span><br>    dsn := <span class="hljs-string">&quot;user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&amp;parseTime=True&amp;loc=Local&quot;</span><br>    db, err := gorm.Open(mysql.Open(dsn), &amp;gorm.Config&#123;&#125;)<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>是有关软件整体结构与组件的抽象描述。</li>
+<li>用于指导软件系统各个方面的设计。</li>
 </ul>
-<h2 id="Kitex"><a href="#Kitex" class="headerlink" title="Kitex"></a>Kitex</h2><p>Kitex[kaɪt’eks] 字节跳动内部的 Golang 微服务 <strong>RPC（Remote Procedure Call）框架</strong>，具有高性能、强可扩展的特点，在字节内部已广泛使用。</p>
-<p>快速开始：<a target="_blank" rel="noopener" href="https://www.cloudwego.io/zh/docs/kitex/getting-started">https://www.cloudwego.io/zh/docs/kitex/getting-started</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/cloudwego/kitex">https://github.com/cloudwego/kitex</a></p>
+<p>实现一个软件有很多种方法，架构在<strong>方法选择</strong>上起着至关重要的指导作用。</p>
+<p><strong>Q：架构的重要性？</strong></p>
+<p>A：拿盖房子来做举例子。</p>
+<p>我们都知道，地基对于一栋楼房的主要性，架构对于一个软件的重要性也是类似的：</p>
 <ul>
-<li><p><strong>定义 IDL</strong></p>
-<p>  如果我们要进行 RPC，就需要知道对方的接口是什么，需要传什么参数，同时也需要知道返回值是什么样的，就好比两个人之间交流，需要保证在说的是同一个语言、同一件事。 这时候，就需要通过 IDL（Interface Definition Language）来约定双方的协议，就像在写代码的时候需要调用某个函数，我们需要知道函数签名一样。</p>
-  <figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs thrift"><span class="hljs-keyword">namespace</span> go api<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Request</span> </span>&#123;<br>    <span class="hljs-number">1</span>: <span class="hljs-type">string</span> message<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Response</span> </span>&#123;<br>    <span class="hljs-number">1</span>: <span class="hljs-type">string</span> message<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">service</span> <span class="hljs-title">Hello</span> </span>&#123;<br>    Response echo(<span class="hljs-number">1</span>: Request req)<br>&#125;<br></code></pre></td></tr></table></figure>
-</li>
-<li><p><strong>编写 echo 服务逻辑</strong></p>
-<p>  服务默认监听 8888 端口。</p>
-  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>    <span class="hljs-string">&quot;context&quot;</span><br>    <span class="hljs-string">&quot;example/kitex_gen/api&quot;</span><br>)<br><br><span class="hljs-comment">// EchoImpl implements the last service interface defined in the IDL.</span><br><span class="hljs-keyword">type</span> EchoImpl <span class="hljs-keyword">struct</span>&#123;&#125;<br><br><span class="hljs-comment">// Echo implements the EchoImpl interface.</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(s *EchoImpl)</span></span> Echo(ctx context.Context, req *api.Request) (resp *api.Response, err <span class="hljs-type">error</span>) &#123;<br>    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> Your code here...</span><br>    <span class="hljs-keyword">return</span><br>&#125;<br></code></pre></td></tr></table></figure>
-</li>
-<li><p><strong>创建 client</strong></p>
-  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;example/kitex_gen/api/echo&quot;</span><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;github.com/cloudwego/kitex/client&quot;</span><br>...<br>c, err := echo.NewClient(<span class="hljs-string">&quot;example&quot;</span>, client.WithHostPorts(<span class="hljs-string">&quot;0.0.0.0:8888&quot;</span>))<br><span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>    log.Fatal(err)<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>  上述代码中，echo.NewClient 用于创建 client，其第一个参数为调用的服务名，第二个参数为 options，用于传入参数，此处的 client.WithHostPorts 用于指定服务端的地址。</p>
-</li>
-<li><p><strong>发起调用</strong></p>
-  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;example/kitex_gen/api&quot;</span><br>...<br>req := &amp;api.Request&#123;Message: <span class="hljs-string">&quot;my request&quot;</span>&#125;<br>resp, err := c.Echo(context.Background(), req, callopt.WithRPCTimeout(<span class="hljs-number">3</span>*time.Second))<br><span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>    log.Fatal(err)<br>&#125;<br>log.Println(resp)<br></code></pre></td></tr></table></figure>
-<p>  上述代码中，我们首先创建了一个请求 req , 然后通过 c.Echo 发起了调用。</p>
-</li>
+<li>架构没设计好，软件容易崩，用户体验上不去。最终要么重构，要么放弃。</li>
+<li>架构设计好了，软件的稳定性上去了，用户体验高了，口碑一点点就打造出来了。</li>
+<li>良好的架构基础，也为软件的未来发展提供了更多的可能。为用户赋能，实现自身价值。</li>
 </ul>
-<h2 id="Hertz"><a href="#Hertz" class="headerlink" title="Hertz"></a>Hertz</h2><p>Hertz[həːts] 是一个 Golang 微服务 <strong>HTTP 框架</strong>，在设计之初参考了其他开源框架 fasthttp、gin、echo 的优势，并结合字节跳动内部的需求，使其具有高易用性、高性能、高扩展性等特点。</p>
-<p>快速开始：<a target="_blank" rel="noopener" href="https://www.cloudwego.io/zh/docs/hertz/getting-started">https://www.cloudwego.io/zh/docs/hertz/getting-started</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/cloudwego/hertz">https://github.com/cloudwego/hertz</a></p>
+<h3 id="单机架构"><a href="#单机架构" class="headerlink" title="单机架构"></a>单机架构</h3><p>All in one，所有的东西都在一个进程里，部署在一个机器上。</p>
+<p><img src="/ByteDance-6/1.png" srcset="/img/loading.gif" lazyload alt="单机"></p>
+<p>优点：</p>
 <ul>
-<li><p><strong>基本使用</strong></p>
-<p>  实现服务监听 8080 端口并注册一个 GET 方法的路由函数。</p>
-  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>    <span class="hljs-string">&quot;context&quot;</span><br><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/app&quot;</span><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/app/server&quot;</span><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/common/utils&quot;</span><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/protocol/consts&quot;</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    h := server.Default(server.WithHostPorts(<span class="hljs-string">&quot;127.0.0.1:8080&quot;</span>))<br><br>    h.GET(<span class="hljs-string">&quot;/ping&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(c context.Context, ctx *app.RequestContext)</span></span> &#123;<br>        ctx.JSON(consts.StatusOK, utils.H&#123;<span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;pong&quot;</span>&#125;)<br>    &#125;)<br><br>    h.Spin()<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>简单</li>
 </ul>
+<p>缺点：</p>
+<ul>
+<li>运维需要停服，用户体验较差</li>
+<li>承载能力有限（c10k 问题）</li>
+</ul>
+<h3 id="单体架构"><a href="#单体架构" class="headerlink" title="单体架构"></a>单体架构</h3><p>在单机架构的基础上，将进程部署到多个机器上。</p>
+<p><img src="/ByteDance-6/2.png" srcset="/img/loading.gif" lazyload alt="单体"></p>
+<p>优点：</p>
+<ul>
+<li>具备水平扩容能力</li>
+<li>运维不需要停服</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>后端进程职责太多，越来越臃肿</li>
+<li>爆炸半径较大，进程中一个很小的模块出现问题，都可能导致整个进程崩溃</li>
+</ul>
+<h3 id="垂直应用架构"><a href="#垂直应用架构" class="headerlink" title="垂直应用架构"></a>垂直应用架构</h3><p>在单机架构基础上，将进程按照某种依据切分开。比如，A 软件和 B 软件的后端原先采用单机架构部署，那就是一个进程部署在多个机器上；如果用垂直应用架构，可以将 A 和 B 的后端拆分为 A、B 两个进程，然后再按照单体模式的思路，部署在多个机器上。</p>
+<p><img src="/ByteDance-6/3.png" srcset="/img/loading.gif" lazyload alt="垂直"></p>
+<p>优点：</p>
+<ul>
+<li>一定程度上减少了后端进程职责</li>
+<li>一定程度上缩小爆炸半径</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>没有根本解决单体架构的问题</li>
+</ul>
+<h3 id="SOA"><a href="#SOA" class="headerlink" title="SOA"></a>SOA</h3><p>SOA（Service-Oriented Architecture，面向服务架构）中，服务为一等公民，将进程按照不同的功能单元进行抽象，拆分为『服务』。有了服务之后，SOA 还为服务之间的通信定义了标准，保证各个服务之间通讯体验的一致性。</p>
+<p><img src="/ByteDance-6/4.png" srcset="/img/loading.gif" lazyload alt="SOA"></p>
+<p>优点：</p>
+<ul>
+<li>各服务的职责更清晰</li>
+<li>运维粒度减小到服务，爆炸半径可控</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>ESB (企业服务总线) 往往需要一整套解决方案</li>
+</ul>
+<h3 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h3><p>在 SOA 架构中，ESB 起到了至关重要的作用。但从架构拓扑来看，它更像是一个集中式的模块。有一个 SOA 去中心化演进的分支，最终的形态便是微服务。</p>
+<p><img src="/ByteDance-6/5.png" srcset="/img/loading.gif" lazyload alt="微服务"></p>
+<p>优点：</p>
+<ul>
+<li>兼具 SOA 解决的问题</li>
+<li>服务间的通信更敏捷、灵活</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>运维成本</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ul>
+<li><p>架构演进的初衷：满足软件迭代诉求，提高迭代效率</p>
+</li>
+<li><p>架构演进的思路：垂直切分——分布式，水平切分——分层&#x2F;模块化</p>
+</li>
+</ul>
+<h2 id="企业级后端架构剖析"><a href="#企业级后端架构剖析" class="headerlink" title="企业级后端架构剖析"></a>企业级后端架构剖析</h2><h3 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h3><p>是指通过软件自动化管理，提供计算资源的服务网络，是现代互联网大规模熟悉分析和存储的基石。</p>
+<p><strong>云计算基础：</strong></p>
+<ul>
+<li><p>虚拟化技术</p>
+<ul>
+<li>硬件层面（VM 虚拟机）- KVM&#x2F;Xen&#x2F;VMware</li>
+<li>操作系统层面（Container 容器）- LCX&#x2F;Docker&#x2F;Kata Container</li>
+<li>网络层面 - Linux Bridge&#x2F;Open v Switch</li>
+</ul>
+</li>
+<li><p>编排方案</p>
+<ul>
+<li>VM - OpenStack&#x2F;VMWare Workstation</li>
+<li>Container - Kubernetes&#x2F;Docker Swarm</li>
+</ul>
+</li>
+</ul>
+<p><strong>云计算架构：</strong></p>
+<ul>
+<li><p>云服务</p>
+<ul>
+<li>IaaS - Infrastructure as a Service，云基础设施，对底层硬件资源池的抽象</li>
+<li>PaaS - Platform as a Service，基于资源池抽象，对上层提供的弹性资源平台</li>
+<li>SaaS - Software as a Service，基于弹性资源平台构建的云服务</li>
+<li>FaaS - Function as a Service，更轻量级的函数服务。好比 LeetCode 等 OJ，刷题时只需要实现函数，不需要关注输入输出流</li>
+</ul>
+</li>
+<li><p>云部署模式</p>
+<ul>
+<li>私有云 - 企业自用</li>
+<li>公有云 - AWS&#x2F;Azure&#x2F;Google Cloud&#x2F;Huawei</li>
+<li>混合云</li>
+</ul>
+</li>
+</ul>
+<h3 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h3><p>云原生，实际是云原生计算的简称，它是云计算发展到现在的一种形态。</p>
+<p><img src="/ByteDance-6/6.png" srcset="/img/loading.gif" lazyload alt="云原生"></p>
+<p>云原生技术为组织（公司）在公有云、自由云、混合云等新型的动态环境中，构建和运行可弹性拓展的应用提供了可能。 它的代表技术：</p>
+<ul>
+<li>弹性资源</li>
+<li>微服务架构</li>
+<li>DevOps</li>
+<li>服务网格</li>
+</ul>
+<h4 id="弹性资源"><a href="#弹性资源" class="headerlink" title="弹性资源"></a>弹性资源</h4><p>基于虚拟化技术，提供的可以快速扩缩容的能力。可以分为<strong>弹性计算资源</strong>和<strong>弹性存储资源</strong>两个方面。</p>
+<ul>
+<li><p><strong>弹性计算资源：</strong></p>
+<ul>
+<li><p>计算资源调度</p>
+<ul>
+<li>在线计算 - 互联网后端服务</li>
+<li>离线计算 - 大数据分析。Map-Reduce&#x2F;Spark&#x2F;Flinnk</li>
+</ul>
+</li>
+<li><p>消息队列</p>
+<ul>
+<li>在线队列 - 削峰、解耦</li>
+<li>离线队列 - 结合数据分析的一整套方案，如 ELK</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>弹性存储资源：</strong></p>
+<ul>
+<li><p>经典存储</p>
+<ul>
+<li>对象存储 - 视频、图片等。结合 CDN 等技术，可以为应用提供丰富的多媒体能力</li>
+<li>大数据存储 - 应用日志、用户数据等。结合数据挖掘、机器学习等技术，提高应用的体验</li>
+</ul>
+</li>
+<li><p>关系型数据库</p>
+</li>
+<li><p>元数据</p>
+<ul>
+<li>服务发现</li>
+</ul>
+</li>
+<li><p>NoSQL</p>
+<ul>
+<li>KV 存储 - Redis</li>
+<li>文档存储 - Mongo</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在云原生的大背景下，不论是计算资源还是存储资源，他们都像是服务一样供用户使用。</p>
+<h4 id="DevOps"><a href="#DevOps" class="headerlink" title="DevOps"></a>DevOps</h4><p>DevOps 是云原生时代软件交付的利器，贯穿整个软件开发周期。结合自动化流程，提高软件开发、交付效率。</p>
+<p><img src="/ByteDance-6/7.png" srcset="/img/loading.gif" lazyload alt="DevOps"></p>
+<h4 id="微服务架构"><a href="#微服务架构" class="headerlink" title="微服务架构"></a>微服务架构</h4><p>微服务架构下，服务之间的通讯标准是基于协议而不是 ESB 的。</p>
+<ul>
+<li>HTTP - H1&#x2F;H2</li>
+<li>RPC - Apache Thrift&#x2F;gRPC</li>
+</ul>
+<p><img src="/ByteDance-6/8.png" srcset="/img/loading.gif" lazyload alt="微服务"></p>
+<p>如何在 HTTP 和 RPC 之间选择？</p>
+<ul>
+<li>性能 - RPC 协议往往具备较好的压缩率，性能较高。如 Thrift, Protocol Buffers</li>
+<li>服务治理 - RPC 中间件往往集成了丰富的服务治理能力。如 熔断、降级、超时等</li>
+<li>可解释性 - HTTP 通信的协议往往首选 JSON，可解释性、可调试性更好</li>
+</ul>
+<h4 id="服务网格"><a href="#服务网格" class="headerlink" title="服务网格"></a>服务网格</h4><ul>
+<li>微服务之间通讯的中间层</li>
+<li>一个高性能网络代理</li>
+<li>将流量层面的逻辑与业务进程解耦</li>
+</ul>
+<p><img src="/ByteDance-6/9.png" srcset="/img/loading.gif" lazyload alt="Service Mesh"></p>
+<p>没有什么是加一层代理解决不了的问题，服务网格相比较于 RPC&#x2F;HTTP 框架：</p>
+<ul>
+<li>实现了异构系统治理的统一化</li>
+<li>服务网格的数据平面代理与业务进程采取进程间通信的模式，使得流量相关的逻辑（包含治理）与业务进程解耦，生命周期也更容易管理</li>
+</ul>
+<h2 id="企业级后端架构的挑战"><a href="#企业级后端架构的挑战" class="headerlink" title="企业级后端架构的挑战"></a>企业级后端架构的挑战</h2><ul>
+<li><p>基础设施层面：</p>
+<p>  Q：我们总说，云是弹性的，也就是说，在用户的角度，云提供的资源是无限的。然而，云背后的物理资源是有限的。在企业级后端架构里，云如何解决近乎无限的弹性资源和有限的物理资源之间的矛盾？</p>
+<p>  Q：闲时的资源就这么空着吗？如何提高资源利用率，提高物理资源的价值转换率？</p>
+</li>
+<li><p>用户层面：</p>
+<p>  Q：上了云原生微服务后，服务之间的通信开销较大，应该如何做成本优化？</p>
+<p>  Q：微服务看起来没有那么美好，抖动导致的运维成本较高，如何解决？</p>
+<p>  Q：异构的物理环境应该对用户是透明的，如何屏蔽这些细节？</p>
+</li>
+</ul>
+<h3 id="离在线资源并池"><a href="#离在线资源并池" class="headerlink" title="离在线资源并池"></a>离在线资源并池</h3><p>考虑到在线业务的潮汐性，物理资源的用量不是一成不变的。离在线资源并池，可以：</p>
+<ul>
+<li>提高物理资源利用率</li>
+<li>提供更多的弹性资源</li>
+</ul>
+<p><img src="/ByteDance-6/10.png" srcset="/img/loading.gif" lazyload alt="离在线资源并池"></p>
+<h3 id="自动扩缩容"><a href="#自动扩缩容" class="headerlink" title="自动扩缩容"></a>自动扩缩容</h3><p>利用在线业务潮汐性自动扩缩容。</p>
+<h3 id="微服务亲合性部署"><a href="#微服务亲合性部署" class="headerlink" title="微服务亲合性部署"></a>微服务亲合性部署</h3><p>微服务之间的通信成本较高，是否可以：</p>
+<ul>
+<li>形态上是微服务架构</li>
+<li>通信上是单体架构</li>
+</ul>
+<p>亲合性部署，通过将微服务调用形态与资源调度系统结合，将一些调用关系紧密、通信量大的服务部署在同一个机器上，并且使用 IPC 代替 RPC 的方式，降低网络通信带来的开销。</p>
+<p><img src="/ByteDance-6/11.png" srcset="/img/loading.gif" lazyload alt="微服务亲合性部署"></p>
+<ul>
+<li>将满足亲合性条件的容器调度到一台宿主机</li>
+<li>微服务中间件与服务网格通过共享内存通信</li>
+<li>服务网格控制面实施灵活、动态的流量调度</li>
+</ul>
+<h3 id="流量治理"><a href="#流量治理" class="headerlink" title="流量治理"></a>流量治理</h3><p>核心收益：</p>
+<ul>
+<li>提高微服务调用容错性</li>
+<li>容灾</li>
+<li>进一步提高开发效率，DevOps 发挥到极致</li>
+</ul>
+<p>解决思路：基于微服务中间件 &amp; 服务网格的流量治理</p>
+<ul>
+<li>熔断、重试</li>
+<li>单元化</li>
+<li>复杂环境（功能、预览）的流量调度</li>
+</ul>
+<h2 id="后端架构实战"><a href="#后端架构实战" class="headerlink" title="后端架构实战"></a>后端架构实战</h2><p><img src="/ByteDance-6/12.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
@@ -343,8 +551,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「训」 笔记(4)：框架三件套</div>
-      <div>https://qanlyma.github.io/ByteDance-4/</div>
+      <div>「训」 笔记(6)：架构初探</div>
+      <div>https://qanlyma.github.io/ByteDance-6/</div>
     </div>
     <div class="license-meta">
       
@@ -356,7 +564,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月10日</div>
+          <div>2023年3月29日</div>
         </div>
       
       
@@ -372,18 +580,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Go-heap/" title="「Go」 堆结构">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「Go」 堆结构</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Go-KMP/" title="「Go」 KMP 算法">
-                        <span class="hidden-mobile">「Go」 KMP 算法</span>
+                      <a href="/Fast-Fabric/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second">
+                        <span class="hidden-mobile">「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -496,7 +698,7 @@
       
         <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
            class="list-group-item list-group-item-action
-           active">
+           ">
           <span class="category-post">「训」 笔记(4)：框架三件套</span>
         </a>
       
@@ -514,7 +716,7 @@
       
         <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探"
            class="list-group-item list-group-item-action
-           ">
+           active">
           <span class="category-post">「训」 笔记(6)：架构初探</span>
         </a>
       
