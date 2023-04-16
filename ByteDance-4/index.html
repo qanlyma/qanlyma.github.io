@@ -1,0 +1,790 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文介绍 Gorm、Kitex、Hertz 三件套。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「训」 笔记(4)：框架三件套">
+<meta property="og:url" content="https://qanlyma.github.io/ByteDance-4/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="本文介绍 Gorm、Kitex、Hertz 三件套。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-10T06:00:49.000Z">
+<meta property="article:modified_time" content="2023-04-16T01:44:21.298Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「训」 笔记(4)：框架三件套 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「训」 笔记(4)：框架三件套"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-10 14:00" pubdate>
+          2023年3月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「训」 笔记(4)：框架三件套</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：13 分钟前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文介绍 Gorm、Kitex、Hertz 三件套。</p>
+<span id="more"></span>
+
+<h2 id="Gorm"><a href="#Gorm" class="headerlink" title="Gorm"></a>Gorm</h2><p>Gorm 是面向 Golang 语言的一种 <strong>ORM（Object Relational Mapping，对象关系映射）框架</strong>，支持多种数据库的接入，例如 MySQL，PostgreSQL，SQLite，SQL Server，Clickhouse。此框架弱化了开发者对于 SQL 语言的掌握程度，使用提供的 API 进行底层数据库的访问。</p>
+<p>快速开始：<a target="_blank" rel="noopener" href="https://gorm.cn/zh_CN/docs/index.html">https://gorm.cn/zh_CN/docs/index.html</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/go-gorm/gorm">https://github.com/go-gorm/gorm</a></p>
+<ul>
+<li><p><strong>基本使用</strong></p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br><span class="hljs-string">&quot;gorm.io/gorm&quot;</span><br><span class="hljs-string">&quot;gorm.io/driver/sqlite&quot;</span><br>)<br><br><span class="hljs-keyword">type</span> Product <span class="hljs-keyword">struct</span> &#123;<br>    gorm.Model<br>    Code  <span class="hljs-type">string</span><br>    Price <span class="hljs-type">uint</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-comment">// 连接数据库</span><br>    db, err := gorm.Open(sqlite.Open(<span class="hljs-string">&quot;test.db&quot;</span>), &amp;gorm.Config&#123;&#125;)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-built_in">panic</span>(<span class="hljs-string">&quot;failed to connect database&quot;</span>)<br>    &#125;   <br><br>    <span class="hljs-comment">// 迁移 schema</span><br>    db.AutoMigrate(&amp;Product&#123;&#125;)<br><br>    <span class="hljs-comment">// Create</span><br>    db.Create(&amp;Product&#123;Code: <span class="hljs-string">&quot;D42&quot;</span>, Price: <span class="hljs-number">100</span>&#125;)<br><br>    <span class="hljs-comment">// Read</span><br>    <span class="hljs-keyword">var</span> product Product<br>    db.First(&amp;product, <span class="hljs-number">1</span>) <span class="hljs-comment">// 根据整形主键查找</span><br>    db.First(&amp;product, <span class="hljs-string">&quot;code = ?&quot;</span>, <span class="hljs-string">&quot;D42&quot;</span>) <span class="hljs-comment">// 查找 code 字段值为 D42 的记录</span><br><br>    <span class="hljs-comment">// Update - 将 product 的 price 更新为 200</span><br>    db.Model(&amp;product).Update(<span class="hljs-string">&quot;Price&quot;</span>, <span class="hljs-number">200</span>)<br>    <span class="hljs-comment">// Update - 更新多个字段</span><br>    db.Model(&amp;product).Updates(Product&#123;Price: <span class="hljs-number">200</span>, Code: <span class="hljs-string">&quot;F42&quot;</span>&#125;) <span class="hljs-comment">// 仅更新非零值字段</span><br>    db.Model(&amp;product).Updates(<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]<span class="hljs-keyword">interface</span>&#123;&#125;&#123;<span class="hljs-string">&quot;Price&quot;</span>: <span class="hljs-number">200</span>, <span class="hljs-string">&quot;Code&quot;</span>: <span class="hljs-string">&quot;F42&quot;</span>&#125;)<br><br>    <span class="hljs-comment">// Delete - 删除 product</span><br>    db.Delete(&amp;product, <span class="hljs-number">1</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>连接数据库</strong></p>
+<p>  GORM 官方支持的数据库类型有： MySQL, PostgreSQL, SQlite, SQL Server。</p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> (<br>    <span class="hljs-string">&quot;gorm.io/driver/mysql&quot;</span><br>    <span class="hljs-string">&quot;gorm.io/gorm&quot;</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-comment">// 参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name 获取详情</span><br>    dsn := <span class="hljs-string">&quot;user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&amp;parseTime=True&amp;loc=Local&quot;</span><br>    db, err := gorm.Open(mysql.Open(dsn), &amp;gorm.Config&#123;&#125;)<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Kitex"><a href="#Kitex" class="headerlink" title="Kitex"></a>Kitex</h2><p>Kitex[kaɪt’eks] 字节跳动内部的 Golang 微服务 <strong>RPC（Remote Procedure Call）框架</strong>，具有高性能、强可扩展的特点，在字节内部已广泛使用。</p>
+<p>快速开始：<a target="_blank" rel="noopener" href="https://www.cloudwego.io/zh/docs/kitex/getting-started">https://www.cloudwego.io/zh/docs/kitex/getting-started</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/cloudwego/kitex">https://github.com/cloudwego/kitex</a></p>
+<ul>
+<li><p><strong>定义 IDL</strong></p>
+<p>  如果我们要进行 RPC，就需要知道对方的接口是什么，需要传什么参数，同时也需要知道返回值是什么样的，就好比两个人之间交流，需要保证在说的是同一个语言、同一件事。 这时候，就需要通过 IDL（Interface Definition Language）来约定双方的协议，就像在写代码的时候需要调用某个函数，我们需要知道函数签名一样。</p>
+  <figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs thrift"><span class="hljs-keyword">namespace</span> go api<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Request</span> </span>&#123;<br>    <span class="hljs-number">1</span>: <span class="hljs-type">string</span> message<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Response</span> </span>&#123;<br>    <span class="hljs-number">1</span>: <span class="hljs-type">string</span> message<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">service</span> <span class="hljs-title">Hello</span> </span>&#123;<br>    Response echo(<span class="hljs-number">1</span>: Request req)<br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>编写 echo 服务逻辑</strong></p>
+<p>  服务默认监听 8888 端口。</p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>    <span class="hljs-string">&quot;context&quot;</span><br>    <span class="hljs-string">&quot;example/kitex_gen/api&quot;</span><br>)<br><br><span class="hljs-comment">// EchoImpl implements the last service interface defined in the IDL.</span><br><span class="hljs-keyword">type</span> EchoImpl <span class="hljs-keyword">struct</span>&#123;&#125;<br><br><span class="hljs-comment">// Echo implements the EchoImpl interface.</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(s *EchoImpl)</span></span> Echo(ctx context.Context, req *api.Request) (resp *api.Response, err <span class="hljs-type">error</span>) &#123;<br>    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> Your code here...</span><br>    <span class="hljs-keyword">return</span><br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>创建 client</strong></p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;example/kitex_gen/api/echo&quot;</span><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;github.com/cloudwego/kitex/client&quot;</span><br>...<br>c, err := echo.NewClient(<span class="hljs-string">&quot;example&quot;</span>, client.WithHostPorts(<span class="hljs-string">&quot;0.0.0.0:8888&quot;</span>))<br><span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>    log.Fatal(err)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>  上述代码中，echo.NewClient 用于创建 client，其第一个参数为调用的服务名，第二个参数为 options，用于传入参数，此处的 client.WithHostPorts 用于指定服务端的地址。</p>
+</li>
+<li><p><strong>发起调用</strong></p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;example/kitex_gen/api&quot;</span><br>...<br>req := &amp;api.Request&#123;Message: <span class="hljs-string">&quot;my request&quot;</span>&#125;<br>resp, err := c.Echo(context.Background(), req, callopt.WithRPCTimeout(<span class="hljs-number">3</span>*time.Second))<br><span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>    log.Fatal(err)<br>&#125;<br>log.Println(resp)<br></code></pre></td></tr></table></figure>
+<p>  上述代码中，我们首先创建了一个请求 req , 然后通过 c.Echo 发起了调用。</p>
+</li>
+</ul>
+<h2 id="Hertz"><a href="#Hertz" class="headerlink" title="Hertz"></a>Hertz</h2><p>Hertz[həːts] 是一个 Golang 微服务 <strong>HTTP 框架</strong>，在设计之初参考了其他开源框架 fasthttp、gin、echo 的优势，并结合字节跳动内部的需求，使其具有高易用性、高性能、高扩展性等特点。</p>
+<p>快速开始：<a target="_blank" rel="noopener" href="https://www.cloudwego.io/zh/docs/hertz/getting-started">https://www.cloudwego.io/zh/docs/hertz/getting-started</a><br>框架地址：<a target="_blank" rel="noopener" href="https://github.com/cloudwego/hertz">https://github.com/cloudwego/hertz</a></p>
+<ul>
+<li><p><strong>基本使用</strong></p>
+<p>  实现服务监听 8080 端口并注册一个 GET 方法的路由函数。</p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>    <span class="hljs-string">&quot;context&quot;</span><br><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/app&quot;</span><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/app/server&quot;</span><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/common/utils&quot;</span><br>    <span class="hljs-string">&quot;github.com/cloudwego/hertz/pkg/protocol/consts&quot;</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    h := server.Default(server.WithHostPorts(<span class="hljs-string">&quot;127.0.0.1:8080&quot;</span>))<br><br>    h.GET(<span class="hljs-string">&quot;/ping&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(c context.Context, ctx *app.RequestContext)</span></span> &#123;<br>        ctx.JSON(consts.StatusOK, utils.H&#123;<span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;pong&quot;</span>&#125;)<br>    &#125;)<br><br>    h.Spin()<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%97%E8%8A%82%E9%9D%92%E8%AE%AD/" class="category-chain-item">字节青训</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「训」 笔记(4)：框架三件套</div>
+      <div>https://qanlyma.github.io/ByteDance-4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月10日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Go-heap/" title="「Go」 堆结构">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「Go」 堆结构</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Go-KMP/" title="「Go」 KMP 算法">
+                        <span class="hidden-mobile">「Go」 KMP 算法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="字节青训"
+        id="heading-984d1428f71819da297f82a6c866640b" role="tab" data-toggle="collapse" href="#collapse-984d1428f71819da297f82a6c866640b"
+        aria-expanded="true"
+      >
+        字节青训
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-984d1428f71819da297f82a6c866640b"
+           role="tabpanel" aria-labelledby="heading-984d1428f71819da297f82a6c866640b">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/ByteDance-1/" title="「训」 笔记(1)：Go 语言"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(1)：Go 语言</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(2)：性能调优</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(3)：内存管理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「训」 笔记(4)：框架三件套</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(5)：规则引擎</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(6)：架构初探</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(7)：分布式理论</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-8/" title="「训」 笔记(8)：微服务框架"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(8)：微服务框架</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

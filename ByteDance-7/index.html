@@ -1,0 +1,927 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="分布式理论 —— 现代架构的基石。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「训」 笔记(7)：分布式理论">
+<meta property="og:url" content="https://qanlyma.github.io/ByteDance-7/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="分布式理论 —— 现代架构的基石。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/6.png">
+<meta property="article:published_time" content="2023-04-02T06:36:16.000Z">
+<meta property="article:modified_time" content="2023-04-16T01:44:21.332Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-7/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「训」 笔记(7)：分布式理论 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「训」 笔记(7)：分布式理论"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-02 14:36" pubdate>
+          2023年4月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「训」 笔记(7)：分布式理论</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：13 分钟前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>分布式理论 —— 现代架构的基石。</p>
+<span id="more"></span>
+
+<h2 id="分布式概述"><a href="#分布式概述" class="headerlink" title="分布式概述"></a>分布式概述</h2><ul>
+<li><p>什么是分布式？</p>
+<ul>
+<li>分布式系统定义：跨多个节点的计算机程序的集合</li>
+<li>使用分布式系统的五大优势：去中心化、低成本、弹性、资源共享、可靠性高</li>
+<li>分布式系统的挑战：节点故障、不可靠的网络、异构的机器与硬件环境、安全</li>
+</ul>
+</li>
+<li><p>常见的分布式系统</p>
+<ul>
+<li>分布式存储：GFS、Ceph、HDFS、Zookeeper</li>
+<li>分布式数据库：Spanner、TiDB、HBase、MangoDB</li>
+<li>分布式计算：Hadoop、YARN、Spark</li>
+</ul>
+</li>
+</ul>
+<h2 id="系统模型"><a href="#系统模型" class="headerlink" title="系统模型"></a>系统模型</h2><h3 id="故障模型"><a href="#故障模型" class="headerlink" title="故障模型"></a>故障模型</h3><ul>
+<li><p>六种故障模型，从处理的难易程度分类</p>
+<ul>
+<li>Byzantine failure：节点可以任意篡改发送给其他节点的数据，是最难处理的故障</li>
+<li>Authentication detectable byzantine failure (ADB)：节点可以篡改数据，但不能伪造其他节点的数据</li>
+<li>Performance failure：节点未在特定时间段内收到数据，即时间太早或太晚</li>
+<li>Omission failure：节点收到数据的时间无限晚，即收不到数据</li>
+<li>Crash failure：节点停止响应，持续性的故障</li>
+<li>Fail-stop failure：错误可检测，是最容易处理的故障</li>
+</ul>
+</li>
+<li><p>故障模型举例</p>
+</li>
+</ul>
+<p><img src="/ByteDance-7/1.png" srcset="/img/loading.gif" lazyload alt="故障模型"></p>
+<h3 id="拜占庭将军问题"><a href="#拜占庭将军问题" class="headerlink" title="拜占庭将军问题"></a>拜占庭将军问题</h3><ul>
+<li><p>两将军问题</p>
+<p>  定义：两支军队的将军只能派信使穿越敌方领土互相通信，以此约定进攻时间。该问题希望求解如何在两名将军派出的任何信使都可能被俘虏的情况下，就进攻时间达成共识。</p>
+<p>  结论：两将军问题是被证实无解的电脑通信问题，两支军队理论上永远无法达成共识。</p>
+<p>  TCP是两将军问题的一个工程解。</p>
+</li>
+<li><p>三将军问题：</p>
+<p>  两个“忠将” A 和 B，一个“叛徒” C，互相传递消息，消息可能丢失，也可能被篡改，当有一个将军是“叛徒”（即出现拜占庭故障）时，整个系统无法达成一致。</p>
+<p>  由于“叛徒” C 的存在，将军 A 和将军 B 获得不同的信息。这样将军 A 获得 2 票进攻 1 票撤退的信息，将军 B 获得 1 票进攻 2 票撤退的信息，产生了不一致。</p>
+</li>
+<li><p>四将军问题：</p>
+<p>  将军 D 作为消息分发中枢，约定如果没收到消息则执行撤退。</p>
+<p>  如果 D 为“叛徒”，ABC 无论收到任何消息，总能达成一致。D 为“忠将”，ABC 有 2 人将 D 的消息进行正确的传递，同样能保证最终决策符合大多数。</p>
+<p>  进而能够证明，当有 3m+1 个将军，m 个“叛徒”时，可以进行 m 轮协商，最终达成一致。</p>
+</li>
+</ul>
+<h3 id="共识和一致性"><a href="#共识和一致性" class="headerlink" title="共识和一致性"></a>共识和一致性</h3><p>不同客户端A和B看到客户端C写入，因为时机的不同，产生数据读取的偏差。</p>
+<ul>
+<li>Eventuallyconsistent（最终一致性）<br>  客户端 A 读到 x&#x3D;0，当客户端 C 正在写入时，客户端 A 和 B 可能读到 0 或者 1。但是当 C 写入完成后，A 和 B 最终能读到一致的数据。</li>
+</ul>
+<p><img src="/ByteDance-7/2.png" srcset="/img/loading.gif" lazyload alt="读请求和写请求并发时可能读到旧值"></p>
+<p>要保证所有客户端看到相同的值，需要多节点进行“协商”，达成共识，来保证线性一致性。</p>
+<ul>
+<li>Linearizability（线性一致性）<br>  当客户端 A 读到更新的版本 x&#x3D;1 后，及时将消息同步给其他客户端，这样其他客户端立即能获取到 x&#x3D;1。</li>
+</ul>
+<p><img src="/ByteDance-7/3.png" srcset="/img/loading.gif" lazyload alt="一旦某个读获取到新值，所有客户端都必须返回新值"></p>
+<p>一致性和可用性是对矛盾，如果要保证“线性”一致性，多个节点间势必需要进行协商，以寻求一致。这样增加了延迟，系统可用性便会受损。</p>
+<h2 id="理论基础"><a href="#理论基础" class="headerlink" title="理论基础"></a>理论基础</h2><h3 id="CAP-理论"><a href="#CAP-理论" class="headerlink" title="CAP 理论"></a>CAP 理论</h3><p>一致性、可用性、分区容错性，三者无法同时达到</p>
+<ul>
+<li>C (Consistence)：一致性，指数据在多个副本之间能够保持一致的特性（严格的一致性）。</li>
+<li>A (Availability)：可用性，指系统提供的服务必须一直处于可用的状态，每次请求都能获取到非错的响应——但是不保证获取的数据为最新数据。</li>
+<li>P (Partitioning)：分区容错性，分布式系统在遇到任何网络分区故障的时候，仍然能够对外提供满足一致性和可用性的服务，除非整个网络环境都发生了故障。</li>
+</ul>
+<p>CAP 诞生了<strong>三类系统</strong>：</p>
+<ul>
+<li>CA 系统：传统单机数据库的代表</li>
+<li>AP 系统：放弃<strong>强</strong>一致性，保证高可用，不少 nosql 存储系统采用，注重用户体验</li>
+<li>CP 系统：放弃可用性，保证数据一致性，注重系统安全</li>
+</ul>
+<h3 id="ACID-理论"><a href="#ACID-理论" class="headerlink" title="ACID 理论"></a>ACID 理论</h3><p>ACID 理论是针对 CA 系统而言的，通常在数据库中具有广泛意义。</p>
+<p>事务是数据库系统中非常重要的概念，它是数据库管理系统执行过程中的一个逻辑单元，它能够保证一个事务中的所有操作要么全部执行，要么全都不执行。</p>
+<p>数据库事务拥有<strong>四个特性</strong>：</p>
+<ul>
+<li>原子性（Atomicity）：原子性是指事务包含的所有操作要么全部成功，要么全部失败回滚。</li>
+<li>一致性（Consistency）：一致性是指事务必须使数据库从一个一致性状态变换到另一个一致性状态，也就是说一个事务执行之前和执行之后都必须处于一致性状态。</li>
+<li>隔离性（Isolation）：隔离性是当多个用户并发访问数据库时，数据库为每一个用户开启的事务，不能被其他事务的操作所干扰，多个并发事务之间要相互隔离。</li>
+<li>持久性（Durability）：持久性是指一个事务一旦被提交了，那么对数据库中的数据的改变就是永久性的，即便是在数据库系统遇到故障的情况下也不会丢失提交事务的操作。</li>
+</ul>
+<h3 id="BASE-理论"><a href="#BASE-理论" class="headerlink" title="BASE 理论"></a>BASE 理论</h3><p>BASE 理论是针对 AP 系统而言的，其来源于对大型互联网分布式实践的总结。</p>
+<ul>
+<li>Basically Available(基本可用)：假设系统，出现了不可预知的故障，但还是能用。</li>
+<li>Soft state（软状态）：允许系统中的数据存在中间状态，并认为该状态不影响系统的整体可用性。</li>
+<li>Eventually consistent（最终一致性）：数据最终一定能够达到一致的状态。</li>
+</ul>
+<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><h3 id="二阶段提交（Two-phase-Commit）"><a href="#二阶段提交（Two-phase-Commit）" class="headerlink" title="二阶段提交（Two-phase Commit）"></a>二阶段提交（Two-phase Commit）</h3><p>为了使基于分布式系统架构下的所有节点在进行事务提交时保持一致性而设计的一种演算法。参与者将操作成败通知协调者，再由协调者根据所有参与者的反馈情报决定各参与者提交操作还是中止操作。</p>
+<p><strong>三个假设</strong>：</p>
+<ol>
+<li>协调者和参与者进行通信</li>
+<li>预写式日志被保持在可靠的存储设备上</li>
+<li>所有节点不会永久性损坏，即使损坏后仍然可以恢复</li>
+</ol>
+<p><img src="/ByteDance-7/4.png" srcset="/img/loading.gif" lazyload alt="2PC"></p>
+<p>正常流程：Prepare 阶段和 Commit 阶段</p>
+<p>异常流程：Prepare 阶段失败 -&gt; 回滚；协调者宕机 -&gt; 重新启用新的协调者；双故障重启 -&gt; 数据库管理员介入</p>
+<p><strong>两阶段提交需解决的问题</strong>：</p>
+<ul>
+<li>性能问题：需要多次网络通信，资源需要等待并锁定</li>
+<li>新协调者：如何确定状态选出新协调者</li>
+<li>Commit 阶段网络分区带来的数据不一致：非所有节点都收到 Commit 请求</li>
+</ul>
+<h3 id="三阶段提交"><a href="#三阶段提交" class="headerlink" title="三阶段提交"></a>三阶段提交</h3><p>针对两阶段提交的补充，将两阶段提交中的 Prepare 阶段，拆成两部分：CanCommit 和 PreCommit</p>
+<ul>
+<li>CanCommit 阶段：询问是否可以执行</li>
+<li>PreCommit 阶段：重新确认是否可以执行</li>
+<li>DoCommit 阶段：向所有人提交事务</li>
+</ul>
+<h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><p>多版本并发控制的方法。维持一个数据的多个版本使读写操作没有冲突。所以既不会阻塞写，也不阻塞读。提高并发性能的同时也解决了脏读的问题。</p>
+<ul>
+<li>悲观锁：操作数据时直接把数据锁住，直到操作完成后才会释放锁；上锁期间其他人不能修改数据。</li>
+<li>乐观锁：不会上锁，只是在执行更新时判断别人是否修改数据，只有冲突时才放弃操作。</li>
+</ul>
+<p>版本的选取：</p>
+<ul>
+<li>物理时钟：提供 TrueTime API，有 Master 节点维持一个绝对时间，保证各个服务器之间时钟误差控制在 ϵ 内，通常 ϵ &lt; 7ms。</li>
+<li>逻辑时钟：中心化授时的方式——时间戳预言机（TSO），好处是无需硬件的支持。</li>
+</ul>
+<h2 id="共识协议"><a href="#共识协议" class="headerlink" title="共识协议"></a>共识协议</h2><h3 id="Quorum-NWR-模型"><a href="#Quorum-NWR-模型" class="headerlink" title="Quorum NWR 模型"></a>Quorum NWR 模型</h3><ul>
+<li>N：在分布式存储系统中，有多少份备份数据。</li>
+<li>W：代表一次成功的更新操作要求至少有 w 份数据写入成功。</li>
+<li>R：代表一次成功的读数据操作要求至少有 R 份数据成功读取。</li>
+</ul>
+<p><strong>为了保证强一致性，需要保证 W + R &gt; N</strong></p>
+<p>Quorum NWR 模型将 CAP 的选择交给用户，是一种简化版的一致性模型。</p>
+<h3 id="RAFT-协议"><a href="#RAFT-协议" class="headerlink" title="RAFT 协议"></a>RAFT 协议</h3><p>Raft 协议是一种分布式一致性算法（共识算法），即使出现部分节点故障，网络延时等情况，也不影响各节点，进而提高系统的整体可用性。</p>
+<p><img src="/ByteDance-7/5.png" srcset="/img/loading.gif" lazyload alt="RAFT"></p>
+<ul>
+<li>Log（日志）：节点之间同步的信息，以只追加写的方式进行同步，解决了数据被覆盖的问题。</li>
+<li>Term（任期号）：单调递增，每个 Term 内最多只有一个 Leader。</li>
+<li>Committed：日志被复制到多数派节点，即可认为已经被提交。</li>
+<li>Applied：日志被应用到本地状态机，即执行了log中命令，修改了内存状态。</li>
+</ul>
+<p><img src="/ByteDance-7/6.png" srcset="/img/loading.gif" lazyload alt="状态转移"></p>
+<ul>
+<li>Leader - 领导者：Leader 负责处理所有的客户端请求，并向 Follower 同步请求日志，当日志同步到大多数节点上后，通知 Follower 提交日志。</li>
+<li>Follower - 跟随者：接受并持久化 Leader 同步的日志，在 Leader 告知日志可以提交后，提交日志。</li>
+<li>Candidate - 备选者：Leader 选举过程中的临时角色，向其他节点发送请求投票信息。</li>
+</ul>
+<p><strong>Leader 选举过程</strong>：</p>
+<ol>
+<li>初始全部为Follower</li>
+<li>Current Term + 1</li>
+<li>选举自己</li>
+<li>向其它参与者发起 RequestVote 请求，retry 直到：<ul>
+<li>收到多数派请求，成为 Leader，并发送心跳</li>
+<li>收到其它 Leader 的请求，转为 Follower，更新自己的 Term</li>
+<li>收到部分，但未达到多数派，选举超时，随机 timeout 开始下一轮</li>
+</ul>
+</li>
+</ol>
+<p><strong>切主</strong>：当Leader出现问题时，就需要进行重新选举</p>
+<ol>
+<li>Leader 发现失去 Follower 的响应，失去 Leader 身份</li>
+<li>两个 Follower 之间一段时间未收到心跳，重新进行选举，选出新的 Leader，此时发生了切主</li>
+<li>Leader 自杀重启，以 Follower 的身份加入进来</li>
+</ol>
+<h3 id="Paxos-协议"><a href="#Paxos-协议" class="headerlink" title="Paxos 协议"></a>Paxos 协议</h3><p><strong>Paxos 算法与 RAFT 算法区别</strong>：</p>
+<ul>
+<li><p>Multi-Paxos 可以并发修改日志，而Raft写日志操作必须是连续的</p>
+</li>
+<li><p>Multi-Paxos 可以随机选主，不必最新最全的节点当选 Leader</p>
+</li>
+<li><p>优势：写入并发性能高，所有节点都能写</p>
+</li>
+<li><p>劣势：没有一个节点有完整的最新的数据，恢复流程复杂，需要同步历史记录</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%97%E8%8A%82%E9%9D%92%E8%AE%AD/" class="category-chain-item">字节青训</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「训」 笔记(7)：分布式理论</div>
+      <div>https://qanlyma.github.io/ByteDance-7/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月2日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/ByteDance-8/" title="「训」 笔记(8)：微服务框架">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「训」 笔记(8)：微服务框架</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Taming-Conflicts/" title="「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts">
+                        <span class="hidden-mobile">「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="字节青训"
+        id="heading-984d1428f71819da297f82a6c866640b" role="tab" data-toggle="collapse" href="#collapse-984d1428f71819da297f82a6c866640b"
+        aria-expanded="true"
+      >
+        字节青训
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-984d1428f71819da297f82a6c866640b"
+           role="tabpanel" aria-labelledby="heading-984d1428f71819da297f82a6c866640b">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/ByteDance-1/" title="「训」 笔记(1)：Go 语言"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(1)：Go 语言</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(2)：性能调优</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(3)：内存管理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(4)：框架三件套</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(5)：规则引擎</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(6)：架构初探</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「训」 笔记(7)：分布式理论</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-8/" title="「训」 笔记(8)：微服务框架"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(8)：微服务框架</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

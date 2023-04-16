@@ -1,0 +1,830 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="请参考：性能优化建议代码，pprof 示例代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「训」 笔记(2)：性能调优">
+<meta property="og:url" content="https://qanlyma.github.io/ByteDance-2/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="请参考：性能优化建议代码，pprof 示例代码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/8.png">
+<meta property="article:published_time" content="2023-03-05T04:07:42.000Z">
+<meta property="article:modified_time" content="2023-04-16T01:44:21.282Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-2/2.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「训」 笔记(2)：性能调优 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「训」 笔记(2)：性能调优"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-05 12:07" pubdate>
+          2023年3月5日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「训」 笔记(2)：性能调优</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：13 分钟前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>请参考：<a target="_blank" rel="noopener" href="https://github.com/RaymondCode/go-practice">性能优化建议代码</a>，<a target="_blank" rel="noopener" href="https://github.com/wolfogre/go-pprof-practice">pprof 示例代码</a></p>
+<span id="more"></span>
+
+<h2 id="1-性能优化建议"><a href="#1-性能优化建议" class="headerlink" title="1 性能优化建议"></a>1 性能优化建议</h2><h3 id="1-1-Slice"><a href="#1-1-Slice" class="headerlink" title="1.1 Slice"></a>1.1 Slice</h3><p><strong>预分配内存</strong>：使用 <code>make()</code> 初始化切片时提供容量信息。</p>
+<ul>
+<li>切片本质是一个数组片段的描述，包括：<ul>
+<li>数组指针</li>
+<li>片段的长度</li>
+<li>片段的容量</li>
+</ul>
+</li>
+<li>切片操作并不复制切片指向的元素</li>
+<li>创建一个新的切片会复用原来切片的底层数组</li>
+<li>切片有三个属性，指针(ptr)、长度(len) 和容量(cap)。append 时有两种场景：<ul>
+<li>当 append 之后的长度小于等于 cap，将会直接利用原底层数组剩余的空间</li>
+<li>当 append 后的长度大于 cap 时，则会分配一块更大的区域来容纳新的底层数组</li>
+</ul>
+</li>
+</ul>
+<p><img src="/ByteDance-2/2.png" srcset="/img/loading.gif" lazyload alt="append"></p>
+<p>因此，为了避免内存发生拷贝，如果能够知道最终的切片的大小，预先设置 cap 的值能够获得最好的性能。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">NoPreAlloc</span><span class="hljs-params">(size <span class="hljs-type">int</span>)</span></span> &#123;<br>	data := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-number">0</span>)<br>	<span class="hljs-keyword">for</span> k := <span class="hljs-number">0</span>; k &lt; size; k++ &#123;<br>		data = <span class="hljs-built_in">append</span>(data, k)<br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">PreAlloc</span><span class="hljs-params">(size <span class="hljs-type">int</span>)</span></span> &#123;<br>	data := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-number">0</span>, size)<br>	<span class="hljs-keyword">for</span> k := <span class="hljs-number">0</span>; k &lt; size; k++ &#123;<br>		data = <span class="hljs-built_in">append</span>(data, k)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/ByteDance-2/1.png" srcset="/img/loading.gif" lazyload alt="result"></p>
+<p><strong>另一个陷阱</strong>：大内存得不到释放。</p>
+<p>在已有切片的基础上进行切片，不会创建新的底层数组。因为原来的底层数组没有发生变化，内存会一直占用，直到没有变量引用该数组因此很可能出现这么一种情况，原切片由大量的元素构成，但是我们在原切片的基础上切片，虽然只使用了很小一段，但底层数组在内存中仍然占据了大量空间，得不到释放。</p>
+<p>推荐的做法：<strong>使用 copy 替代 re-slice</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// slice.go</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">GetLastBySlice</span><span class="hljs-params">(origin []<span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>	<span class="hljs-keyword">return</span> origin[<span class="hljs-built_in">len</span>(origin)<span class="hljs-number">-2</span>:]<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">GetLastByCopy</span><span class="hljs-params">(origin []<span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>	result := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-number">2</span>)<br>	<span class="hljs-built_in">copy</span>(result, origin[<span class="hljs-built_in">len</span>(origin)<span class="hljs-number">-2</span>:])<br>	<span class="hljs-keyword">return</span> result<br>&#125;<br><br><span class="hljs-comment">// slice_test.go</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">testGetLast</span><span class="hljs-params">(t *testing.T, f <span class="hljs-keyword">func</span>([]<span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span>) &#123;<br>	result := <span class="hljs-built_in">make</span>([][]<span class="hljs-type">int</span>, <span class="hljs-number">0</span>)<br>	<span class="hljs-keyword">for</span> k := <span class="hljs-number">0</span>; k &lt; <span class="hljs-number">100</span>; k++ &#123;<br>		origin := generateWithCap(<span class="hljs-number">128</span> * <span class="hljs-number">1024</span>) <span class="hljs-comment">// 1M</span><br>		result = <span class="hljs-built_in">append</span>(result, f(origin))<br>	&#125;<br>	printMem(t)<br>	_ = result<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestLastBySlice</span><span class="hljs-params">(t *testing.T)</span></span> &#123;<br>	testGetLast(t, GetLastBySlice)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestLastByCopy</span><span class="hljs-params">(t *testing.T)</span></span> &#123;<br>	testGetLast(t, GetLastByCopy)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/ByteDance-2/3.png" srcset="/img/loading.gif" lazyload alt="result"></p>
+<h3 id="1-2-Map"><a href="#1-2-Map" class="headerlink" title="1.2 Map"></a>1.2 Map</h3><p><strong>预分配内存</strong></p>
+<ul>
+<li>不断向 map 中添加元素的操作会触发 map 的扩容</li>
+<li>根据实际需求提前预估好需要的空间</li>
+<li>提前分配好空间可以减少内存拷贝和 Rehash 的消耗</li>
+</ul>
+<h3 id="1-3-字符串处理"><a href="#1-3-字符串处理" class="headerlink" title="1.3 字符串处理"></a>1.3 字符串处理</h3><p>使用 strings.Builder 代替 “+”</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Plus</span><span class="hljs-params">(n <span class="hljs-type">int</span>, str <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">string</span> &#123;<br>	s := <span class="hljs-string">&quot;&quot;</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; n; i++ &#123;<br>		s += str<br>	&#125;<br>	<span class="hljs-keyword">return</span> s<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">StrBuilder</span><span class="hljs-params">(n <span class="hljs-type">int</span>, str <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">string</span> &#123;<br>	<span class="hljs-keyword">var</span> builder strings.Builder<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; n; i++ &#123;<br>		builder.WriteString(str)<br>	&#125;<br>	<span class="hljs-keyword">return</span> builder.String()<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ByteBuffer</span><span class="hljs-params">(n <span class="hljs-type">int</span>, str <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">string</span> &#123;<br>	buf := <span class="hljs-built_in">new</span>(bytes.Buffer)<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; n; i++ &#123;<br>		buf.WriteString(str)<br>	&#125;<br>	<span class="hljs-keyword">return</span> buf.String()<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/ByteDance-2/4.png" srcset="/img/loading.gif" lazyload alt="分别传入(1000, &quot;string&quot;)"></p>
+<ul>
+<li>字符串在 Go 语言中是不可变类型，占用内存大小是固定的，当使用 “+” 拼接 2 个字符串时，生成一个新的字符串，那么就需要开辟一段新的空间，新空间的大小是原来两个字符串的大小之和</li>
+<li>strings.Builder，bytes.Buffer 的内存是以倍数申请的</li>
+<li>strings.Builder 和 bytes.Buffer 底层都是 []byte 数组，bytes.Buffer 转化为字符串时重新申请了一块空间，存放生成的字符串变量，而 strings.Builder 直接将底层的 []byte 转换成了字符串类型返回</li>
+</ul>
+<h3 id="1-4-空结构体"><a href="#1-4-空结构体" class="headerlink" title="1.4 空结构体"></a>1.4 空结构体</h3><p><strong>使用空结构体节省内存</strong></p>
+<ul>
+<li>空结构体不占据内存空间，可作为占位符使用。比如实现简单的 Set：Go 语言标准库没有提供 Set 的实现，通常使用 map 来代替。对于集合场景，只需要用到 map 的键而不需要值。</li>
+</ul>
+<h2 id="2-性能调优实战"><a href="#2-性能调优实战" class="headerlink" title="2 性能调优实战"></a>2 性能调优实战</h2><h3 id="2-1-分析工具"><a href="#2-1-分析工具" class="headerlink" title="2.1 分析工具"></a>2.1 分析工具</h3><p><img src="/ByteDance-2/5.png" srcset="/img/loading.gif" lazyload alt="pprof"></p>
+<h3 id="2-2-搭建项目"><a href="#2-2-搭建项目" class="headerlink" title="2.2 搭建项目"></a>2.2 搭建项目</h3><p><a target="_blank" rel="noopener" href="https://blog.wolfogre.com/posts/go-ppof-practice/">参考教程</a><br>项目提前埋入了一些炸弹代码，产生可观测的性能问题。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;log&quot;</span><br>	<span class="hljs-string">&quot;net/http&quot;</span><br>	_ <span class="hljs-string">&quot;net/http/pprof&quot;</span>  <span class="hljs-comment">// 自动注册 pprof 的 handler 到 http server</span><br>    <span class="hljs-comment">// ...</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	log.SetFlags(log.Lshortfile | log.LstdFlags)<br>	log.SetOutput(os.Stdout)<br><br>	runtime.GOMAXPROCS(<span class="hljs-number">1</span>)                   <span class="hljs-comment">// 限制 CPU 使用数</span><br>	runtime.SetMutexProfileFraction(<span class="hljs-number">1</span>)      <span class="hljs-comment">// 开启锁调用跟踪</span><br>	runtime.SetBlockProfileRate(<span class="hljs-number">1</span>)          <span class="hljs-comment">// 开启阻塞调用跟踪</span><br><br>	<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>        <span class="hljs-comment">// 启动 http server</span><br>		<span class="hljs-keyword">if</span> err := http.ListenAndServe(<span class="hljs-string">&quot;:6060&quot;</span>, <span class="hljs-literal">nil</span>); err != <span class="hljs-literal">nil</span> &#123;<br>			log.Fatal(err)<br>		&#125;<br>		os.Exit(<span class="hljs-number">0</span>)<br>	&#125;()<br><br>	<span class="hljs-keyword">for</span> &#123;<br>		<span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> animal.AllAnimals &#123;<br>			v.Live()<br>		&#125;<br>		time.Sleep(time.Second)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-浏览器查看指标"><a href="#2-3-浏览器查看指标" class="headerlink" title="2.3 浏览器查看指标"></a>2.3 浏览器查看指标</h3><p><img src="/ByteDance-2/6.png" srcset="/img/loading.gif" lazyload alt="debug"></p>
+<ul>
+<li>CPU</li>
+</ul>
+<p><img src="/ByteDance-2/7.png" srcset="/img/loading.gif" lazyload alt="CPU"></p>
+<ul>
+<li><code>go tool pprof &quot;http://127.0.0.1:6060/debug/pprof/profile?seconds=10&quot;</code></li>
+<li><code>topN</code> 查看占用资源最多的函数</li>
+<li><code>list</code> 根据指定的正则表达式查找代码行</li>
+<li><code>web</code> 调用关系可视化</li>
+</ul>
+<p><img src="/ByteDance-2/8.png" srcset="/img/loading.gif" lazyload alt="排查过程"></p>
+<ul>
+<li>heap-堆内存</li>
+<li>goroutine-协程</li>
+<li>mutex-锁</li>
+<li>block-阻塞</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%97%E8%8A%82%E9%9D%92%E8%AE%AD/" class="category-chain-item">字节青训</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「训」 笔记(2)：性能调优</div>
+      <div>https://qanlyma.github.io/ByteDance-2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月5日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「训」 笔记(3)：内存管理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Block/" title="「研」 以太坊区块结构和数据存储">
+                        <span class="hidden-mobile">「研」 以太坊区块结构和数据存储</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="字节青训"
+        id="heading-984d1428f71819da297f82a6c866640b" role="tab" data-toggle="collapse" href="#collapse-984d1428f71819da297f82a6c866640b"
+        aria-expanded="true"
+      >
+        字节青训
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-984d1428f71819da297f82a6c866640b"
+           role="tabpanel" aria-labelledby="heading-984d1428f71819da297f82a6c866640b">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/ByteDance-1/" title="「训」 笔记(1)：Go 语言"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(1)：Go 语言</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「训」 笔记(2)：性能调优</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(3)：内存管理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(4)：框架三件套</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(5)：规则引擎</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(6)：架构初探</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(7)：分布式理论</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-8/" title="「训」 笔记(8)：微服务框架"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(8)：微服务框架</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

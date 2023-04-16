@@ -1,0 +1,830 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="区块链系统随着共识技术的发展，性能已经大大提高，交易执行成为一个新的性能瓶颈。我们观察到应用内在的冲突是限制并行执行的主要因素。本文提出使用分区计数器和特殊的可交换指令来打破应用程序冲突链，以最大化性能。我们还提出了 OCC-DA，一个具有确定性中止的乐观并发控制调度器，使得在公链中使用 OCC 调度成为可能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts">
+<meta property="og:url" content="https://qanlyma.github.io/Taming-Conflicts/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="区块链系统随着共识技术的发展，性能已经大大提高，交易执行成为一个新的性能瓶颈。我们观察到应用内在的冲突是限制并行执行的主要因素。本文提出使用分区计数器和特殊的可交换指令来打破应用程序冲突链，以最大化性能。我们还提出了 OCC-DA，一个具有确定性中止的乐观并发控制调度器，使得在公链中使用 OCC 调度成为可能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/Taming-Conflicts/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Taming-Conflicts/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Taming-Conflicts/3.png">
+<meta property="article:published_time" content="2023-03-30T07:42:57.000Z">
+<meta property="article:modified_time" content="2023-04-16T01:44:21.465Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/Taming-Conflicts/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-30 15:42" pubdate>
+          2023年3月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：13 分钟前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>区块链系统随着共识技术的发展，性能已经大大提高，交易执行成为一个新的性能瓶颈。我们观察到应用内在的冲突是限制并行执行的主要因素。本文提出使用<strong>分区计数器</strong>和特殊的<strong>可交换指令</strong>来打破应用程序冲突链，以最大化性能。我们还提出了 <strong>OCC-DA</strong>，一个具有确定性中止的乐观并发控制调度器，使得在<strong>公链</strong>中使用 OCC 调度成为可能。</p>
+<span id="more"></span>
+
+<h2 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1 INTRODUCTION"></a>1 INTRODUCTION</h2><p>我们的发现：</p>
+<ol>
+<li>与串行执行相比，并行可实现的总体加速限制约为 4 倍。虽然有许多块的执行速度随着线程数量的增加而增大，但很大一部分块的执行情况要差得多。</li>
+<li>大多数块都被单个交易依赖链所阻塞，这些交易需要串行执行，因此影响了总体的执行时间。</li>
+<li>对瓶颈交易的人工检查显示，它们中的大多数在单个计数器或数组上发生冲突。从应用程序的角度来看，大多数瓶颈交易可以分为三类：代币分发、收藏品和去中心化金融。</li>
+</ol>
+<p>研究结果表明，我们工作的重点应该是消除智能合约中这些常见的争用源，而不是优化调度器的实现。本文提出了三种独立的技术来消除上述瓶颈：</p>
+<ol>
+<li><p>最简单方法是使用多个发送方地址。手动将单个发送方的一组交易划分为多个不相交的交易集。</p>
+</li>
+<li><p>第二种方法是使用分区计数器（partitioned counters），类似于 Sloppy Counters。在这种方法中，我们维护几个子计数器，它们的总和构成原始计数器的值。写入基于某些属性（例如发送方地址）被路由到不同的子计数器并在其上操作。分区计数器可以减少任何两个写入交易冲突的概率。</p>
+</li>
+<li><p>第三种方法是消除由虚拟机级别的交换更新引起的可避免冲突。两个增加计数器但不使用其原始值的交易在语义上是可交换的。然而，在当前的以太坊虚拟机语义下，这些增量被转换为读取（SLOAD）和写入（SSTORE）指令，这将导致读写冲突。我们提出了一个名为 CADD（commutative add）的新指令。在给定状态条目上没有其他读写操作，而只有 CADD 操作的两个交易被视为不冲突。增量在交易提交期间逐个应用。</p>
+</li>
+</ol>
+<p>此外，为了解决并行执行导致节点状态不一致问题，我们引入了一种具有确定性事务中止的乐观调度器。这种方法允许我们引入并行性的激励措施，以换取可接受的性能影响。</p>
+<h2 id="2-BACKGROUND-AND-MOTIVATION"><a href="#2-BACKGROUND-AND-MOTIVATION" class="headerlink" title="2 BACKGROUND AND MOTIVATION"></a>2 BACKGROUND AND MOTIVATION</h2><p>为了解决 Bitcoin 和 Ethereum 的性能瓶颈，大家都做了很多努力。</p>
+<p>在并行执行研究上，通过调查以太坊的历史工作负载，我们发现必须按顺序执行的一系列交易的许多关键路径都是由<strong>共享全局计数器</strong>的使用引起的。我们认为，进一步提高实际工作负载并行性的重要方法是引入更好的编程范式，使开发人员能够更容易地表达并行性，同时保持原始语义。并且需要对激励机制进行一些新的设计，以使该范式适用于现实世界的应用。</p>
+<h2 id="3-EMPIRICAL-STUDY"><a href="#3-EMPIRICAL-STUDY" class="headerlink" title="3 EMPIRICAL STUDY"></a>3 EMPIRICAL STUDY</h2><h3 id="3-1-Methodology"><a href="#3-1-Methodology" class="headerlink" title="3.1 Methodology"></a>3.1 Methodology</h3><p>我们使用以太坊历史交易对现实世界数据集（2018 年 1 月 1 日到 2018 年 5 月 28 日共 8582236 个区块）中存在的并行性进行了实证研究。本实验的主题是智能合约存储冲突，即同一块内的两个交易访问状态树中的同一条目，并且这些访问中至少有一个是写入。</p>
+<p>考虑到交易的执行时间是未知的，并且可能因节点而异，我们使用从交易收据中获得的 gas 成本作为近似值。</p>
+<p>从交易的状态访问跟踪和 gas 成本导出的依赖性，我们为每个块构建了一个依赖图。然后，模拟在 2、4、8、16 和 32 个线程上的非抢占式执行，我们为每个块构建了一个最优调度。确保不需要中止任何交易的调度，同时最大限度地提高线程利用率。在这种执行模型下，该计划的总体执行成本为我们能够实现的潜在加速设定了上限。</p>
+<h3 id="3-2-Results-and-Findings"><a href="#3-2-Results-and-Findings" class="headerlink" title="3.2 Results and Findings"></a>3.2 Results and Findings</h3><ul>
+<li><p><em>Execution Bottlenecks.</em> 该实验揭示了我们在并行执行以太坊交易时可以实现的加速限制。我们发现，与串行执行相比，观察到的总体加速仅为 4 倍，考虑到我们有 8 个、16 个甚至更多的线程可用，这一结果并不令人满意。许多区块的加速效率很高，但也有相当一部分区块的性能很差。</p>
+<p>  <img src="/Taming-Conflicts/1.png" srcset="/img/loading.gif" lazyload alt="Distribution of parallel speedup bounds"></p>
+<p>  将一个块的执行成本与其依赖图中最重路径的执行成本进行比较时，我们发现这两者经常重合，这意味着性能瓶颈在最重路径的执行上。</p>
+</li>
+<li><p><em>Classification of Smart Contract Conflicts.</em> 我们确定了三大类：ERC20 代币（代币分发、空投）占样本瓶颈的 60%，去中心化金融（DeFi）应用程序占 29%，而游戏和收藏品（不可替代代币、NFT）占 10%。</p>
+</li>
+<li><p><em>Bottleneck Code Examples.</em></p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs code">function transfer(address _to , uint256 _val) /* ... */ &#123;<br>    balances[msg.sender] -= _val ; // &lt;&lt;&lt;<br>    balances[_to] += _val ;<br>    // ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当调用 transfer 时，发送者的余额被记 debited，而接收者的余额被记 credited。发送方的余额对应于状态树中的一个特定存储位置。借记操作将编译为加载（SLOAD）、添加（ADD）和存储（SSTORE）操作等。当两个交易同时从同一个发送方地址触发此函数时，将导致冲突。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs code">function _createKitty(/* ... */) /* ... */ &#123;<br>    uint256 newKittenId = kitties.push(_kitty) - 1; // &lt;&lt;&lt;<br>    // ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在以太坊流行的 CryptoKitties 游戏中，每个新的收藏品都存储在一个数组中。Solidity 数组上的 push 操作将修改两个存储条目：首先，它将把新项目存储在从数组长度导出的位置，其次，它将增加数组长度。两个并发交易都会修改数组长度，因此它们会发生冲突。</p>
+<h3 id="3-3-Generalizability-of-the-Observations"><a href="#3-3-Generalizability-of-the-Observations" class="headerlink" title="3.3 Generalizability of the Observations"></a>3.3 Generalizability of the Observations</h3><p>我们相信所选择的时间段代表了当今以太坊的工作量，因此我们的发现是普遍的。</p>
+<h2 id="4-AVOIDING-APPLICATION-INHERENT-CONFLICTS"><a href="#4-AVOIDING-APPLICATION-INHERENT-CONFLICTS" class="headerlink" title="4 AVOIDING APPLICATION INHERENT CONFLICTS"></a>4 AVOIDING APPLICATION INHERENT CONFLICTS</h2><p>由第三章可以看出，很大一部分存储冲突与计数器或数组的存储槽相关联。这里所说的计数器（counter）是指一个变量，无论其当前值如何，都可以通过递增或递减来跟踪一个量。Solidity 中的数组（Arrays）是一种简单的数据结构，用于存储元素序列和元素数量。</p>
+<p>为了减轻交易瓶颈链的影响，我们需要通过消除所涉及的交易子集之间的依赖关系，将它们分解为多个较短的链：</p>
+<p><img src="/Taming-Conflicts/2.png" srcset="/img/loading.gif" lazyload alt="Breaking up a conflict chain into multiple disjoint conflict chains"></p>
+<ul>
+<li><p><em><strong>Technique 1: Conflict-Aware Token Distribution.</strong></em> 我们发现代币分发是迄今为止瓶颈冲突最常见的来源。在大多数情况下，冲突的来源是存储发送者帐户当前余额的条目。</p>
+<p>  最简单方法是使用多个发送者地址。通过将初始资金（在适用的情况下）分配给一组发送方账户，而不是单个账户，并对连续的交易使用不同的发送方地址，我们可以将瓶颈交易集划分为不相交的冲突交易集，每个交易集都不太可能形成瓶颈。</p>
+</li>
+<li><p><em><strong>Technique 2: Partitioned Counters.</strong></em> 使用一种类似于 Linux 内核中 sloppy counters 的技术，我们提出了一种将同一计数器上的多个写入路由到多个不同存储条目的方法。由于对不同存储条目的写入不会发生冲突，因此可以大幅降低冲突率。</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs code">contract PartitionedCounter &#123; // LEN = 3<br>    int256[LEN] public cnt;<br><br>    function add(uint32 n) internal &#123;<br>        uint8 slot = uint8(tx.origin) % LEN<br>        cnt[slot] += n;<br>    &#125;<br><br>    function get() internal view returns (int256 sum) &#123;<br>        for (uint8 i = 0; i &lt; LEN; ++i) &#123;sum += cnt[i];&#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>  这里我们有一个单独的合约，它代表一个计数器实例。计数器的值实际上保存在 3 个称为子计数器的独立存储条目上。每次交易修改计数器的值时，我们都会根据发送方地址分配一个子计数器。由于地址是使用加密哈希导出的，因此可以将其视为伪随机子计数器分配。读取计数器的值时，将访问所有子计数器，并对其值进行求和。</p>
+<p>  给定交易的写入操作即使多次递增计数器也都将在单个存储条目上进行，因为在整个交易执行过程中，发送方地址不会更改。来自两个不同发送方地址的两个交易都增加了计数器，但在同一子计数器上操作的机会大大减少，因此通常可以避免冲突。也可以根据计数器使用频率分派不同的子计数器数量和路由规则（本例是根据发送方地址）。</p>
+<p>  此方案的缺点在于虽然我们只需要访问一个存储条目来写入计数器，但读取它将涉及到所有子计数器。因此，任何读取计数器的交易都将与所有写入交易发生冲突。因此，这种技术适用于 write-heavy 计数器。幸运的是，我们分析的许多计数器从来都不是通过交易读取的。其次，分区计数器可能比内置整数开销大得多，尤其是在读取计数器时。分区计数器提供的并行加速抵消了这一缺点。</p>
+</li>
+<li><p><em><strong>Technique 3: Commutative EVM Instructions.</strong></em> 我们已经讨论了两种方法。一种是在应用程序级别，通过引入与应用程序交互的特定方式来解决冲突。另一种是在智能合约层面上，通过向合约开发人员提供工具来避免冲突。第三种方法是通过使用具有更好的冲突容忍度的新指令来扩展协议，从而在虚拟机级别上解决冲突。</p>
+<p>  当以太坊虚拟机（EVM）执行增量操作时，它首先将存储条目的当前值加载到内存中（SLOAD），然后修改该值（ADD），最后将最终结果存储回存储条目中（SSTORE）。两个交易递增同一计数器将同时读取和写入同一存储条目，因此它们将发生冲突。</p>
+<p>  对于计数器增量，当前值仅用于计算新值，所以与其他读写冲突不同，增量是可交换的（commutative），即递增同一计数器但不使用其值的两个交易可以按任何顺序执行。然而，在 EVM 的当前语义下，这样的交易将发生冲突。</p>
+<p>  我们引入了特殊的语义，用于以不会导致冲突的方式执行增量。将增量编译成一条代表交换加法的 CADD 指令，而不是编译成 SSLOAD 和 SSTORE 指令。此指令以一个存储位置和一个值作为其参数。当虚拟机遇到 CADD 指令时，它不会立即执行加法，而是将此操作记录在内存临时存储器中。如果虚拟机遇到 SSTORE 操作，则会移除同一存储位置上挂起的 CADD 指令，因为它们已经被覆盖。如果虚拟机遇到 SLOAD 操作，它将首先在同一存储位置上执行所有挂起的 CADD 操作，然后将结果用于此 SLOAD。</p>
+<p>  在交易被执行之后，调度程序继续检查冲突。对同一存储位置的并发读取和写入构成冲突，但是如果两个交易在一个存储位置上只有 CADD 操作，而没有其他读取操作，则不认为它们有冲突。在这种情况下，这些 CADD 操作是在提交阶段是串行执行的。引入 CADD 指令以向 VM 发送交换操作的信号，使我们能够避免源自单个计数器上的主要交易冲突。</p>
+</li>
+</ul>
+<h2 id="5-OCC-WITH-DETERMINISTIC-ABORTS"><a href="#5-OCC-WITH-DETERMINISTIC-ABORTS" class="headerlink" title="5 OCC WITH DETERMINISTIC ABORTS"></a>5 OCC WITH DETERMINISTIC ABORTS</h2><h3 id="5-1-Incentives-in-Parallel-Scheduling"><a href="#5-1-Incentives-in-Parallel-Scheduling" class="headerlink" title="5.1 Incentives in Parallel Scheduling"></a>5.1 Incentives in Parallel Scheduling</h3><p>并行调度器的效率取决于各种因素，其中一些因素在用户的控制之下。因此，并行执行必须有一套激励措施，以最大限度地提高其有效性。这种激励制度的详细设计超出了本文的范围。</p>
+<p>基于 OCC 的并行执行不可避免地会导致一些事务中止和重新执行。如果允许用户在没有任何惩罚的情况下故意触发中止，就会导致调度器的 DoS 漏洞。因此，我们的目标是定义一个执行框架，允许调度器通过对交易的重新执行进行确定性定价。</p>
+<h3 id="5-2-Levels-of-Determinism"><a href="#5-2-Levels-of-Determinism" class="headerlink" title="5.2 Levels of Determinism"></a>5.2 Levels of Determinism</h3><p>因为交易的精确时间可能因节点而异，并行调度器在执行中引入了一定程度的非确定性。这与共识机制依赖于节点严格收敛到相同状态的要求直接冲突。因此区块链系统与传统算法相比，并行调度器必须保持更高水平的确定性。我们在乐观事务执行中定义了以下三个确定性级别：</p>
+<ol>
+<li><p><strong>Classic OCC</strong>： first-come-first-served 的执行方式。没有确定性保证，交易在执行完后立即提交，不考虑其在区块中的顺序，不同节点最终结果可能不一致。</p>
+</li>
+<li><p><strong>OCC with deterministic commit order</strong>：交易的提交操作会延迟到区块中前一个交易提交后。这意味着不同节点上的最终执行结果将是相等的，即使实际执行顺序可能不同。通过严格按照块交易顺序提交，或者根据依赖图进行调度，可以满足这一要求。</p>
+</li>
+<li><p><strong>OCC with deterministic aborts</strong>：交易只能看到在执行之前决定的状态版本（即使有更新的版本可用）。交易的每次执行都将在所有节点上提交或中止。虽然确定性顺序保证所有节点的可观察输出（结果状态）相同，但实际执行可能仍然不同：由于交易的时间不同，交易可能在一个节点上提交，而在另一个节点则中止。如果协议依赖于此提交&#x2F;中止决定来惩罚中止并避免 DoS 攻击，这将导致不同的状态。所以我们的目标是中止本身具有确定性：如果交易在一个节点上中止一次，那么在所有其他节点上也会中止一次。</p>
+</li>
+</ol>
+<h3 id="5-3-OCC-DA-OCC-with-Deterministic-Aborts"><a href="#5-3-OCC-DA-OCC-with-Deterministic-Aborts" class="headerlink" title="5.3 OCC-DA: OCC with Deterministic Aborts"></a>5.3 OCC-DA: OCC with Deterministic Aborts</h3><p>我们的执行模型基于快照隔离（snapshot isolation）的 OCC。交易被安排在一组线程上执行，已执行的交易是根据块交易顺序提交的。在执行开始时，每个交易都会接收对应于存储版本的快照，此快照在交易执行过程中不会更改。</p>
+<p>例如，假设交易 #1 已经被提交，交易 #2 正在一个线程上执行，而我们正在另一个线程调度交易 #3。在这种情况下，#3 可以看到存储版本 #1（直到并包括 #1 的写入的存储内容）。如果在 #3 的执行过程中，#2 修改了一些存储值，那么这些更新对 #3 来说是不可见的。如果在 #3 的提交期间，调度器检测到 #3 读取的一些值被 #2 同时修改，即 #3 对过时的值进行了操作，#3 将中止并被重新执行。</p>
+<p><strong>OCC-DA 定义如下</strong>：<br>在执行之前，我们为每个交易的每次执行分配一个存储版本（storage version）：<code>(𝑡𝑥𝑛,𝑖) → 𝑠𝑣𝑛,𝑖</code>。<code>(𝑡𝑥𝑛,𝑖)</code> 代表 𝑖 次执行交易 #n，其中 𝑖 &#x3D; 0, 1, 2, … 根据调度程序的实现，交易可以执行两次或多次。最后一次执行必须提交，而之前的所有执行都将中止。对于在执行单元中（例如在块中）的所有交易 #n 的所有可能的执行，<code>𝑠𝑣𝑛,𝑖</code> 在所有节点上统一定义，并且在执行之前进行定义，从而不受不确定性的执行影响。对于任何 <code>(𝑡𝑥𝑛,𝑖)</code>, 交易 #n 将在所有节点上中止或提交。</p>
+<p>在 <code>(𝑡𝑥𝑛,𝑖)</code> 执行过程中, 调度程序必须允许交易访问 <code>𝑠𝑣𝑛,𝑖</code> 之前且包括此交易写入的存储条目。调度程序不得允许交易访问由 id 高于 <code>𝑠𝑣𝑛,𝑖</code> 的交易写入的存储条目。如果 <code>𝑠𝑣𝑛,𝑖</code> 尚未提交，交易无法开始执行，必须等待。</p>
+<h3 id="5-4-Example"><a href="#5-4-Example" class="headerlink" title="5.4 Example"></a>5.4 Example</h3><p>有 4 笔交易，标记为 #1 到 #4。#1 和 #3 存在存储冲突：#1 写入由 #3 读取的存储条目。然后，让我们在不同的决定论保证下，在两个不同的节点上调度这四个交易，每个节点有2个线程。</p>
+<p><img src="/Taming-Conflicts/3.png" srcset="/img/loading.gif" lazyload alt="三个级别"></p>
+<ul>
+<li><p>左图是使用经典 OCC 的调度示例。这种方法没有确定性的保证。特别地，我们可以看到节点 A 上的提交顺序是 #1-#2-#3-#4，而节点B上是 #3-#2-#1-#4。两个冲突交易的不同相对顺序（#1-#3，#3-#1）可能导致两个节点的状态不一致。虽然 #1 和 #3 冲突，但在本例中，它们不是同时执行的，因此都不需要中止。</p>
+</li>
+<li><p>中间的图中，我们看到了一个具有确定性提交顺序的 OCC 示例。在节点 B 上，#3 在 #1 之前完成执行，此时检测到冲突并中止 #3，直到 #1 完成之后才提交。节点 A 和 B 上的最终提交顺序是 #1-#2-#3-#4。由于 #1 和 #3 在两个节点上执行的相对顺序不同，#3 的第一次执行在节点 A 上提交，而在节点 B 上中止。在分布式共识中，这种不确定性是不可接受的。</p>
+</li>
+<li><p>右图显示了 OCC-DA 的工作原理。在执行之前，所有节点都决定 #3 的第一次执行只能读取 #1 执行之前的状态 (<code>𝑠𝑣3,0 := 0</code>)，而第二次执行可以看到 #2 之后的状态 (<code>𝑠𝑣3,1 := 2</code>)。因此，即使在节点 A 中 #3 被安排的 #1 之后，它无法获得 #1 的写入并将中止。这与节点 B 上 #3 与 #1 同时执行的结果一致。第二次执行 #3 将在节点 A 和 B 上获得最新状态，因此它将在两个节点上提交。</p>
+</li>
+</ul>
+<h3 id="5-5-Assigning-Storage-Versions"><a href="#5-5-Assigning-Storage-Versions" class="headerlink" title="5.5 Assigning Storage Versions"></a>5.5 Assigning Storage Versions</h3><p>依赖两种信息：</p>
+<ul>
+<li>首先，我们可以使用交易的预期执行时间来查找交易预期读取的最新存储版本。假如 #3 将在 #1 之后但在 #2 之前开始执行，我们设置 <code>𝑠𝑣3,0 := 1</code>。</li>
+<li>其次，我们通过对事务依赖关系图的估计来允许预防中止。例如，如果我们猜测 #3 可能与 #1 冲突，那么我们可以设置 <code>𝑠𝑣3,0 &gt;= 1</code>。</li>
+</ul>
+<p>存储版本分配的准确性直接影响并行调度程序的性能：如果我们使用的存储版本太低，那么我们就有可能引入更多的中止。如果我们使用的存储版本太高，那么交易可能需要一直等待存储版本可用，从而导致线程利用率不足。</p>
+<h3 id="5-6-The-Algorithm"><a href="#5-6-The-Algorithm" class="headerlink" title="5.6 The Algorithm"></a>5.6 The Algorithm</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs Algorithm">Input: Transactions 𝑇, gas 𝐺𝑎𝑠, number of threads 𝑡, none or a dependency graph 𝐷<br><br>𝐻𝑡𝑥𝑠 ← an empty minheap of (𝑠𝑣, 𝑖𝑑) ;<br>for 𝑖𝑑 ∈ [0, |𝑇|) do<br>    if 𝐷 exists then<br>        𝑖𝑑𝑚𝑎𝑥 ← −1 ;<br>        for edge (𝑖𝑑, 𝑖𝑑𝑝𝑟𝑒𝑣) ∈ 𝐷 do<br>            //tx_𝑖𝑑 depends on tx_𝑖𝑑𝑝𝑟𝑒𝑣<br>            //tx_𝑖𝑑 reads what tx_𝑖𝑑𝑝𝑟𝑒𝑣 writes<br>            𝑖𝑑𝑚𝑎𝑥 ← 𝑚𝑎𝑥(𝑖𝑑𝑚𝑎𝑥, 𝑖𝑑𝑝𝑟𝑒𝑣) ;<br>        𝐻𝑡𝑥𝑠.𝑝𝑢𝑠ℎ((𝑖𝑑𝑚𝑎𝑥, 𝑖𝑑)) ;<br>    else<br>        𝐻𝑡𝑥𝑠.𝑝𝑢𝑠ℎ((−1, 𝑖𝑑)) ;<br><br>𝐻𝑟𝑒𝑎𝑑𝑦 ← an empty minheap of (𝑖𝑑, 𝑠𝑣) ;<br>𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠 ← an empty minheap of (𝑔𝑎𝑠, 𝑖𝑑, 𝑠𝑣) ;<br>𝐻𝑐𝑜𝑚𝑚𝑖𝑡 ← an empty minheap of (𝑖𝑑, 𝑠𝑣) ;<br>𝑛𝑒𝑥𝑡 ← 0 ;<br><br>while 𝑛𝑒𝑥𝑡 &lt; |𝑇| do<br>    //Stage 1 : Schedule<br>    for (𝑠𝑣, 𝑖𝑑) ← 𝐻𝑡𝑥𝑠.𝑝𝑜𝑝() do<br>        if 𝑠𝑣 &gt; 𝑛𝑒𝑥𝑡 − 1 then<br>            𝐻𝑡𝑥𝑠.𝑝𝑢𝑠ℎ((𝑠𝑣, 𝑖𝑑)) ;<br>            break<br>        else<br>            𝐻𝑟𝑒𝑎𝑑𝑦.𝑝𝑢𝑠ℎ((𝑖𝑑, 𝑠𝑣)) ;<br>    while |𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠| &lt; 𝑝𝑜𝑜𝑙_𝑠𝑖𝑧𝑒 and |𝐻𝑟𝑒𝑎𝑑𝑦| &gt; 0 do<br>        (𝑖𝑑, 𝑠𝑣) ← 𝐻𝑟𝑒𝑎𝑑𝑦.𝑝𝑜𝑝 () ;<br>        𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠.𝑝𝑢𝑠ℎ((𝐺𝑎𝑠[𝑖𝑑], 𝑖𝑑, 𝑠𝑣)) ;<br>    //Stage 2 : Execution<br>    if |𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠| &gt; 0 then<br>        (𝑔𝑎𝑠, 𝑖𝑑, 𝑠𝑣) ← 𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠.𝑝𝑜𝑝 () ;<br>        𝐻𝑐𝑜𝑚𝑚𝑖𝑡 ← (𝑖𝑑, 𝑠𝑣) ;<br>        for 𝑖 ∈ [0, |𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠|) do<br>            𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠[𝑖].𝑔𝑎𝑠 ← 𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠[𝑖].𝑔𝑎𝑠 − 𝑔𝑎𝑠 ;<br>    //Stage 3 : Commit/Abort<br>    while |𝐻𝑐𝑜𝑚𝑚𝑖𝑡| &gt; 0 do<br>        (𝑖𝑑, 𝑠𝑣) ← 𝐻𝑐𝑜𝑚𝑚𝑖𝑡.𝑝𝑜𝑝() ;<br>        if 𝑖𝑑 ≠ 𝑛𝑒𝑥𝑡 then<br>            𝐻𝑐𝑜𝑚𝑚𝑖𝑡.𝑝𝑢𝑠ℎ((𝑖𝑑, 𝑠𝑣)) ;<br>            break<br>        for 𝑖𝑑𝑝𝑟𝑒𝑣 ∈ [𝑠𝑣 + 1, 𝑖𝑑 − 1] do<br>            if tx_𝑖𝑑𝑝𝑟𝑒𝑣’s write set ∩ tx_𝑖𝑑’s read set ≠ ∅ then<br>                get Aborted ;<br>                break<br>        if Aborted then<br>            𝐻𝑡𝑥𝑠.𝑝𝑢𝑠ℎ((𝑖𝑑 − 1, 𝑖𝑑)) ;<br>        else<br>            //Commit successfully<br>            𝑛𝑒𝑥𝑡 ← 𝑛𝑒𝑥𝑡 + 1 ;<br>return<br></code></pre></td></tr></table></figure>
+
+<p>该算法将一组交易及其依赖项作为输入。依赖图可以通过估计每个交易的读写集来构建。估计不一定是完美的，但它需要在所有区块链节点上具有确定性和一致性。它越精确，我们可能遇到的不必要中断就越少。</p>
+<p>根据依赖关系图，每个交易的存储版本被初始化为它所依赖交易的最大 id，如果没有依赖关系，则为 −1。交易被加入最小堆 𝐻𝑡𝑥𝑠 并按存储版本索引。还有另外三个最小堆：𝐻𝑟𝑒𝑎𝑑𝑦 维护准备好被调度的交易，𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠 是用于执行交易的线程池，𝐻𝑐𝑜𝑚𝑚𝑖𝑡 用于已完成执行并等待提交的交易。全局变量 𝑛𝑒𝑥𝑡 维护下一个要提交交易的 id。接下来：</p>
+<ul>
+<li><p><strong>Stage 1</strong>：将交易调度到线程池中。当与其存储版本对应的交易已提交时，我们认为该交易已准备好执行。如果线程池有空槽，交易将被推入线程池。</p>
+</li>
+<li><p><strong>Stage 2</strong>：线程池中交易的执行。我们选择剩余 gas 最少的交易，即是 𝐻𝑡ℎ𝑟𝑒𝑎𝑑𝑠 的顶部元素，把它推入 𝐻𝑐𝑜𝑚𝑚𝑖𝑡。</p>
+</li>
+<li><p><strong>Stage 3</strong>：逐个尝试提交在 𝐻𝑐𝑜𝑚𝑚𝑖𝑡 中的交易。𝐻𝑐𝑜𝑚𝑚𝑖𝑡 中的交易按照 id 的顺序进行维护，因为我们总是按顺序提交。对于每个交易，算法通过检查当前交易和自开始执行以来提交的交易之间是否存在读写冲突来判断中止或提交。如果中止，交易将被推回到 𝐻𝑡𝑥𝑠 其新存储版本设置为 𝑖𝑑 − 1。</p>
+</li>
+</ul>
+<h2 id="6-EVALUATION"><a href="#6-EVALUATION" class="headerlink" title="6 EVALUATION"></a>6 EVALUATION</h2><h3 id="6-1-Experimental-Setup"><a href="#6-1-Experimental-Setup" class="headerlink" title="6.1 Experimental Setup"></a>6.1 Experimental Setup</h3><p>我们首先构建交易的依赖图，其中顶点（对应于交易）由消耗的 gas 加权。然后我们模拟在一组线程（2、4、8、16、32）上调度事务。</p>
+<h3 id="6-2-Assumptions-and-Limitations"><a href="#6-2-Assumptions-and-Limitations" class="headerlink" title="6.2 Assumptions and Limitations"></a>6.2 Assumptions and Limitations</h3><p>我们的评估是基于使用真实数据的模拟，而不是基于在真实区块链系统中的实现。</p>
+<h3 id="6-3-Evaluation-Results"><a href="#6-3-Evaluation-Results" class="headerlink" title="6.3 Evaluation Results"></a>6.3 Evaluation Results</h3><p>略</p>
+<h2 id="7-THREATS-TO-VALIDITY"><a href="#7-THREATS-TO-VALIDITY" class="headerlink" title="7 THREATS TO VALIDITY"></a>7 THREATS TO VALIDITY</h2><p>略</p>
+<h2 id="8-RELEVANCE-AND-FUTURE-WORK"><a href="#8-RELEVANCE-AND-FUTURE-WORK" class="headerlink" title="8 RELEVANCE AND FUTURE WORK"></a>8 RELEVANCE AND FUTURE WORK</h2><p>略</p>
+<h2 id="9-RELATED-WORK"><a href="#9-RELATED-WORK" class="headerlink" title="9 RELATED WORK"></a>9 RELATED WORK</h2><p>略</p>
+<h2 id="10-CONCLUSION"><a href="#10-CONCLUSION" class="headerlink" title="10 CONCLUSION"></a>10 CONCLUSION</h2><p>略</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" class="category-chain-item">论文阅读</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts</div>
+      <div>https://qanlyma.github.io/Taming-Conflicts/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月30日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「训」 笔记(7)：分布式理论</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探">
+                        <span class="hidden-mobile">「训」 笔记(6)：架构初探</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="论文阅读"
+        id="heading-7545c85b0df88485ddabffad9bb45965" role="tab" data-toggle="collapse" href="#collapse-7545c85b0df88485ddabffad9bb45965"
+        aria-expanded="true"
+      >
+        论文阅读
+        <span class="list-group-count">(4)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-7545c85b0df88485ddabffad9bb45965"
+           role="tabpanel" aria-labelledby="heading-7545c85b0df88485ddabffad9bb45965">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Fast-Fabric/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Hyperledger-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Optimizing-Fabric/" title="「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Taming-Conflicts/" title="「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

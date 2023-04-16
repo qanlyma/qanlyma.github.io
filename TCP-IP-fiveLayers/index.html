@@ -1,0 +1,759 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基本协议，也是国际互联网络的基础。TCP&#x2F;IP 是一个协议族，包括多个网络协议，定义了计算机操作系统如何连入互联网，以及数据传输的标准。它是为了解决不同系统的计算机之间的传输通信而提出的一个标准，不同系统的计算机采">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「研」 TCP&#x2F;IP 分层结构">
+<meta property="og:url" content="https://qanlyma.github.io/TCP-IP-fiveLayers/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基本协议，也是国际互联网络的基础。TCP&#x2F;IP 是一个协议族，包括多个网络协议，定义了计算机操作系统如何连入互联网，以及数据传输的标准。它是为了解决不同系统的计算机之间的传输通信而提出的一个标准，不同系统的计算机采">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/3.png">
+<meta property="article:published_time" content="2023-02-26T03:35:36.000Z">
+<meta property="article:modified_time" content="2023-04-16T01:44:21.452Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/TCP-IP-fiveLayers/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「研」 TCP/IP 分层结构 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「研」 TCP/IP 分层结构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-02-26 11:35" pubdate>
+          2023年2月26日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「研」 TCP/IP 分层结构</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：13 分钟前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基本协议，也是国际互联网络的基础。TCP&#x2F;IP 是一个协议族，包括多个网络协议，定义了计算机操作系统如何连入互联网，以及数据传输的标准。它是为了解决不同系统的计算机之间的传输通信而提出的一个标准，不同系统的计算机采用了同一种协议后，就能相互通信，从而能够建立网络连接，实现资源共享和网络通信。</p>
+<span id="more"></span>
+
+<h2 id="TCP-x2F-IP-的分层结构"><a href="#TCP-x2F-IP-的分层结构" class="headerlink" title="TCP&#x2F;IP 的分层结构"></a>TCP&#x2F;IP 的分层结构</h2><p>目前对计算机网络的分层方式一共有三种：1.OSI 七层模型；2.五层模型；3.TCP&#x2F;IP 四层模型</p>
+<p>OSI 是一种理论模型，实现起来过分复杂，而且运行效率低。OSI 先有模型，后有协议，先有标准，后进行实践，而 TCP&#x2F;IP 则相反。TCI&#x2F;IP 已经被广泛使用，成为网络互连实际上的标准。而五层模型一般只出现在计算机网络学习教学过程中，是对七层模型和四层模型的一个折中。</p>
+<p><img src="/TCP-IP-fiveLayers/1.png" srcset="/img/loading.gif" lazyload alt="三种模型"></p>
+<ul>
+<li><strong>应用层</strong>：包含所有的高层协议，比如 Telnet（Telecommunications Network，远程登录协议）、FTP、SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）、DNS（Domain Name Service，域名服务）、NNTP（Net News Transfer Protocol，网络新闻传输协议）和 HTTP 等。Telnet 允许一台机器上的用户登录远程机器进行工作，FTP 提供将文件从一台机器上移到另一台机器上的有效方法，SMTP用于电子邮件的收发，DNS 用于把主机名映射到网络地址，NNTP 用于新闻的发布、检索和获取，HTTP 用于在 WWW 上获取主页。</li>
+<li><strong>传输层</strong>：著名的 TCP 和 UDP（User Datagram Protocol，用户数据报协议）就在这一层。TCP 是面向连接的协议，它提供可靠的报文传输和对上层应用的连接服务。为此，除了基本的数据传输外，它还有可靠性保证、流量控制、多路复用、优先权和安全性控制等功能。UDP 是面向无连接的不可靠传输协议，主要用于不需要 TCP 的排序和流量控制等功能的应用程序。</li>
+<li><strong>网络层</strong>：该层是整个 TCP&#x2F;IP 体系结构的关键部分，其功能是使主机可以把数据报（Packet，或称为分组）发往任何网络，并使分组独立地传向目标。这些分组经由不同的网络到达的顺序和发送的顺序可能不同。网络层使用的协议有 IP。</li>
+<li><strong>数据链路层</strong>：该层是整个体系结构的基础部分，负责接收 IP 层的 IP 数据报，通过网络向外发送，或接收从网络上来的物理帧，抽出 IP 数据报，向 IP 层发送。该层是主机与网络的实际连接层。数据链路层下面就是实体线路（比如以太网络、光纤网络等）。数据链路层有以太网、令牌环网等标准，负责网卡设备的驱动、帧同步（从网线上检测到什么信号算作新帧的开始）、冲突检测（如果检测到冲突就自动重发）、数据差错校验等工作。交换机可以在不同的数据链路层的网络之间（比如十兆以太网和百兆以太网之间、以太网和令牌环网之间）转发数据帧，由于不同数据链路层的帧格式不同，交换机要将进来的数据报拆掉报头重新封装之后再转发。</li>
+</ul>
+<p>不同的协议层对数据报有不同的称谓，在传输层叫作段（Segment），在网络层叫作数据报（Datagram），在数据链路层叫作帧（Frame）。数据封装成帧后发送到传输介质上，到达目的主机后，每层协议再剥掉相应的报头，最后将应用层数据交给应用程序处理。</p>
+<p><img src="/TCP-IP-fiveLayers/2.png" srcset="/img/loading.gif" lazyload alt="数据封装"></p>
+<h2 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h2><p>以浏览某个网页为例，看一下浏览网页的过程中 TCP&#x2F;IP 各层做了哪些工作。</p>
+<p>发送方：</p>
+<ol>
+<li>打开浏览器，输入网址 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 按回车键来访问网页，其实就是访问 Web 服务器上的网页，在应用层采用的协议是 HTTP，浏览器将网址等信息组成 HTTP 数据，并将数据传送给传输层。</li>
+<li>传输层在数据前面加上 TCP 报头，并标记端口为 80（Web 服务器的默认端口），将这个数据段给了网络层。</li>
+<li>网络层在这个数据段前面加上自己机器的 IP 和目的 IP，这时该段被称为 IP 数据报，然后将这个 IP 数据报给了数据链路层。</li>
+<li>数据链路层先在 IP 数据报前面加上自己机器的 MAC 地址以及目的 MAC 地址，加上 MAC 地址的数据称为帧，然后通过物理网卡把这个帧以比特流的方式发送到网络上。</li>
+</ol>
+<p>互联网上有路由器，它会读取比特流中的 IP 地址进行路由操作，到达正确的网段后，这个网段的交换机读取比特流中的 MAC 地址，从而找到要接收的对应机器。</p>
+<p>接收方：</p>
+<ol>
+<li>数据链路层用网卡接收到了比特流，读取比特流中的帧，将帧中的 MAC 地址去掉，就成了 IP 数据报，传递给网络层。</li>
+<li>网络层接收下层传来的 IP 数据报，将 IP 从包的前面拿掉，取出带有 TCP 的数据（数据段）交给传输层。</li>
+<li>传输层拿到了这个数据段，看到 TCP 标记的端口是 80，说明应用层协议是 HTTP，之后将 TCP 头去掉并将数据交给应用层，告诉应用层对方请求的是 HTTP 数据。</li>
+<li>应用层得知发送方请求的是 HTTP 数据，因此调用 Web 服务器程序把 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 的首页文件发送回去。</li>
+</ol>
+<p>如果两台计算机位于不同的网段中，那么数据从一台计算机到另一台计算机传输的过程中要经过一个或多个路由器，如下图所示。</p>
+<p><img src="/TCP-IP-fiveLayers/3.png" srcset="/img/loading.gif" lazyload alt="例子"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%90%86%E8%AE%BA%E7%A0%94%E7%A9%B6/" class="category-chain-item">理论研究</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「研」 TCP/IP 分层结构</div>
+      <div>https://qanlyma.github.io/TCP-IP-fiveLayers/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年2月26日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/TCP-IP-handshake/" title="「研」 TCP 与 TLS/SSL">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「研」 TCP 与 TLS/SSL</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Hyperledger-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains">
+                        <span class="hidden-mobile">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="理论研究"
+        id="heading-8d98e6af91d447f6b771495a010cfe63" role="tab" data-toggle="collapse" href="#collapse-8d98e6af91d447f6b771495a010cfe63"
+        aria-expanded="true"
+      >
+        理论研究
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-8d98e6af91d447f6b771495a010cfe63"
+           role="tabpanel" aria-labelledby="heading-8d98e6af91d447f6b771495a010cfe63">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/QUIC/" title="「研」 QUIC 协议理解"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 QUIC 协议理解</span>
+        </a>
+      
+    
+      
+      
+        <a href="/TCP-IP-handshake/" title="「研」 TCP 与 TLS/SSL"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 TCP 与 TLS/SSL</span>
+        </a>
+      
+    
+      
+      
+        <a href="/TCP-IP-fiveLayers/" title="「研」 TCP/IP 分层结构"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「研」 TCP/IP 分层结构</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Block/" title="「研」 以太坊区块结构和数据存储"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 以太坊区块结构和数据存储</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Blockchain-scalability/" title="「研」 区块链扩容调研"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 区块链扩容调研</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
