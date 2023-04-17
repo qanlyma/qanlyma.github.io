@@ -64,14 +64,14 @@ banner_img:
 
 **简单方案**：
 
-  * 直接指定 ip:port？
+  * 直接指定 ip:port
 
     ![Hardcode](5.png)
 
     * 没有任何动态能力
     * 有多个实例下游实例怎么办？
 
-  * 使用 DNS？
+  * 使用 DNS
 
     ![DNS](6.png)
 
