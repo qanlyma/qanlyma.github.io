@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/8.png">
 <meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/9.png">
 <meta property="article:published_time" content="2023-03-26T05:33:23.000Z">
-<meta property="article:modified_time" content="2023-04-13T13:42:33.424Z">
+<meta property="article:modified_time" content="2023-04-18T10:13:02.881Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Fast-Fabric/1.png">
@@ -267,7 +267,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 天前
+                    本文最后更新于：2 小时前
                   
                 
               </p>
@@ -301,7 +301,7 @@
 <p>  当排序节点收到交易提案时，它会检查客户端是否有权提交交易。如果通过，排序节点将交易提案发布到 Kafka cluster，其中每个 Fabric 通道都映射到一个 Kafka topic，以创建相应的不可变的交易序列顺序。然后，每个排序节点根据每个块允许的最大交易数或超时时间，将从 Kafka 接收的交易组装成块，签名并使用 gRPC 将块传递给节点。</p>
 </li>
 <li><p><em>Peer</em></p>
-<p>  在接收到来自排序服务的消息时，对等节点首先对块的头和元数据进行解码，并检查其语法结构。然后验证创建此块的排序节点的签名是否符合指定的策略。未通过这些测试的块将立即被丢弃。初始验证之后，区块被加入队列，从而保证其被添加到区块链中。之后块会依次经过两个验证步骤和一个提交步骤。</p>
+<p>  在接收到来自排序服务的消息时，对等节点首先对块的头和元数据进行解码，并检查其语法结构，然后验证创建此块的排序节点的签名。未通过这些测试的块将立即被丢弃。初始验证之后，区块被加入队列，从而保证其被添加到区块链中。之后块会依次经过两个验证步骤和一个提交步骤。</p>
 <p>  在第一个验证步骤中，对块中的所有交易进行解码，检查它们的语法并验证它们的背书集。未通过的交易被标记为无效，但保留在块中。这一步使得恶意交易被排除。</p>
 <p>  在第二个验证步骤中，节点确保有效交易间的相互作用不会导致无效的世界状态。回想一下，每一笔交易都携带一组需要从世界状态数据库读取的键（读集）和一组将写入数据库的键和值（写集），以及背书节点记录的版本号。在第二个验证步骤中，交易读写集中的每个键都必须具有相同的版本号。这样可以防止双重支付。</p>
 <p>  在最后一步中，对等节点将块写入文件系统，该块现在包含交易的验证标志。根据应用程序的配置，键值（即世界状态）将持久化在 LevelDB 或 CouchDB 中。每个块及其交易的索引都存储在 LevelDB 中，以加快数据访问速度。</p>
@@ -329,14 +329,14 @@
 </ul>
 <p>我们的目标是在交易流的关键路径上最大限度地提高吞吐量。为此，我们进行了调用图分析，以确定性能瓶颈。<strong>首先</strong>，交易读写集的验证需要快速访问世界状态。因此，我们可以通过使用内存中的哈希表而不是数据库来加快这一过程。<strong>其次</strong>，交易流不需要区块链日志，因此我们可以推迟到交易流结束时将其存储到专用存储和数据分析服务器。<strong>第三</strong>，如果节点是背书节点，则需要处理新的交易提案。然而，提交者和背书者的角色是不同的，因此可以为每个任务分配不同的物理硬件。<strong>第四</strong>，传入的块和交易必须在节点进行验证和解析。最重要的是，通过交易写集对状态更改的验证必须按顺序进行，这会阻止所有其他任务。因此，尽可能加快这项操作是很重要的。<strong>最后</strong>，通过缓存块的 Protocol Buffers 解码的结果，可以获得显著的性能增益。</p>
 <p><img src="/Fast-Fabric/2.png" srcset="/img/loading.gif" lazyload alt="New peer architecture"></p>
-<h3 id="E-Peer-improvement-I-Replacing-the-world-state-database-with-a-hash-table"><a href="#E-Peer-improvement-I-Replacing-the-world-state-database-with-a-hash-table" class="headerlink" title="E. Peer improvement I: Replacing the world state database with a hash table"></a>E. Peer improvement I: Replacing the world state database with a hash table</h3><p>我们认为，对于常见的情况，例如跟踪钱包或账本上的资产，世界状态相对较小。即使需要存储数十亿个键值，大多数服务器也可以很容易地将它们保存在内存中。因此，我们建议使用内存中的哈希表来存储世界状态，而不是 LevelDB&#x2F;CouchDB。这消除了在更新世界状态时对硬盘的访问。它还消除了昂贵的数据库系统保证（即 ACID 属性），因为区块链本身的冗余保证是不必要的，进一步提高了性能。由于使用易失性内存，这种替换容易受到节点故障的影响，因此必须通过稳定存储来增强内存哈希表。</p>
-<h3 id="F-Peer-improvement-II-Store-blocks-using-a-peer-cluster"><a href="#F-Peer-improvement-II-Store-blocks-using-a-peer-cluster" class="headerlink" title="F. Peer improvement II: Store blocks using a peer cluster"></a>F. Peer improvement II: Store blocks using a peer cluster</h3><p>根据定义，区块是不可变的。这使它们非常适合追加式数据存储。通过将数据存储与节点的其余任务分离，我们可以设想许多类型的数据存储用于区块和世界状态备份，包括单个服务器将区块和世界状态备份存储在其文件系统中，就像 Fabric 目前所做的那样；也可以使用数据库或键值存储，例如 LevelDB 或 CouchDB。为了最大限度地扩展，我们建议使用分布式存储集群。请注意，使用此解决方案，每个存储服务器仅包含链的一部分，这促使使用分布式数据处理工具，如 Hadoop MapReduce 或 Spark5。</p>
+<h3 id="E-Peer-improvement-I-Replacing-the-world-state-database-with-a-hash-table"><a href="#E-Peer-improvement-I-Replacing-the-world-state-database-with-a-hash-table" class="headerlink" title="E. Peer improvement I: Replacing the world state database with a hash table"></a>E. Peer improvement I: Replacing the world state database with a hash table</h3><p>我们认为，对于常见的情况，例如跟踪钱包或账本上的资产，世界状态相对较小。即使需要存储数十亿个键值，大多数服务器也可以很容易地将它们保存在内存中。因此，我们建议使用内存中的哈希表来存储世界状态，而不是 LevelDB&#x2F;CouchDB。这消除了在更新世界状态时对硬盘的访问，还消除了由于区块链本身的冗余保证而不必要的昂贵的数据库系统保证（即，ACID属性），进一步提高了性能。当然，由于使用易失性存储器，这种替换易受节点故障的影响，因此必须通过稳定存储来增强内存中的哈希表。</p>
+<h3 id="F-Peer-improvement-II-Store-blocks-using-a-peer-cluster"><a href="#F-Peer-improvement-II-Store-blocks-using-a-peer-cluster" class="headerlink" title="F. Peer improvement II: Store blocks using a peer cluster"></a>F. Peer improvement II: Store blocks using a peer cluster</h3><p>根据定义，区块是不可变的。这使它们非常适合追加式数据存储。通过将数据存储与节点的其余任务分离，我们可以设想许多类型的数据存储用于区块和世界状态备份，包括单个服务器将区块和世界状态备份存储在其文件系统中，就像 Fabric 目前所做的那样；也可以使用数据库或键值存储，例如 LevelDB 或 CouchDB。为了最大限度地扩展，我们建议使用分布式存储集群。此解决方案中每个存储服务器仅包含链的一部分，可以使用分布式数据处理工具，如 Hadoop MapReduce 或 Spark5。</p>
 <h3 id="G-Peer-improvement-III-Separate-commitment-and-endorsement"><a href="#G-Peer-improvement-III-Separate-commitment-and-endorsement" class="headerlink" title="G. Peer improvement III: Separate commitment and endorsement"></a>G. Peer improvement III: Separate commitment and endorsement</h3><p>在 Fabric 1.2 中，背书节点也负责提交区块。背书是一个昂贵的操作，提交也是如此。虽然在背书节点集群上的并发事务处理会提高性能，但在每个新节点上重复提交的额外工作实际上抵消了这些好处。因此，我们建议拆分这些角色。</p>
 <p>在我们的设计中，提交节点执行验证流程，然后将已验证的区块发送到一个背书节点集群，这些节点仅将更改应用于其世界状态而不进行验证。这一步骤允许我们释放节点上的资源。这样的背书节点集群可以通过只将节点的背书角色分离到专用硬件上以满足需求。该集群中的服务器并不相当于 Fabric 1.2 中完整的背书节点。</p>
 <h3 id="H-Peer-improvement-IV-Parallelize-validation"><a href="#H-Peer-improvement-IV-Parallelize-validation" class="headerlink" title="H. Peer improvement IV: Parallelize validation"></a>H. Peer improvement IV: Parallelize validation</h3><p>区块和交易头验证都包括检查发送方的权限、背书策略和语法验证，具有高度可并行性。我们通过引入完整的验证流水线来扩展 Fabric 1.2 的并发性能。</p>
 <p>具体而言，对于每个传入的区块，分配一个 go-routine 来引导其通过区块验证阶段。随后，这些 go-routines 中的每一个都利用 Fabric 1.2 中已经存在的用于交易验证的 go-routine 池。因此，在任何给定时间，多个区块及其交易都可以并行地进行有效性检查。最后，所有<strong>读写集合按正确顺序由单个 go-routine 顺序验证</strong>。这使我们能够充分利用多核服务器 CPU 的潜力。</p>
-<h3 id="I-Peer-improvement-V-Cache-unmarshaled-blocks"><a href="#I-Peer-improvement-V-Cache-unmarshaled-blocks" class="headerlink" title="I. Peer improvement V: Cache unmarshaled blocks"></a>I. Peer improvement V: Cache unmarshaled blocks</h3><p>Fabric 在网络节点之间使用 gRPC 进行通信。为了准备数据进行传输，使用 Protocol Buffers 进行序列化。为了能够处理应用程序和软件随着时间的推移进行的升级，Fabric 的区块结构高度分层，每个层都分别进行编组和解组。这导致大量内存被分配用于将字节数组转换为数据结构。此外，Fabric 1.2 不会在缓存中存储先前未解组的数据，因此每当需要数据时就必须重新进行此操作。</p>
-<p>为了缓解这个问题，我们提出了一个临时的未解组数据缓存。在验证流水线中，块被存储在缓存中，并在需要时按块编号检索。一旦块的任何部分变得未解组，它就与块一起存储以供重用。我们将其实现为一个循环缓冲区，大小与验证流水线相同。每当提交一个块时，就可以接受一个新块到管道中，并自动覆盖已提交块的现有缓存位置。由于在提交后不需要缓存，并且保证新块仅在旧块离开管道后才到达，因此这是一个安全的操作。请注意，解组仅向缓存添加数据，它从不更改数据。因此，在验证流水线中可以为所有 go-routines 提供无锁访问。在最坏的情况下，多个 go-routines 尝试访问相同的（但尚未解组的）数据，并且所有 go-routines 并行执行解组。然后，缓存的最后写入获胜，这不是问题，因为结果在任何情况下都是相同的。</p>
+<h3 id="I-Peer-improvement-V-Cache-unmarshaled-blocks"><a href="#I-Peer-improvement-V-Cache-unmarshaled-blocks" class="headerlink" title="I. Peer improvement V: Cache unmarshaled blocks"></a>I. Peer improvement V: Cache unmarshaled blocks</h3><p>Fabric 在网络节点之间使用 gRPC 进行通信。为了准备数据进行传输，使用 Protocol Buffers 进行序列化。为了能够处理应用程序和软件随着时间的推移进行的升级，Fabric 的区块结构高度分层，每个层都分别进行序列化和反序列化。这导致大量内存被分配用于将字节数组转换为数据结构。此外，Fabric 1.2 不会在缓存中存储先前解析的数据，因此每当需要数据时就必须重新进行此操作。</p>
+<p>为了优化这个问题，我们计划用一个临时的缓存来存放解析的数据。验证流水线中区块被存储在缓存中，并在需要时按块编号检索。一旦块的任何部分被解析，它就与块一起存储以供重用。我们将其实现为一个循环缓冲区，大小与验证流水线相同。每当提交一个块时，就可以接受一个新块到管道中，并自动覆盖已提交块的缓存位置。由于在提交后不需要缓存，并且保证新块仅在旧块离开管道后才到达，因此这是一个安全的操作。解组仅向缓存添加数据，它从不更改数据，所以在验证流水线中可以为所有 go-routines 提供无锁访问。在最坏的情况下，多个 go-routines 尝试访问相同的（但尚未解析的）数据，并且所有 go-routines 并行执行解析操作，缓存的最后写入获胜。这是没有问题的，因为大家执行结果都是相同的。</p>
 <h2 id="IV-RESULTS"><a href="#IV-RESULTS" class="headerlink" title="IV. RESULTS"></a>IV. RESULTS</h2><p>实验配置略。</p>
 <h3 id="A-Block-transfer-via-gRPC"><a href="#A-Block-transfer-via-gRPC" class="headerlink" title="A. Block transfer via gRPC"></a>A. Block transfer via gRPC</h3><p>我们预先创建了包含不同数量交易的有效块，通过 Fabric gRPC 接口将它们从一个 orderer 发送到 peer，然后立即丢弃它们。</p>
 <p><img src="/Fast-Fabric/3.png" srcset="/img/loading.gif" lazyload alt="Throughput via gRPC for different block sizes"></p>
