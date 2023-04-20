@@ -19,24 +19,24 @@
     <meta name="description" content="本文重新构建了 Hyperledger Fabric，减少事务排序和验证期间的计算和 I&#x2F;O 开销，从而大大提高吞吐量，将交易吞吐量从每秒 3000 笔提高到 20000 笔。值得注意的是，本文的优化是即插即用的，不需要对 Fabric 进行任何接口更改。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second">
-<meta property="og:url" content="https://qanlyma.github.io/Fast-Fabric/index.html">
+<meta property="og:url" content="https://qanlyma.github.io/Fabric-Fast/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="本文重新构建了 Hyperledger Fabric，减少事务排序和验证期间的计算和 I&#x2F;O 开销，从而大大提高吞吐量，将交易吞吐量从每秒 3000 笔提高到 20000 笔。值得注意的是，本文的优化是即插即用的，不需要对 Fabric 进行任何接口更改。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/5.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/6.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/7.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/8.png">
-<meta property="og:image" content="https://qanlyma.github.io/Fast-Fabric/9.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/8.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Fast/9.png">
 <meta property="article:published_time" content="2023-03-26T05:33:23.000Z">
 <meta property="article:modified_time" content="2023-04-18T10:13:02.881Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/Fast-Fabric/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/Fabric-Fast/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -267,7 +267,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 小时前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -318,7 +318,7 @@
 </ul>
 <h3 id="B-Orderer-improvement-I-Separate-transaction-header-from-payload"><a href="#B-Orderer-improvement-I-Separate-transaction-header-from-payload" class="headerlink" title="B. Orderer improvement I: Separate transaction header from payload"></a>B. Orderer improvement I: Separate transaction header from payload</h3><p>在 Fabric 1.2 中，使用 Apache Kafka 的排序节点将整个交易发送给 Kafka 进行排序。交易的长度可能是几千字节，这会导致高通信开销，从而影响整体性能。然而，在交易顺序上获得共识只需要交易 ID，因此我们可以通过只向 Kafka 发送交易 ID 来显著提高排序节点的吞吐量。具体来说，在从客户端接收到交易时，排序节点从 header 中提取交易 ID，并将该 ID 发布到 Kafka 集群。排序节点将相应的 payload 单独存储在本地数据结构中，当从 Kafka 收到 ID 时，交易将重新组装。</p>
 <h3 id="C-Orderer-improvement-II-Message-pipelining"><a href="#C-Orderer-improvement-II-Message-pipelining" class="headerlink" title="C. Orderer improvement II: Message pipelining"></a>C. Orderer improvement II: Message pipelining</h3><p>在 Fabric 1.2 中，排序服务逐个处理来自客户端的传入交易。当交易到达时，识别其对应的通道，根据一组规则检查其有效性，最后将其转发到共识系统（Kafka），然后才能处理下一笔交易。我们实现了一种流水线机制，可以同时处理多个传入交易，即使它们来自使用相同 gRPC 连接的同一客户端。为此，我们维护了一个并行处理传入请求的线程池，每个传入请求有一个线程。线程调用 Kafka API 来发布交易 ID，并在成功时向客户端发送响应。</p>
-<p><img src="/Fast-Fabric/1.png" srcset="/img/loading.gif" lazyload alt="New orderer architecture"></p>
+<p><img src="/Fabric-Fast/1.png" srcset="/img/loading.gif" lazyload alt="New orderer architecture"></p>
 <h3 id="D-Peer-tasks"><a href="#D-Peer-tasks" class="headerlink" title="D. Peer tasks"></a>D. Peer tasks</h3><p>在接收到区块时，Fabric 节点按顺序执行以下任务：</p>
 <ul>
 <li>验证接收到的消息的合法性</li>
@@ -328,7 +328,7 @@
 <li>将区块链日志存储在文件系统中，并在 LevelDB 中提供相应的索引</li>
 </ul>
 <p>我们的目标是在交易流的关键路径上最大限度地提高吞吐量。为此，我们进行了调用图分析，以确定性能瓶颈。<strong>首先</strong>，交易读写集的验证需要快速访问世界状态。因此，我们可以通过使用内存中的哈希表而不是数据库来加快这一过程。<strong>其次</strong>，交易流不需要区块链日志，因此我们可以推迟到交易流结束时将其存储到专用存储和数据分析服务器。<strong>第三</strong>，如果节点是背书节点，则需要处理新的交易提案。然而，提交者和背书者的角色是不同的，因此可以为每个任务分配不同的物理硬件。<strong>第四</strong>，传入的块和交易必须在节点进行验证和解析。最重要的是，通过交易写集对状态更改的验证必须按顺序进行，这会阻止所有其他任务。因此，尽可能加快这项操作是很重要的。<strong>最后</strong>，通过缓存块的 Protocol Buffers 解码的结果，可以获得显著的性能增益。</p>
-<p><img src="/Fast-Fabric/2.png" srcset="/img/loading.gif" lazyload alt="New peer architecture"></p>
+<p><img src="/Fabric-Fast/2.png" srcset="/img/loading.gif" lazyload alt="New peer architecture"></p>
 <h3 id="E-Peer-improvement-I-Replacing-the-world-state-database-with-a-hash-table"><a href="#E-Peer-improvement-I-Replacing-the-world-state-database-with-a-hash-table" class="headerlink" title="E. Peer improvement I: Replacing the world state database with a hash table"></a>E. Peer improvement I: Replacing the world state database with a hash table</h3><p>我们认为，对于常见的情况，例如跟踪钱包或账本上的资产，世界状态相对较小。即使需要存储数十亿个键值，大多数服务器也可以很容易地将它们保存在内存中。因此，我们建议使用内存中的哈希表来存储世界状态，而不是 LevelDB&#x2F;CouchDB。这消除了在更新世界状态时对硬盘的访问，还消除了由于区块链本身的冗余保证而不必要的昂贵的数据库系统保证（即，ACID属性），进一步提高了性能。当然，由于使用易失性存储器，这种替换易受节点故障的影响，因此必须通过稳定存储来增强内存中的哈希表。</p>
 <h3 id="F-Peer-improvement-II-Store-blocks-using-a-peer-cluster"><a href="#F-Peer-improvement-II-Store-blocks-using-a-peer-cluster" class="headerlink" title="F. Peer improvement II: Store blocks using a peer cluster"></a>F. Peer improvement II: Store blocks using a peer cluster</h3><p>根据定义，区块是不可变的。这使它们非常适合追加式数据存储。通过将数据存储与节点的其余任务分离，我们可以设想许多类型的数据存储用于区块和世界状态备份，包括单个服务器将区块和世界状态备份存储在其文件系统中，就像 Fabric 目前所做的那样；也可以使用数据库或键值存储，例如 LevelDB 或 CouchDB。为了最大限度地扩展，我们建议使用分布式存储集群。此解决方案中每个存储服务器仅包含链的一部分，可以使用分布式数据处理工具，如 Hadoop MapReduce 或 Spark5。</p>
 <h3 id="G-Peer-improvement-III-Separate-commitment-and-endorsement"><a href="#G-Peer-improvement-III-Separate-commitment-and-endorsement" class="headerlink" title="G. Peer improvement III: Separate commitment and endorsement"></a>G. Peer improvement III: Separate commitment and endorsement</h3><p>在 Fabric 1.2 中，背书节点也负责提交区块。背书是一个昂贵的操作，提交也是如此。虽然在背书节点集群上的并发事务处理会提高性能，但在每个新节点上重复提交的额外工作实际上抵消了这些好处。因此，我们建议拆分这些角色。</p>
@@ -339,13 +339,13 @@
 <p>为了优化这个问题，我们计划用一个临时的缓存来存放解析的数据。验证流水线中区块被存储在缓存中，并在需要时按块编号检索。一旦块的任何部分被解析，它就与块一起存储以供重用。我们将其实现为一个循环缓冲区，大小与验证流水线相同。每当提交一个块时，就可以接受一个新块到管道中，并自动覆盖已提交块的缓存位置。由于在提交后不需要缓存，并且保证新块仅在旧块离开管道后才到达，因此这是一个安全的操作。解组仅向缓存添加数据，它从不更改数据，所以在验证流水线中可以为所有 go-routines 提供无锁访问。在最坏的情况下，多个 go-routines 尝试访问相同的（但尚未解析的）数据，并且所有 go-routines 并行执行解析操作，缓存的最后写入获胜。这是没有问题的，因为大家执行结果都是相同的。</p>
 <h2 id="IV-RESULTS"><a href="#IV-RESULTS" class="headerlink" title="IV. RESULTS"></a>IV. RESULTS</h2><p>实验配置略。</p>
 <h3 id="A-Block-transfer-via-gRPC"><a href="#A-Block-transfer-via-gRPC" class="headerlink" title="A. Block transfer via gRPC"></a>A. Block transfer via gRPC</h3><p>我们预先创建了包含不同数量交易的有效块，通过 Fabric gRPC 接口将它们从一个 orderer 发送到 peer，然后立即丢弃它们。</p>
-<p><img src="/Fast-Fabric/3.png" srcset="/img/loading.gif" lazyload alt="Throughput via gRPC for different block sizes"></p>
+<p><img src="/Fabric-Fast/3.png" srcset="/img/loading.gif" lazyload alt="Throughput via gRPC for different block sizes"></p>
 <h3 id="B-Orderer-throughput-as-a-function-of-message-size"><a href="#B-Orderer-throughput-as-a-function-of-message-size" class="headerlink" title="B. Orderer throughput as a function of message size"></a>B. Orderer throughput as a function of message size</h3><p>在这个实验中，我们设置了多个客户端，这些客户端向排序节点发送交易，并监控发送 100000 个交易所需的时间。我们评估在 Fabric 1.2 中排序交易的速率，并将其与我们的改进进行比较：</p>
 <ul>
 <li><strong>Opt O-I</strong>: only Transaction ID is published to Kafka (Section III-B)</li>
 <li><strong>Opt O-II</strong>: parallelized incoming transaction proposals from clients (Section III-C)</li>
 </ul>
-<p><img src="/Fast-Fabric/4.png" srcset="/img/loading.gif" lazyload alt="Effect of payload size on orderer throughput"></p>
+<p><img src="/Fabric-Fast/4.png" srcset="/img/loading.gif" lazyload alt="Effect of payload size on orderer throughput"></p>
 <h3 id="C-Peer-experiments"><a href="#C-Peer-experiments" class="headerlink" title="C. Peer experiments"></a>C. Peer experiments</h3><p>本节在单独节点上进行测试。我们准备好块，并将它们发送给节点，就像我们在第 IV-A 节的 gRPC 实验中所做的那样。然后，节点完全验证并提交块。</p>
 <ul>
 <li><strong>Opt P-I</strong>: LevelDB replaced by an in-memory hash table</li>
@@ -355,8 +355,8 @@
 <ol>
 <li><em>Experiments with fixed block sizes</em>：单次运行 100000 个交易的验证和提交，重复 1000 次，每个区块包含 100 笔交易。</li>
 </ol>
-<p><img src="/Fast-Fabric/5.png" srcset="/img/loading.gif" lazyload alt="Impact of our optimizations on peer block latency"></p>
-<p><img src="/Fast-Fabric/6.png" srcset="/img/loading.gif" lazyload alt="Impact of our optimizations on peer throughput"></p>
+<p><img src="/Fabric-Fast/5.png" srcset="/img/loading.gif" lazyload alt="Impact of our optimizations on peer block latency"></p>
+<p><img src="/Fabric-Fast/6.png" srcset="/img/loading.gif" lazyload alt="Impact of our optimizations on peer throughput"></p>
 <ol start="2">
 <li><em>Parameter sensitivity</em>：测试改变两个参数对并行化性能的影响。</li>
 </ol>
@@ -365,11 +365,11 @@
 <li>并行验证交易的 go-routines 的数量</li>
 </ul>
 <p>我们使用 semaphores 控制系统中 go-routines 的数量，同时允许多个块同时进入验证管道。这使我们能够通过两个独立的 go-routine pools 来控制块头验证和交易验证的并行度。</p>
-<p><img src="/Fast-Fabric/7.png" srcset="/img/loading.gif" lazyload alt=" Parameter sensitivity study for blocks containing 100 transactions and a server with 24 CPU cores. We scale the number of blocks that are validated in parallel and the number of transactions per block that are validated in parallel independently"></p>
+<p><img src="/Fabric-Fast/7.png" srcset="/img/loading.gif" lazyload alt=" Parameter sensitivity study for blocks containing 100 transactions and a server with 24 CPU cores. We scale the number of blocks that are validated in parallel and the number of transactions per block that are validated in parallel independently"></p>
 <p>配置 24 ± 2 交易验证 go-routines，验证通道中有 30 ± 3 个区块，测试区块大小的影响。</p>
-<p><img src="/Fast-Fabric/8.png" srcset="/img/loading.gif" lazyload alt="Throughput dependence on block size for optimally tuned configuration"></p>
+<p><img src="/Fabric-Fast/8.png" srcset="/img/loading.gif" lazyload alt="Throughput dependence on block size for optimally tuned configuration"></p>
 <h3 id="D-End-to-end-throughput"><a href="#D-End-to-end-throughput" class="headerlink" title="D. End-to-end throughput"></a>D. End-to-end throughput</h3><p>我们现在讨论通过组合所有优化实现的端到端吞吐量。O-II 与 P-III，与 Fabric 1.2 的测量结果对比。</p>
-<p><img src="/Fast-Fabric/9.png" srcset="/img/loading.gif" lazyload alt="Result"></p>
+<p><img src="/Fabric-Fast/9.png" srcset="/img/loading.gif" lazyload alt="Result"></p>
 <h2 id="V-RELATED-WORK"><a href="#V-RELATED-WORK" class="headerlink" title="V. RELATED WORK"></a>V. RELATED WORK</h2><p>略</p>
 <h2 id="VI-CONCLUSIONS"><a href="#VI-CONCLUSIONS" class="headerlink" title="VI. CONCLUSIONS"></a>VI. CONCLUSIONS</h2><p>略</p>
 
@@ -411,7 +411,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second</div>
-      <div>https://qanlyma.github.io/Fast-Fabric/</div>
+      <div>https://qanlyma.github.io/Fabric-Fast/</div>
     </div>
     <div class="license-meta">
       
@@ -534,7 +534,7 @@
     
       
       
-        <a href="/Fast-Fabric/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second"
+        <a href="/Fabric-Fast/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second"
            class="list-group-item list-group-item-action
            active">
           <span class="category-post">「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second</span>
@@ -543,7 +543,7 @@
     
       
       
-        <a href="/Hyperledger-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"
+        <a href="/Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
@@ -552,7 +552,7 @@
     
       
       
-        <a href="/Optimizing-Fabric/" title="「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform"
+        <a href="/Fabric-Optimizing/" title="「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform"
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform</span>

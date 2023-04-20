@@ -19,33 +19,33 @@
     <meta name="description" content="这篇文章发现了 Fabric v1.0 的三个主要性能瓶颈：(1) 背书策略验证；(2) 块中交易的顺序策略验证；(3) CouchDB 的状态验证和提交。同时对上述问题进行了简单的优化，如加密组件中用于背书策略验证的主动缓存、并行背书策略验证、增强并测量了 CouchDB 的现有批量读&#x2F;写优化的效果。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform">
-<meta property="og:url" content="https://qanlyma.github.io/Optimizing-Fabric/index.html">
+<meta property="og:url" content="https://qanlyma.github.io/Fabric-Optimizing/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="这篇文章发现了 Fabric v1.0 的三个主要性能瓶颈：(1) 背书策略验证；(2) 块中交易的顺序策略验证；(3) CouchDB 的状态验证和提交。同时对上述问题进行了简单的优化，如加密组件中用于背书策略验证的主动缓存、并行背书策略验证、增强并测量了 CouchDB 的现有批量读&#x2F;写优化的效果。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/5.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/6.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/7.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/8.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/9.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/10.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/11.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/12.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/13.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/14.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/15.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/16.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/17.png">
-<meta property="og:image" content="https://qanlyma.github.io/Optimizing-Fabric/18.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/8.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/9.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/10.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/11.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/12.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/13.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/14.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/15.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/16.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/17.png">
+<meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/18.png">
 <meta property="article:published_time" content="2023-03-22T06:54:28.000Z">
 <meta property="article:modified_time" content="2023-03-26T04:35:46.937Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/Optimizing-Fabric/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/Fabric-Optimizing/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -276,7 +276,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：23 天前
+                    本文最后更新于：25 天前
                   
                 
               </p>
@@ -310,12 +310,12 @@
 <li><p><strong>Ordering Service</strong>：排序节点（OSN）参与共识协议并出块，然后通过 gossip 协议传递给对等节点。区块结构如下图所示：</p>
 </li>
 </ul>
-<p><img src="/Optimizing-Fabric/1.png" srcset="/img/loading.gif" lazyload alt="Block Structure in Hyperledger Fabric v1.0"></p>
+<p><img src="/Fabric-Optimizing/1.png" srcset="/img/loading.gif" lazyload alt="Block Structure in Hyperledger Fabric v1.0"></p>
 <p>OSNs 将交易发布到 kafka 并利用其记录的有序和不可变性来生成唯一的有序区块。</p>
 <ul>
 <li><strong>Client</strong>：客户端应用负责将交易提案组装成上图的形式，然后将交易提案同时提交给一个或多个对等节点，以收集带有背书的提案响应，满足背书政策后再将其广播给排序者。</li>
 </ul>
-<h3 id="B-Transaction-Flow-in-Hyperledger-Fabric"><a href="#B-Transaction-Flow-in-Hyperledger-Fabric" class="headerlink" title="B. Transaction Flow in Hyperledger Fabric"></a>B. Transaction Flow in Hyperledger Fabric</h3><p><img src="/Optimizing-Fabric/2.png" srcset="/img/loading.gif" lazyload alt="Transaction Flow"></p>
+<h3 id="B-Transaction-Flow-in-Hyperledger-Fabric"><a href="#B-Transaction-Flow-in-Hyperledger-Fabric" class="headerlink" title="B. Transaction Flow in Hyperledger Fabric"></a>B. Transaction Flow in Hyperledger Fabric</h3><p><img src="/Fabric-Optimizing/2.png" srcset="/img/loading.gif" lazyload alt="Transaction Flow"></p>
 <ol>
 <li><p><strong>Endorsement Phase</strong><br> 客户端根据背书政策发送交易。背书节点收到客户端发来的交易，首先验证提交者有调用交易的权限；其次执行链码并产生 response value，read-set 和 write-set，读集读取当前的区块链状态，写集仅修改一个私有的工作区，即未提交到账本；然后背书节点调用 ESCC 签署背书并回复客户端；最后客户端验证提案响应。</p>
 </li>
@@ -357,10 +357,10 @@
 <li>Ledger update latency：根据一个区块有效交易的写集改变数据库状态的时间。</li>
 </ul>
 <p>使用 <a target="_blank" rel="noopener" href="https://github.com/thakkarparth007/fabric-load-gen">load generator</a> 生成交易，<a target="_blank" rel="noopener" href="https://github.com/cendhu/fetch-block">fetch-block</a> 测试。</p>
-<h3 id="A-Setup-and-Workloads"><a href="#A-Setup-and-Workloads" class="headerlink" title="A. Setup and Workloads"></a>A. Setup and Workloads</h3><p><img src="/Optimizing-Fabric/3.png" srcset="/img/loading.gif" lazyload alt="Experimental Setup"></p>
+<h3 id="A-Setup-and-Workloads"><a href="#A-Setup-and-Workloads" class="headerlink" title="A. Setup and Workloads"></a>A. Setup and Workloads</h3><p><img src="/Fabric-Optimizing/3.png" srcset="/img/loading.gif" lazyload alt="Experimental Setup"></p>
 <p>4 个组织，每个组织 2 个背书节点，1 个排序节点（硬件配置略）。</p>
-<h2 id="V-EXPERIMENTAL-RESULTS"><a href="#V-EXPERIMENTAL-RESULTS" class="headerlink" title="V. EXPERIMENTAL RESULTS"></a>V. EXPERIMENTAL RESULTS</h2><p><img src="/Optimizing-Fabric/4.png" srcset="/img/loading.gif" lazyload alt="默认配置"></p>
-<h3 id="A-Impact-of-Transaction-Arrival-Rate-and-Block-Size"><a href="#A-Impact-of-Transaction-Arrival-Rate-and-Block-Size" class="headerlink" title="A. Impact of Transaction Arrival Rate and Block Size"></a>A. Impact of Transaction Arrival Rate and Block Size</h3><p><img src="/Optimizing-Fabric/5.png" srcset="/img/loading.gif" lazyload alt="Impact of the block size and transaction arrival rate on performance"></p>
+<h2 id="V-EXPERIMENTAL-RESULTS"><a href="#V-EXPERIMENTAL-RESULTS" class="headerlink" title="V. EXPERIMENTAL RESULTS"></a>V. EXPERIMENTAL RESULTS</h2><p><img src="/Fabric-Optimizing/4.png" srcset="/img/loading.gif" lazyload alt="默认配置"></p>
+<h3 id="A-Impact-of-Transaction-Arrival-Rate-and-Block-Size"><a href="#A-Impact-of-Transaction-Arrival-Rate-and-Block-Size" class="headerlink" title="A. Impact of Transaction Arrival Rate and Block Size"></a>A. Impact of Transaction Arrival Rate and Block Size</h3><p><img src="/Fabric-Optimizing/5.png" srcset="/img/loading.gif" lazyload alt="Impact of the block size and transaction arrival rate on performance"></p>
 <ul>
 <li><p><strong>Observation 1</strong>：throughput 随交易到达率线性增长，直到 140 tps 左右饱和，在饱和点附近延时显著增长。这是因为验证阶段 VSCC 队列中等待的有序交易数量显著增长，影响了提交延迟。进一步提高交易到达率并不会影响背书延时和广播延时，仅影响提交延时，这是因为 VSCC 利用单个 vCPU，新的交易提案使用了对等节点上的其他 vCPU 进行模拟和背书。所以只有验证阶段会成为性能瓶颈。</p>
 </li>
@@ -379,9 +379,9 @@
 <li><p><strong>Action Item 1</strong>：CPU 资源利用不足，潜在的优化是在 VSCC 验证阶段一次处理多个事务。</p>
 </li>
 </ul>
-<h3 id="B-Impact-of-Endorsement-Policy"><a href="#B-Impact-of-Endorsement-Policy" class="headerlink" title="B. Impact of Endorsement Policy"></a>B. Impact of Endorsement Policy</h3><p><img src="/Optimizing-Fabric/6.png" srcset="/img/loading.gif" lazyload alt="Impact of different endorsement policies"></p>
+<h3 id="B-Impact-of-Endorsement-Policy"><a href="#B-Impact-of-Endorsement-Policy" class="headerlink" title="B. Impact of Endorsement Policy"></a>B. Impact of Endorsement Policy</h3><p><img src="/Fabric-Optimizing/6.png" srcset="/img/loading.gif" lazyload alt="Impact of different endorsement policies"></p>
 <p>研究不同的背书策略对性能影响，其中 a b c d 是四个不同的组织。</p>
-<p><img src="/Optimizing-Fabric/7.png" srcset="/img/loading.gif" lazyload alt="VSCC latency, and resource utilization for various endorsement policies (arrival rate = 125)"></p>
+<p><img src="/Fabric-Optimizing/7.png" srcset="/img/loading.gif" lazyload alt="VSCC latency, and resource utilization for various endorsement policies (arrival rate = 125)"></p>
 <ul>
 <li><p><strong>Observation 6</strong>：多个子策略和多个加密签名验证的组合影响了性能（CPU 利用率和 VSCC 延迟）。1 和 4 背书策略没有子策略，2 和 3 AND&#x2F;OR 策略实现的吞吐量分别比其他策略低 7% 和 20%。</p>
 </li>
@@ -392,15 +392,15 @@
 </ul>
 <h3 id="C-Impact-of-Channels-and-Resource-Allocation"><a href="#C-Impact-of-Channels-and-Resource-Allocation" class="headerlink" title="C. Impact of Channels and Resource Allocation"></a>C. Impact of Channels and Resource Allocation</h3><p>我们将不同信道数量的到达率分为两类：<strong>non-overloaded</strong>（延迟在 [0.4-1s]）和 <strong>overloaded</strong>（延迟范围 [30-40s]）。</p>
 <p>Number of Channels: 1, 2, 4, 8, 16.<br>Tx. Arrival Rate: 125 to 250 tps with a step of 25.</p>
-<p><img src="/Optimizing-Fabric/8.png" srcset="/img/loading.gif" lazyload alt="Impact of the number of channels on performance"></p>
+<p><img src="/Fabric-Optimizing/8.png" srcset="/img/loading.gif" lazyload alt="Impact of the number of channels on performance"></p>
 <ul>
 <li><strong>Observation 7</strong>：随着通道数量的增加，吞吐量增加，延迟减少，CPU等资源利用率也有所提高。这是因为每个通道都独立于其他通道，并维护自己的区块链。因此，多个块（每个通道一个）的验证阶段和最终账本更新并行执行，这增加了 CPU 利用率，从而提高了吞吐量。</li>
 </ul>
-<p><img src="/Optimizing-Fabric/9.png" srcset="/img/loading.gif" lazyload alt="Impact of the number of vCPU on throughput &amp; various latencies with 4 channels (arrival rate = 350 tps) and 16 channels (arrival rate = 850 tps)"></p>
+<p><img src="/Fabric-Optimizing/9.png" srcset="/img/loading.gif" lazyload alt="Impact of the number of vCPU on throughput &amp; various latencies with 4 channels (arrival rate = 350 tps) and 16 channels (arrival rate = 850 tps)"></p>
 <ul>
 <li><strong>Observation 8</strong>：在中等负载下，当分配的 vCPU 数量小于通道数时，性能下降。由于 CPU 资源的大量竞争，平均背书和提交延迟都呈爆炸式增长（分别从 37ms 到 21s 和 640ms 到 49s）。</li>
 </ul>
-<p><img src="/Optimizing-Fabric/10.png" srcset="/img/loading.gif" lazyload alt="Impact of heterogeneous setup"></p>
+<p><img src="/Fabric-Optimizing/10.png" srcset="/img/loading.gif" lazyload alt="Impact of heterogeneous setup"></p>
 <ul>
 <li><p><strong>Observation 9</strong>：在中等负载下，即使分配给 8 个对等点中的 2 个对等点的 vCPU 数量小于通道数，性能也会下降。原因有两个，一是来自功能较弱的对等节点的背书请求超时，二是专门针对读写事务的 MVCC 冲突。</p>
 </li>
@@ -411,11 +411,11 @@
 <li><p><strong>Action Item 3</strong>：可以改进通道内和通道间的交易处理，以更好地利用额外的 CPU 能力。</p>
 </li>
 </ul>
-<h3 id="D-Impact-of-Ledger-Database"><a href="#D-Impact-of-Ledger-Database" class="headerlink" title="D. Impact of Ledger Database"></a>D. Impact of Ledger Database</h3><p><img src="/Optimizing-Fabric/11.png" srcset="/img/loading.gif" lazyload alt="Impact of state database"></p>
+<h3 id="D-Impact-of-Ledger-Database"><a href="#D-Impact-of-Ledger-Database" class="headerlink" title="D. Impact of Ledger Database"></a>D. Impact of Ledger Database</h3><p><img src="/Fabric-Optimizing/11.png" srcset="/img/loading.gif" lazyload alt="Impact of state database"></p>
 <ul>
 <li><strong>Observation 10</strong>：以 GoLevelDB 作为 Fabric 的状态数据库，事务吞吐量是 CouchDB 的 3 倍。CouchDB 和 GoLevelDB 之间存在显著性能差异的原因是，后者是一个对等节点进程的嵌入式数据库，而前者是通过安全的 HTTP 使用 REST APIs 访问的。因此 CouchDB 的背书延迟、VSCC 延迟、MVCC 延迟和账本更新延迟更高。</li>
 </ul>
-<p><img src="/Optimizing-Fabric/12.png" srcset="/img/loading.gif" lazyload alt="Impact of database (arrival rate = 30 tps)"></p>
+<p><img src="/Fabric-Optimizing/12.png" srcset="/img/loading.gif" lazyload alt="Impact of database (arrival rate = 30 tps)"></p>
 <ul>
 <li><p><strong>Observation 11</strong>：对于 CouchDB，背书延迟和账本更新延迟随着每笔交易写入次数的增加而增加。</p>
 </li>
@@ -437,17 +437,17 @@
 <li>组织 MSP 的身份验证</li>
 </ol>
 <p>为了避免每次都对序列化的身份标识进行反序列化，我们使用以序列化形式为键的哈希映射来缓存反序列化的身份。类似地，为了避免每次使用多个 MSP 验证一个身份，我们使用了一个哈希表，其中身份作为键，值是该身份所属的相应 MSP。</p>
-<p><img src="/Optimizing-Fabric/13.png" srcset="/img/loading.gif" lazyload alt="Impact of MSP cache"></p>
+<p><img src="/Fabric-Optimizing/13.png" srcset="/img/loading.gif" lazyload alt="Impact of MSP cache"></p>
 <p>与普通对等节点相比，由于 MSP 缓存，吞吐量平均增加了 3 倍。</p>
 <h3 id="B-Parallel-VSCC-Validation-of-a-Block"><a href="#B-Parallel-VSCC-Validation-of-a-Block" class="headerlink" title="B. Parallel VSCC Validation of a Block"></a>B. Parallel VSCC Validation of a Block</h3><p>并行验证多个交易的背书，以利用闲置的 CPU 并提高整体性能。为了实现这一点，我们在对等节点启动时为每个通道创建了可配置数量的工作线程。每个工作线程根据其背书策略验证一个交易的背书签名集。</p>
-<p><img src="/Optimizing-Fabric/14.png" srcset="/img/loading.gif" lazyload alt="Impact of parallel VSCC validation on multichannel setup"></p>
+<p><img src="/Fabric-Optimizing/14.png" srcset="/img/loading.gif" lazyload alt="Impact of parallel VSCC validation on multichannel setup"></p>
 <p>对于每个通道，我们分配了与块大小相等的工作线程。在一个通道的非过载情况下，对于 30 的块大小，吞吐量从 130 tps 提升到 800 tps（提高了6.3倍），对于 300 的块大小提升到 980 tps（7.5倍）。块内交易的并行 VSCC 验证显著提高了单个通道的性能。但是随着通道数量的增加，改善的百分比下降。这是因为默认情况下，多个通道会导致块（而不是交易）的并行验证，因此只有少量可用的 vCPU 可用于并行 VSCC。</p>
 <h3 id="C-Bulk-Read-x2F-Write-During-MVCC-Validation-amp-Commit"><a href="#C-Bulk-Read-x2F-Write-During-MVCC-Validation-amp-Commit" class="headerlink" title="C. Bulk Read&#x2F;Write During MVCC Validation &amp; Commit"></a>C. Bulk Read&#x2F;Write During MVCC Validation &amp; Commit</h3><p>为了减少 REST API 调用的数量，CouchDB 建议使用批量操作。因此，我们使用 Fabric 中现有的 BatchRetrieval API，通过每个块的单个 GET REST API 调用，将多个键的版本和修订号批量加载到缓存中。为了增强账本更新过程，我们使用 BatchUpdate API 来提交一批文档，每个块使用一个 PUT REST API 调用。此外，我们在 VSCC 中引入了一个缓存，以减少对 CouchDB 的调用，从而获得每个交易的背书策略。</p>
-<p><img src="/Optimizing-Fabric/15.png" srcset="/img/loading.gif" lazyload alt="Impact of bulk read during the MVCC validation and ledger update on the performance"></p>
+<p><img src="/Fabric-Optimizing/15.png" srcset="/img/loading.gif" lazyload alt="Impact of bulk read during the MVCC validation and ledger update on the performance"></p>
 <p>要与上文非批量读写进行比较，对于单次写入的事务，性能从 50 tps 显著提高到 115 tps（2.3 倍）。对于多次写入（3-w 和 5-w），吞吐量从 26 tps 增加到 100 tps（3-w 为 3.8倍），从 18 tps 提高到 90 tps（5-w 为 5 倍）。我们注意到读写事务也有类似的改进。</p>
-<h3 id="D-Combinations-of-Optimizations"><a href="#D-Combinations-of-Optimizations" class="headerlink" title="D. Combinations of Optimizations"></a>D. Combinations of Optimizations</h3><p><img src="/Optimizing-Fabric/16.png" srcset="/img/loading.gif" lazyload alt="Configuration"></p>
-<p><img src="/Optimizing-Fabric/17.png" srcset="/img/loading.gif" lazyload alt="Impact of all the three optimizations on the performance with different block sizes"></p>
-<p><img src="/Optimizing-Fabric/18.png" srcset="/img/loading.gif" lazyload alt="Impact of all the three optimizations on the performance with a simple endorsement policy and different number of channels"></p>
+<h3 id="D-Combinations-of-Optimizations"><a href="#D-Combinations-of-Optimizations" class="headerlink" title="D. Combinations of Optimizations"></a>D. Combinations of Optimizations</h3><p><img src="/Fabric-Optimizing/16.png" srcset="/img/loading.gif" lazyload alt="Configuration"></p>
+<p><img src="/Fabric-Optimizing/17.png" srcset="/img/loading.gif" lazyload alt="Impact of all the three optimizations on the performance with different block sizes"></p>
+<p><img src="/Fabric-Optimizing/18.png" srcset="/img/loading.gif" lazyload alt="Impact of all the three optimizations on the performance with a simple endorsement policy and different number of channels"></p>
 <h2 id="VII-RELATED-WORK"><a href="#VII-RELATED-WORK" class="headerlink" title="VII. RELATED WORK"></a>VII. RELATED WORK</h2><p>略</p>
 <h2 id="VIII-CONCLUSION-amp-FUTURE-WORK"><a href="#VIII-CONCLUSION-amp-FUTURE-WORK" class="headerlink" title="VIII. CONCLUSION &amp; FUTURE WORK"></a>VIII. CONCLUSION &amp; FUTURE WORK</h2><p>略</p>
 <h2 id="IX-ACKNOWLEDGEMENTS"><a href="#IX-ACKNOWLEDGEMENTS" class="headerlink" title="IX. ACKNOWLEDGEMENTS"></a>IX. ACKNOWLEDGEMENTS</h2><p>略</p>
@@ -490,7 +490,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform</div>
-      <div>https://qanlyma.github.io/Optimizing-Fabric/</div>
+      <div>https://qanlyma.github.io/Fabric-Optimizing/</div>
     </div>
     <div class="license-meta">
       
@@ -613,7 +613,7 @@
     
       
       
-        <a href="/Fast-Fabric/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second"
+        <a href="/Fabric-Fast/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second"
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second</span>
@@ -622,7 +622,7 @@
     
       
       
-        <a href="/Hyperledger-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"
+        <a href="/Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
@@ -631,7 +631,7 @@
     
       
       
-        <a href="/Optimizing-Fabric/" title="「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform"
+        <a href="/Fabric-Optimizing/" title="「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform"
            class="list-group-item list-group-item-action
            active">
           <span class="category-post">「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform</span>
