@@ -92,7 +92,7 @@ Caliper：<https://hyperledger.github.io/caliper/v0.4.2/installing-caliper/>
 
 3. 克隆官方 tape 仓库
    ```Linux
-   git clone https://github.com/Hyperledger-TWGC/tape
+   $ git clone https://github.com/Hyperledger-TWGC/tape
    ```
 
 4. 将 fabric-samples/test-network 的网络生成的证书文件夹（organizations）复制到 tape 文件内
