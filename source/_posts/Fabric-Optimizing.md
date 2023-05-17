@@ -63,7 +63,7 @@ OSNs 将交易发布到 kafka 并利用其记录的有序和不可变性来生�
      * MVCC Validation：Multi-Version Concurrency Control **顺序**检查有效交易（VSCC 标记）在背书阶段读取键值的版本与提交时本地账本中的当前状态是否相同，类似于为并发控制所做的读写冲突检查。
 
 4. **Ledger Update Phase**
-    StateDB 使用有效事务（MVCC 验证所标记）的写集进行更新
+    StateDB 使用有效事务（MVCC 验证所标记）的写集进行更新。
 
 ### C. Configuration Parameters
 

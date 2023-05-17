@@ -61,6 +61,8 @@ Caliper：<https://hyperledger.github.io/caliper/v0.4.2/installing-caliper/>
     $ cd fabric/fabric-samples
     $ wget https://github.com/hyperledger/fabric/releases/download/v2.4.0/hyperledger-fabric-linux-amd64-2.4.0.tar.gz
     $ tar -xzvf hyperledger-fabric-linux-amd64-2.4.0.tar.gz
+    $ wget https://github.com/hyperledger/fabric-ca/releases/download/v1.5.6/hyperledger-fabric-ca-linux-amd64-1.5.6.tar.gz
+    $ tar -xzvf hyperledger-fabric-ca-linux-amd64-1.5.6.tar.gz
     ```
 
 6. 启动/关闭网络
