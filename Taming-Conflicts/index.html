@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Taming-Conflicts/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/Taming-Conflicts/3.png">
 <meta property="article:published_time" content="2023-03-30T07:42:57.000Z">
-<meta property="article:modified_time" content="2023-04-10T12:00:18.428Z">
+<meta property="article:modified_time" content="2023-05-05T06:08:02.733Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Taming-Conflicts/1.png">
@@ -261,7 +261,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：17 天前
+                    本文最后更新于：12 天前
                   
                 
               </p>
@@ -272,7 +272,7 @@
                 <p>区块链系统随着共识技术的发展，性能已经大大提高，交易执行成为一个新的性能瓶颈。我们观察到应用内在的冲突是限制并行执行的主要因素。本文提出使用<strong>分区计数器</strong>和特殊的<strong>可交换指令</strong>来打破应用程序冲突链，以最大化性能。我们还提出了 <strong>OCC-DA</strong>，一个具有确定性中止的乐观并发控制调度器，使得在<strong>公链</strong>中使用 OCC 调度成为可能。</p>
 <span id="more"></span>
 
-<h2 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1 INTRODUCTION"></a>1 INTRODUCTION</h2><p>我们的发现：</p>
+<h2 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1 INTRODUCTION"></a>1 INTRODUCTION</h2><p>为了了解现有交易工作负载中可以利用的并行度，本文实证研究了一段历史以太坊交易。我们的发现：</p>
 <ol>
 <li>与串行执行相比，并行可实现的总体加速限制约为 4 倍。虽然有许多块的执行速度随着线程数量的增加而增大，但很大一部分块的执行情况要差得多。</li>
 <li>大多数块都被单个交易依赖链所阻塞，这些交易需要串行执行，因此影响了总体的执行时间。</li>
@@ -287,7 +287,7 @@
 <li><p>第三种方法是消除由虚拟机级别的交换更新引起的可避免冲突。两个增加计数器但不使用其原始值的交易在语义上是可交换的。然而，在当前的以太坊虚拟机语义下，这些增量被转换为读取（SLOAD）和写入（SSTORE）指令，这将导致读写冲突。我们提出了一个名为 CADD（commutative add）的新指令。在给定状态条目上没有其他读写操作，而只有 CADD 操作的两个交易被视为不冲突。增量在交易提交期间逐个应用。</p>
 </li>
 </ol>
-<p>此外，为了解决并行执行导致节点状态不一致问题，我们引入了一种具有确定性事务中止的乐观调度器。这种方法允许我们引入并行性的激励措施，以换取可接受的性能影响。</p>
+<p>上述方案可以达到 18 倍以上的提速。此外，为了解决并行执行导致节点状态不一致问题，我们引入了一种具有确定性事务中止的乐观调度器。这种方法允许我们引入并行性的激励措施，以换取可接受的性能影响。</p>
 <h2 id="2-BACKGROUND-AND-MOTIVATION"><a href="#2-BACKGROUND-AND-MOTIVATION" class="headerlink" title="2 BACKGROUND AND MOTIVATION"></a>2 BACKGROUND AND MOTIVATION</h2><p>为了解决 Bitcoin 和 Ethereum 的性能瓶颈，大家都做了很多努力。</p>
 <p>在并行执行研究上，通过调查以太坊的历史工作负载，我们发现必须按顺序执行的一系列交易的许多关键路径都是由<strong>共享全局计数器</strong>的使用引起的。我们认为，进一步提高实际工作负载并行性的重要方法是引入更好的编程范式，使开发人员能够更容易地表达并行性，同时保持原始语义。并且需要对激励机制进行一些新的设计，以使该范式适用于现实世界的应用。</p>
 <h2 id="3-EMPIRICAL-STUDY"><a href="#3-EMPIRICAL-STUDY" class="headerlink" title="3 EMPIRICAL STUDY"></a>3 EMPIRICAL STUDY</h2><h3 id="3-1-Methodology"><a href="#3-1-Methodology" class="headerlink" title="3.1 Methodology"></a>3.1 Methodology</h3><p>我们使用以太坊历史交易对现实世界数据集（2018 年 1 月 1 日到 2018 年 5 月 28 日共 8582236 个区块）中存在的并行性进行了实证研究。本实验的主题是智能合约存储冲突，即同一块内的两个交易访问状态树中的同一条目，并且这些访问中至少有一个是写入。</p>
@@ -296,7 +296,7 @@
 <h3 id="3-2-Results-and-Findings"><a href="#3-2-Results-and-Findings" class="headerlink" title="3.2 Results and Findings"></a>3.2 Results and Findings</h3><ul>
 <li><p><em>Execution Bottlenecks.</em> 该实验揭示了我们在并行执行以太坊交易时可以实现的加速限制。我们发现，与串行执行相比，观察到的总体加速仅为 4 倍，考虑到我们有 8 个、16 个甚至更多的线程可用，这一结果并不令人满意。许多区块的加速效率很高，但也有相当一部分区块的性能很差。</p>
 <p>  <img src="/Taming-Conflicts/1.png" srcset="/img/loading.gif" lazyload alt="Distribution of parallel speedup bounds"></p>
-<p>  将一个块的执行成本与其依赖图中最重路径的执行成本进行比较时，我们发现这两者经常重合，这意味着性能瓶颈在最重路径的执行上。</p>
+<p>  将一个块的执行成本与其依赖图中最重路径的执行成本进行比较时，我们发现这两者经常重合，这意味着性能瓶颈在最重路径的执行上。这往往是块中的某一笔交易，而我们想解决的是两笔或更多交易之间的瓶颈冲突链。所以我们又进行了一次实验，以 30 个块为一批并行执行。这相比串行执行速度提高了 9.46 倍，我们观察到：瓶颈通常在几十个或几百个依赖交易所组成的单个依赖链。</p>
 </li>
 <li><p><em>Classification of Smart Contract Conflicts.</em> 我们确定了三大类：ERC20 代币（代币分发、空投）占样本瓶颈的 60%，去中心化金融（DeFi）应用程序占 29%，而游戏和收藏品（不可替代代币、NFT）占 10%。</p>
 </li>
