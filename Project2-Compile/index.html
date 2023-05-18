@@ -18,27 +18,29 @@
   
     <meta name="description" content="本文尝试编译 Fabric 源码来构建 Fabric 网络。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「学」 编译 Fabric 源码">
-<meta property="og:url" content="https://qanlyma.github.io/Tutorial-Compile/index.html">
+<meta property="og:title" content="「毕」 2. 编译 Fabric 源码">
+<meta property="og:url" content="https://qanlyma.github.io/Project2-Compile/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="本文尝试编译 Fabric 源码来构建 Fabric 网络。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Compile/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Compile/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Compile/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Compile/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/Tutorial-Compile/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/7.png">
 <meta property="article:published_time" content="2023-05-09T07:09:12.000Z">
-<meta property="article:modified_time" content="2023-05-17T06:47:44.145Z">
+<meta property="article:modified_time" content="2023-05-18T06:34:28.767Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/Tutorial-Compile/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/Project2-Compile/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「学」 编译 Fabric 源码 - Qanly</title>
+  <title>「毕」 2. 编译 Fabric 源码 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -179,7 +181,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「学」 编译 Fabric 源码"></span>
+            <span id="subtitle" data-typed-text="「毕」 2. 编译 Fabric 源码"></span>
           
         </div>
 
@@ -258,12 +260,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「学」 编译 Fabric 源码</h1>
+            <h1 style="display: none">「毕」 2. 编译 Fabric 源码</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：7 分钟前
+                    本文最后更新于：1 分钟前
                   
                 
               </p>
@@ -382,25 +384,26 @@
 <h3 id="2-编译-fabric-源码"><a href="#2-编译-fabric-源码" class="headerlink" title="2. 编译 fabric 源码"></a>2. 编译 fabric 源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make release<br></code></pre></td></tr></table></figure>
 
 <p>编译好的二进制可执行文件在 <code>fabric/release/linux-amd64/bin/</code> 下：</p>
-<p><img src="/Tutorial-Compile/1.png" srcset="/img/loading.gif" lazyload alt="二进制文件"></p>
+<p><img src="/Project2-Compile/1.png" srcset="/img/loading.gif" lazyload alt="二进制文件"></p>
 <h4 id="测试编译"><a href="#测试编译" class="headerlink" title="测试编译"></a>测试编译</h4><p>我注意到网上的教程都需要我们把 fabric 的源码放在 <code>$GOPATH/src/github.com/heperledger/</code> 目录下，Makefile 文件中的编译路径也是：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs Makefile">PKGNAME = github.com/hyperledger/fabric<br><br>pkgmap.configtxgen    := <span class="hljs-variable">$(PKGNAME)</span>/cmd/configtxgen<br>pkgmap.configtxlator  := <span class="hljs-variable">$(PKGNAME)</span>/cmd/configtxlator<br>pkgmap.cryptogen      := <span class="hljs-variable">$(PKGNAME)</span>/cmd/cryptogen<br>pkgmap.discover       := <span class="hljs-variable">$(PKGNAME)</span>/cmd/discover<br>pkgmap.ledgerutil     := <span class="hljs-variable">$(PKGNAME)</span>/cmd/ledgerutil<br>pkgmap.orderer        := <span class="hljs-variable">$(PKGNAME)</span>/cmd/orderer<br>pkgmap.osnadmin       := <span class="hljs-variable">$(PKGNAME)</span>/cmd/osnadmin<br>pkgmap.peer           := <span class="hljs-variable">$(PKGNAME)</span>/cmd/peer<br></code></pre></td></tr></table></figure>
 
 <p>为了测试能否在自定义路径中编译源码，我修改了 <code>fabric/internal/peer/version</code> :</p>
-<p><img src="/Tutorial-Compile/3.png" srcset="/img/loading.gif" lazyload alt="version.go"></p>
+<p><img src="/Project2-Compile/3.png" srcset="/img/loading.gif" lazyload alt="version.go"></p>
 <p>然后编译并执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make peer<br>$ export PATH=$PWD/build/bin<br>$ peer<br></code></pre></td></tr></table></figure>
 
-<p><img src="/Tutorial-Compile/4.png" srcset="/img/loading.gif" lazyload alt="输出"></p>
+<p><img src="/Project2-Compile/4.png" srcset="/img/loading.gif" lazyload alt="输出"></p>
 <h3 id="3-下载-fabric-ca-源码"><a href="#3-下载-fabric-ca-源码" class="headerlink" title="3. 下载 fabric-ca 源码"></a>3. 下载 fabric-ca 源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ git clone https://github.com/hyperledger/fabric-ca.git<br>$ cd fabric-ca<br></code></pre></td></tr></table></figure>
 
 <h3 id="4-编译-fabric-ca-源码"><a href="#4-编译-fabric-ca-源码" class="headerlink" title="4. 编译 fabric-ca 源码"></a>4. 编译 fabric-ca 源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make fabric-ca-server<br>$ make fabric-ca-client<br></code></pre></td></tr></table></figure>
 
 <p>编译好的二进制可执行文件在 <code>fabric-ca/bin/</code> 下：</p>
-<p><img src="/Tutorial-Compile/2.png" srcset="/img/loading.gif" lazyload alt="二进制文件"></p>
-<h2 id="制作镜像"><a href="#制作镜像" class="headerlink" title="制作镜像"></a>制作镜像</h2><p>把当前用户加入到 docker 用户组后在 fabric 目录下执行：</p>
+<p><img src="/Project2-Compile/2.png" srcset="/img/loading.gif" lazyload alt="二进制文件"></p>
+<h2 id="制作镜像"><a href="#制作镜像" class="headerlink" title="制作镜像"></a>制作镜像</h2><p>把当前用户加入到 docker 用户组后，分别在 fabric 和 fabric-ca 目录下执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make docker<br></code></pre></td></tr></table></figure>
 
+<p><img src="/Project2-Compile/6.png" srcset="/img/loading.gif" lazyload alt="Docker Images"></p>
 <h3 id="镜像代码"><a href="#镜像代码" class="headerlink" title="镜像代码"></a>镜像代码</h3><p><code>Makefile</code> 中制作 docker 镜像的代码如下：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs Makefile"><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: docker</span><br><span class="hljs-section">docker: $(RELEASE_IMAGES:%=%-docker)</span><br><br><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: $(RELEASE_IMAGES:%=%-docker)</span><br><span class="hljs-section">$(RELEASE_IMAGES:%=%-docker): %-docker: <span class="hljs-variable">$(BUILD_DIR)</span>/images/%/<span class="hljs-variable">$(DUMMY)</span></span><br><br><span class="hljs-variable">$(BUILD_DIR)</span>/images/baseos/<span class="hljs-variable">$(DUMMY)</span>:  BUILD_CONTEXT=images/baseos<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/ccenv/<span class="hljs-variable">$(DUMMY)</span>:   BUILD_CONTEXT=images/ccenv<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/peer/<span class="hljs-variable">$(DUMMY)</span>:    BUILD_ARGS=--build-arg GO_TAGS=$&#123;GO_TAGS&#125;<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/orderer/<span class="hljs-variable">$(DUMMY)</span>: BUILD_ARGS=--build-arg GO_TAGS=$&#123;GO_TAGS&#125;<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/tools/<span class="hljs-variable">$(DUMMY)</span>:   BUILD_ARGS=--build-arg GO_TAGS=$&#123;GO_TAGS&#125;<br><br><span class="hljs-variable">$(BUILD_DIR)</span>/images/%/<span class="hljs-variable">$(DUMMY)</span>:<br>	@echo <span class="hljs-string">&quot;Building Docker image <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>&quot;</span><br>	@mkdir -p $(@D)<br>	<span class="hljs-variable">$(DBUILD)</span> -f images/<span class="hljs-variable">$*</span>/Dockerfile \<br>		--build-arg GO_VER=<span class="hljs-variable">$(GO_VER)</span> \<br>		--build-arg ALPINE_VER=<span class="hljs-variable">$(ALPINE_VER)</span> \<br>		<span class="hljs-variable">$(BUILD_ARGS)</span> \<br>		-t <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> ./<span class="hljs-variable">$(BUILD_CONTEXT)</span><br>	docker tag <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>:<span class="hljs-variable">$(BASE_VERSION)</span><br>	docker tag <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>:<span class="hljs-variable">$(TWO_DIGIT_VERSION)</span><br>	docker tag <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>:<span class="hljs-variable">$(DOCKER_TAG)</span><br>	@touch <span class="hljs-variable">$@</span><br></code></pre></td></tr></table></figure>
 
@@ -443,10 +446,20 @@
 </ul>
 </li>
 </ol>
+<p><strong>可以看出该镜像并非直接复制主机编译的二进制文件，而是复制当前目录的代码，在容器中自己编译。</strong></p>
 <h3 id="测试镜像"><a href="#测试镜像" class="headerlink" title="测试镜像"></a>测试镜像</h3><p>保留之前测试编译的更改，制作 peer 镜像并进入容器测试：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make peer-docker<br>$ docker run hyperledger/fabric-peer<br>$ docker exec -it container_id /bin/sh<br># peer<br></code></pre></td></tr></table></figure>
 
-<p><img src="/Tutorial-Compile/5.png" srcset="/img/loading.gif" lazyload alt="输出"></p>
+<p><img src="/Project2-Compile/5.png" srcset="/img/loading.gif" lazyload alt="输出"></p>
+<h2 id="启动网络"><a href="#启动网络" class="headerlink" title="启动网络"></a>启动网络</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ cd fabric-samples<br></code></pre></td></tr></table></figure>
+
+<p>将之前编译的二进制文件全部放在 <code>fabric-samples/bin</code> 下：</p>
+<p><img src="/Project2-Compile/7.png" srcset="/img/loading.gif" lazyload alt="bin"></p>
+<p>此时还需要生成节点的配置文件，将 <code>fabric/sampleconfig</code> 复制到 fabric-samples，并改名 config。</p>
+<p>启动：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ cd test-network<br>$ ./network.sh up<br></code></pre></td></tr></table></figure>
+
+<p>成功启动！但是在创建通道的时候组织二的节点无法加入，将 peer 的二进制文件更换为官方提供直接下载的则没有这个问题，初步推测下载的那个版本是在编译时为了适应 fabric-sample 做了某些修改。</p>
 
                 
               </div>
@@ -465,7 +478,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  <a href="/categories/%E6%AF%95%E8%AE%BE%E9%A1%B9%E7%9B%AE/" class="category-chain-item">毕设项目</a>
   
   
 
@@ -485,8 +498,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「学」 编译 Fabric 源码</div>
-      <div>https://qanlyma.github.io/Tutorial-Compile/</div>
+      <div>「毕」 2. 编译 Fabric 源码</div>
+      <div>https://qanlyma.github.io/Project2-Compile/</div>
     </div>
     <div class="license-meta">
       
@@ -584,17 +597,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="学习笔记"
-        id="heading-078425eaf316a180b0989442e53f920b" role="tab" data-toggle="collapse" href="#collapse-078425eaf316a180b0989442e53f920b"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="毕设项目"
+        id="heading-f081d380c266d8d857350bddc6f1b47c" role="tab" data-toggle="collapse" href="#collapse-f081d380c266d8d857350bddc6f1b47c"
         aria-expanded="true"
       >
-        学习笔记
-        <span class="list-group-count">(8)</span>
+        毕设项目
+        <span class="list-group-count">(2)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-078425eaf316a180b0989442e53f920b"
-           role="tabpanel" aria-labelledby="heading-078425eaf316a180b0989442e53f920b">
+      <div class="category-collapse collapse show" id="collapse-f081d380c266d8d857350bddc6f1b47c"
+           role="tabpanel" aria-labelledby="heading-f081d380c266d8d857350bddc6f1b47c">
         
         
           
@@ -603,73 +616,19 @@
     
       
       
-        <a href="/Tutorial-Docker/" title="「学」 Docker 使用教程"
+        <a href="/Project1-Test/" title="「毕」 1. 测试 Fabric 2.4.0"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「学」 Docker 使用教程</span>
+          <span class="category-post">「毕」 1. 测试 Fabric 2.4.0</span>
         </a>
       
     
       
       
-        <a href="/Tutorial-Git/" title="「学」 Git 使用教程"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Git 使用教程</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Tutorial-Hexo/" title="「学」 Hexo 基础命令"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Hexo 基础命令</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Tutorial-Linux/" title="「学」 Linux 使用教程"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Linux 使用教程</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Tutorial-Markdown/" title="「学」 Markdown 使用教程"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Markdown 使用教程</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Black-words/" title="「学」 Web3.0 黑话"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 Web3.0 黑话</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Tutorial-Tape/" title="「学」 使用 Tape 测试 Fabric 2.4.0"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「学」 使用 Tape 测试 Fabric 2.4.0</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Tutorial-Compile/" title="「学」 编译 Fabric 源码"
+        <a href="/Project2-Compile/" title="「毕」 2. 编译 Fabric 源码"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「学」 编译 Fabric 源码</span>
+          <span class="category-post">「毕」 2. 编译 Fabric 源码</span>
         </a>
       
     
