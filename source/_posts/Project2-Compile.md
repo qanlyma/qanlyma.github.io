@@ -1,9 +1,9 @@
 ---
-title: 「学」 编译 Fabric 源码
+title: 「毕」 2. 编译 Fabric 源码
 category_bar: true
 date: 2023-05-09 15:09:12
 tags:
-categories: 学习笔记
+categories: 毕设项目
 banner_img:
 ---
 
@@ -117,15 +117,17 @@ $ make fabric-ca-client
 
 ![二进制文件](2.png)
 
-### 5. 制作 docker 镜像
+## 制作镜像
 
-把当前用户加入到 docker 用户组后在 fabric 目录下执行：
+把当前用户加入到 docker 用户组后，分别在 fabric 和 fabric-ca 目录下执行：
 
 ```Linux
 $ make docker
 ```
 
-#### 镜像代码
+![Docker Images](6.png)
+
+### 镜像代码
 
 `Makefile` 中制作 docker 镜像的代码如下：
 
@@ -219,13 +221,38 @@ CMD ["peer","node","start"]
     * 暴露容器的 7051 端口。
     * 使用 CMD 指令在容器启动时运行 peer node start 命令。
 
-#### 测试镜像
+**可以看出该镜像并非直接复制主机编译的二进制文件，而是复制当前目录的代码，在容器中自己编译。**
 
-保留之前的更改，制作 peer 镜像并进入容器测试：
+### 测试镜像
+
+保留之前测试编译的更改，制作 peer 镜像并进入容器测试：
 
 ```Linux
 $ make peer-docker
 $ docker run hyperledger/fabric-peer
 $ docker exec -it container_id /bin/sh
+# peer
 ```
+
 ![输出](5.png)
+
+## 启动网络
+
+```Linux
+$ cd fabric-samples
+```
+
+将之前编译的二进制文件全部放在 `fabric-samples/bin` 下：
+
+![bin](7.png)
+
+此时还需要生成节点的配置文件，将 `fabric/sampleconfig` 复制到 fabric-samples，并改名 config。
+
+启动：
+
+```Linux
+$ cd test-network
+$ ./network.sh up
+```
+
+成功启动！但是在创建通道的时候组织二的节点无法加入，将 peer 的二进制文件更换为官方提供直接下载的则没有这个问题，初步推测下载的那个版本是在编译时为了适应 fabric-sample 做了某些修改。

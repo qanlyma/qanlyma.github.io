@@ -1,9 +1,9 @@
 ---
-title: 「学」 使用 Tape 测试 Fabric 2.4.0
+title: 「毕」 1. 测试 Fabric 2.4.0
 category_bar: true
 date: 2023-04-17 10:53:08
 tags:
-categories: 学习笔记
+categories: 毕设项目
 banner_img:
 ---
 
