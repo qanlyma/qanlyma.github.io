@@ -217,7 +217,9 @@ Tx. Arrival Rate: 125 to 250 tps with a step of 25.
 
 ### C. Bulk Read/Write During MVCC Validation & Commit
 
-为了减少 REST API 调用的数量，CouchDB 建议使用批量操作。因此，我们使用 Fabric 中现有的 BatchRetrieval API，通过每个块的单个 GET REST API 调用，将多个键的版本和修订号批量加载到缓存中。为了增强账本更新过程，我们使用 BatchUpdate API 来提交一批文档，每个块使用一个 PUT REST API 调用。此外，我们在 VSCC 中引入了一个缓存，以减少对 CouchDB 的调用，从而获得每个交易的背书策略。
+在使用 CouchDB 作为状态数据库进行 MVCC 验证时，对于块中的每个交易读集中的每个键，使用安全的 HTTPS 协议进行 GET REST API 调用来检索最后提交的版本号。在提交阶段，对于块中的每个有效交易写集中的每个键，使用 GET REST API 调用来检索修订号。最后，对于写集中的每个条目，使用 PUT REST API 调用来提交记录。由于这些多个 REST API 调用，性能显著下降。
+
+为了减少 REST API 调用的数量，CouchDB 建议使用批量操作。因此，我们使用 Fabric 中现有的 BatchRetrieval API，通过每个块的单个 GET REST API 调用，将多个键的版本和修订号批量加载到缓存中。为了增强账本更新过程，我们使用 BatchUpdate API 来提交一批记录，每个块调用一个 PUT REST API。此外，我们在 VSCC 中引入了一个缓存，以减少对 CouchDB 的调用，从而获得每个交易的背书策略。
 
 ![Impact of bulk read during the MVCC validation and ledger update on the performance](15.png)
 
