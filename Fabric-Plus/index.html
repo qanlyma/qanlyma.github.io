@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Plus/18.png">
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Plus/19.png">
 <meta property="article:published_time" content="2023-04-20T08:16:09.000Z">
-<meta property="article:modified_time" content="2023-04-23T06:05:08.414Z">
+<meta property="article:modified_time" content="2023-05-20T13:21:04.473Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Fabric-Plus/1.png">
@@ -277,7 +277,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：25 天前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -334,7 +334,7 @@
 <p>这种情况下的问题是：如果 T1、T2、T3 或 T4 将写入由 T5 读取的键值，那么 T5 对过时的数据进行模拟。因此在读取的那一刻，交易就已经变得无效。可是 Fabric 在 T5 的验证阶段之前没有检测到这种过时的读取。因此 T5 将继续其模拟并经历排序阶段，只是最终被无效。</p>
 <h4 id="4-2-2-Violation-in-the-ordering-phase-within-block-conflicts"><a href="#4-2-2-Violation-in-the-ordering-phase-within-block-conflicts" class="headerlink" title="4.2.2 Violation in the ordering phase (within-block conflicts)"></a>4.2.2 Violation in the ordering phase (within-block conflicts)</h4><p>冲突除了发生在不同区块，也有可能发生在同一个区块内部：如 4.1 节所示，这种情况出现在排序之后。尽管块内 3&#x2F;4 的交易实际上是无效的，也将传递给网络的所有节点进行验证。</p>
 <p>尽早“清理”流水线的概念在数据库中被称为 early abort，它减少了网络流量并节省了计算资源。</p>
-<h2 id="5-FABRIC"><a href="#5-FABRIC" class="headerlink" title="5 FABRIC++"></a>5 FABRIC++</h2><h3 id="5-1-Transaction-Reordering"><a href="#5-1-Transaction-Reordering" class="headerlink" title="5.1 Transaction Reordering"></a>5.1 Transaction Reordering</h3><p>对一组交易 S 重新排序时遇到的挑战：首先我们需要确定 S 中的哪些交易是相互冲突的。由于 S 中的交易在完全隔离的环境下模拟执行，这些冲突仍有可能会发生。因为S 的 提交发生在之后的阶段，它们没有机会看到彼此潜在的冲突修改。</p>
+<h2 id="5-FABRIC"><a href="#5-FABRIC" class="headerlink" title="5 FABRIC++"></a>5 FABRIC++</h2><h3 id="5-1-Transaction-Reordering"><a href="#5-1-Transaction-Reordering" class="headerlink" title="5.1 Transaction Reordering"></a>5.1 Transaction Reordering</h3><p>对一组交易 S 重新排序时遇到的挑战：首先我们需要确定 S 中的哪些交易是相互冲突的。由于 S 中的交易在完全隔离的环境下模拟执行，这些冲突仍有可能会发生。因为 S 的提交发生在之后的阶段，它们没有机会看到彼此潜在的冲突修改。</p>
 <p>假设 Ti 写入由 Tj 读取的键值（记为 Ti ↛  Tj），那么 Ti 必须排在 Tj 之后（记为 Tj ⇒ Ti），否则 Tj 将无效。如果发生冲突循环，简单的重新排序无法解决问题。比如 Ti ↛  Tj ↛  Tk ↛  Ti，这种情况下只有先删除某笔交易来形成一个无环子集。</p>
 <p><strong>五个步骤</strong>：</p>
 <ol>
@@ -357,7 +357,7 @@
 <p><strong>Step 4</strong>：首先处理所在环数最多的交易 T0 和 T3，移除下标较小的一个 T0 以保证算法的确定性，这步操作清除了 c1 和 c2 两个环。接着移除 T2 清除 c3，使图变为无环状态。我们可以从剩下的交易子集 S’ &#x3D; {T1,T3,T4,T5} 建立无冲突调度序列。</p>
 <p><img src="/Fabric-Plus/9.png" srcset="/img/loading.gif" lazyload alt="cycle-free conflict graph C(S’)"></p>
 <p><strong>Step 5</strong>：重复执行以下两步，直到所有节点都被 scheduled：(a) 定位当前子图源节点；(b) 对该源节点可访问的所有节点 scheduling。</p>
-<p>首先从 C(S’) 中下标最小的交易 T1 开始（即代码中的 startNode），我们必须找到 T1 的源节点，将它排在最后。T1 有两个父节点 T3 和 T4，T3 没有被访问过但是它有父节点 T4，T4没有被访问过且是源节点，因此我们将 T4 放在 schedule 的最后一个位置。</p>
+<p>首先从 C(S’) 中下标最小的交易 T1 开始（即代码中的 startNode），我们必须找到 T1 的源节点，将它排在最后。T1 有两个父节点 T3 和 T4，T3 没有被访问过但是它有父节点 T4，T4 没有被访问过且是源节点，因此我们将 T4 放在 schedule 的最后一个位置。</p>
 <p>图中 T4 能够到达的所有节点都要排在它前面，T4 有两个子节点 T1 和 T3，T1 没有被 scheduled，但是 T3 指向 T1，所以不能直接 schedule T1。我们访问 T3 并发现它有一个父节点 T4 是源节点，所以将 T3 排在 T4 之前，T1 排在 T3 之前。到此，源节点能够到达的节点都排完了，然后再对剩下的节点进行排序得到 T5 ⇒ T1 ⇒ T3 ⇒ T4。</p>
 <p>请注意，我们的重新排序机制并不能保证中止最少数量的交易，因为这将是一个 NP 难题。然而它提供了一种非常轻量级的方法来生成一个可串行化的调度，只需要少量的中止。</p>
 <h4 id="5-1-2-Batch-Cutting"><a href="#5-1-2-Batch-Cutting" class="headerlink" title="5.1.2 Batch Cutting"></a>5.1.2 Batch Cutting</h4><p>上述讨论忽视了排序服务的出块操作，我们在 Fabric 原有出块条件的基础上加入了一个条件：批处理中交易访问的键值达到一定数量。这个条件确保了我们的重新排序机制的运行时间保持有界。</p>

@@ -42,7 +42,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/17.png">
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Optimizing/18.png">
 <meta property="article:published_time" content="2023-03-22T06:54:28.000Z">
-<meta property="article:modified_time" content="2023-05-09T12:30:12.880Z">
+<meta property="article:modified_time" content="2023-05-18T08:39:22.047Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Fabric-Optimizing/1.png">
@@ -276,7 +276,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：9 天前
+                    本文最后更新于：4 天前
                   
                 
               </p>
@@ -442,7 +442,8 @@
 <h3 id="B-Parallel-VSCC-Validation-of-a-Block"><a href="#B-Parallel-VSCC-Validation-of-a-Block" class="headerlink" title="B. Parallel VSCC Validation of a Block"></a>B. Parallel VSCC Validation of a Block</h3><p>并行验证多个交易的背书，以利用闲置的 CPU 并提高整体性能。为了实现这一点，我们在对等节点启动时为每个通道创建了可配置数量的工作线程。每个工作线程根据其背书策略验证一个交易的背书签名集。</p>
 <p><img src="/Fabric-Optimizing/14.png" srcset="/img/loading.gif" lazyload alt="Impact of parallel VSCC validation on multichannel setup"></p>
 <p>对于每个通道，我们分配了与块大小相等的工作线程。在一个通道的非过载情况下，对于 30 的块大小，吞吐量从 130 tps 提升到 800 tps（提高了6.3倍），对于 300 的块大小提升到 980 tps（7.5倍）。块内交易的并行 VSCC 验证显著提高了单个通道的性能。但是随着通道数量的增加，改善的百分比下降。这是因为默认情况下，多个通道会导致块（而不是交易）的并行验证，因此只有少量可用的 vCPU 可用于并行 VSCC。</p>
-<h3 id="C-Bulk-Read-x2F-Write-During-MVCC-Validation-amp-Commit"><a href="#C-Bulk-Read-x2F-Write-During-MVCC-Validation-amp-Commit" class="headerlink" title="C. Bulk Read&#x2F;Write During MVCC Validation &amp; Commit"></a>C. Bulk Read&#x2F;Write During MVCC Validation &amp; Commit</h3><p>为了减少 REST API 调用的数量，CouchDB 建议使用批量操作。因此，我们使用 Fabric 中现有的 BatchRetrieval API，通过每个块的单个 GET REST API 调用，将多个键的版本和修订号批量加载到缓存中。为了增强账本更新过程，我们使用 BatchUpdate API 来提交一批文档，每个块使用一个 PUT REST API 调用。此外，我们在 VSCC 中引入了一个缓存，以减少对 CouchDB 的调用，从而获得每个交易的背书策略。</p>
+<h3 id="C-Bulk-Read-x2F-Write-During-MVCC-Validation-amp-Commit"><a href="#C-Bulk-Read-x2F-Write-During-MVCC-Validation-amp-Commit" class="headerlink" title="C. Bulk Read&#x2F;Write During MVCC Validation &amp; Commit"></a>C. Bulk Read&#x2F;Write During MVCC Validation &amp; Commit</h3><p>在使用 CouchDB 作为状态数据库进行 MVCC 验证时，对于块中的每个交易读集中的每个键，使用安全的 HTTPS 协议进行 GET REST API 调用来检索最后提交的版本号。在提交阶段，对于块中的每个有效交易写集中的每个键，使用 GET REST API 调用来检索修订号。最后，对于写集中的每个条目，使用 PUT REST API 调用来提交记录。由于这些多个 REST API 调用，性能显著下降。</p>
+<p>为了减少 REST API 调用的数量，CouchDB 建议使用批量操作。因此，我们使用 Fabric 中现有的 BatchRetrieval API，通过每个块的单个 GET REST API 调用，将多个键的版本和修订号批量加载到缓存中。为了增强账本更新过程，我们使用 BatchUpdate API 来提交一批记录，每个块调用一个 PUT REST API。此外，我们在 VSCC 中引入了一个缓存，以减少对 CouchDB 的调用，从而获得每个交易的背书策略。</p>
 <p><img src="/Fabric-Optimizing/15.png" srcset="/img/loading.gif" lazyload alt="Impact of bulk read during the MVCC validation and ledger update on the performance"></p>
 <p>要与上文非批量读写进行比较，对于单次写入的事务，性能从 50 tps 显著提高到 115 tps（2.3 倍）。对于多次写入（3-w 和 5-w），吞吐量从 26 tps 增加到 100 tps（3-w 为 3.8倍），从 18 tps 提高到 90 tps（5-w 为 5 倍）。我们注意到读写事务也有类似的改进。</p>
 <h3 id="D-Combinations-of-Optimizations"><a href="#D-Combinations-of-Optimizations" class="headerlink" title="D. Combinations of Optimizations"></a>D. Combinations of Optimizations</h3><p><img src="/Fabric-Optimizing/16.png" srcset="/img/loading.gif" lazyload alt="Configuration"></p>
