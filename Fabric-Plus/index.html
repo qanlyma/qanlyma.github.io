@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Plus/18.png">
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Plus/19.png">
 <meta property="article:published_time" content="2023-04-20T08:16:09.000Z">
-<meta property="article:modified_time" content="2023-05-20T13:21:04.473Z">
+<meta property="article:modified_time" content="2023-05-23T06:28:57.099Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Fabric-Plus/1.png">
@@ -365,10 +365,10 @@
 <h4 id="5-2-1-Early-Abort-in-the-Simulation-Phase"><a href="#5-2-1-Early-Abort-in-the-Simulation-Phase" class="headerlink" title="5.2.1 Early Abort in the Simulation Phase"></a>5.2.1 Early Abort in the Simulation Phase</h4><p>为了在模拟阶段实现 early abort，必须通过更细粒度的并发控制机制来扩展 Fabric，该机制允许在 Peer 中并行执行模拟和验证。有了这样的机制，我们就有机会在模拟过程中识别过时的读取。</p>
 <p>再来看看 4.2.1 的例子，在细粒度的并发控制机制下，当提案 T5 的智能合约正在模拟时，包含 T1、T2、T3 和 T4 的块将不必等待验证，这四个交易将以原子方式应用它们的更新。对于 T5 执行的每一次读取，我们都可以检查读取值是否仍然是最新的。一旦检测到过时的读取，就可以中止对 T5 的模拟并直接通知相应的客户，以便其重新提交提案。</p>
 <p><strong>如何实现</strong>：在现代数据库系统的背景下，高级并发控制机制已经建立起来。这种技术通常在记录级别甚至在单个单元&#x2F;值级别执行细粒度锁定，而不是锁定整个存储。由于数据库系统的存储和 Fabric 中使用的存储在概念上没有区别，因此可以在这里应用类似的技术。</p>
-<p>Fabric 用键值对存储其当前状态，该存储将每个单独的键映射到一对值和版本号。版本号实际上由执行更新的交易 ID 以及块 ID 组成，其唯一目的是识别过时的读取。我们在 Fabric++ 中删除读写锁，使用每个值维护的版本号足以确保与 Fabric 相同的交易隔离。由于不再获取锁，我们需要一种机制来确保并行运行的模拟阶段不会读到验证阶段执行的更新。我们在模拟过程中检查每个读取值的版本号，并测试它是否仍然是最新的。</p>
+<p>Fabric 用键值对存储其当前状态，该存储将每个单独的键映射到一对值和版本号。版本号实际上由执行更新的交易 ID 以及块 ID 组成，其唯一目的是识别过时的读取。我们在 Fabric++ 中删除读写锁，因为使用每个值维护的版本号足以确保与 Fabric 相同的交易隔离。为了确保并行运行的模拟阶段不会读到验证阶段执行的更新，我们在模拟过程中检查每个读取值的版本号，并测试它是否是最新的。</p>
 <p><img src="/Fabric-Plus/10.png" srcset="/img/loading.gif" lazyload alt="Fine-grained Concurrency Control"></p>
-<p>在模拟阶段开始时，首先识别账本的最后一个区块 ID。将此块 ID 称为 记为 last-block-ID。在我们的示例中，最后一个块 last-block-ID &#x3D; 4。模拟阶段中的 balA＝70 的读取发生在验证阶段将 balA 更新为 50 之前。因此读数是最新的，模拟仍在继续。balB 的读取发生在验证阶段将 balB 更新为 100 之后。由于 5 高于 last-block-ID &#x3D; 4，我们可以直接将该交易标记为无效，因为交易将没有机会通过验证阶段。</p>
-<h4 id="5-2-2-Early-Abort-in-the-Ordering-Phase"><a href="#5-2-2-Early-Abort-in-the-Ordering-Phase" class="headerlink" title="5.2.2 Early Abort in the Ordering Phase"></a>5.2.2 Early Abort in the Ordering Phase</h4><p>由于 Fabric 以整个块的粒度执行提交，因此同一块中读取相同键值的两个交易必须读取相同版本。因此一旦检测到同一块内的交易之间的版本不匹配，就可以提前中止后一个交易。这种策略确保只有那些有提交机会的交易最终会进入块中。</p>
+<p>在模拟阶段开始时，首先识别账本的最后一个区块 ID，在此记为 last-block-ID。如图 last-block-ID &#x3D; 4。在模拟执行期间，任何读取的版本号所包含的 block-ID 都不应该高于 last-block-ID，否则该值在交易模拟阶段已经被更改而过期。模拟阶段中的 balA＝70 的读取发生在验证阶段将 balA 更新为 50 之前。因此读数是最新的，模拟仍在继续。balB 的读取发生在验证阶段将 balB 更新为 100 之后。由于 5 高于 last-block-ID &#x3D; 4，我们可以直接将该交易标记为无效，因为交易将没有机会通过验证阶段。</p>
+<h4 id="5-2-2-Early-Abort-in-the-Ordering-Phase"><a href="#5-2-2-Early-Abort-in-the-Ordering-Phase" class="headerlink" title="5.2.2 Early Abort in the Ordering Phase"></a>5.2.2 Early Abort in the Ordering Phase</h4><p>由于 Fabric 以整个块的粒度执行提交，因此同一块中读取相同键的两个交易必须读取相同版本。因此一旦检测到同一块内的交易之间的版本不匹配，就可以提前中止后一个交易。这种策略确保只有那些有提交机会的交易最终会进入块中。</p>
 <h2 id="6-EXPERIMENTAL-EVALUATION"><a href="#6-EXPERIMENTAL-EVALUATION" class="headerlink" title="6 EXPERIMENTAL EVALUATION"></a>6 EXPERIMENTAL EVALUATION</h2><h3 id="6-1-Setup"><a href="#6-1-Setup" class="headerlink" title="6.1 Setup"></a>6.1 Setup</h3><p>略</p>
 <h3 id="6-2-Benchmark-Framework-and-Workload"><a href="#6-2-Benchmark-Framework-and-Workload" class="headerlink" title="6.2 Benchmark Framework and Workload"></a>6.2 Benchmark Framework and Workload</h3><h4 id="6-2-1-Framework"><a href="#6-2-1-Framework" class="headerlink" title="6.2.1 Framework"></a>6.2.1 Framework</h4><p>主要使用自己搭建的测试工具，也使用了 Caliper。</p>
 <h4 id="6-2-2-Workload"><a href="#6-2-2-Workload" class="headerlink" title="6.2.2 Workload"></a>6.2.2 Workload</h4><p><strong>两种不同的工作负载</strong>：</p>

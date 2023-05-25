@@ -47,7 +47,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Sharp/22.png">
 <meta property="og:image" content="https://qanlyma.github.io/Fabric-Sharp/23.png">
 <meta property="article:published_time" content="2023-04-24T05:05:21.000Z">
-<meta property="article:modified_time" content="2023-05-22T09:06:01.009Z">
+<meta property="article:modified_time" content="2023-05-23T08:27:49.475Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Fabric-Sharp/1.png">
@@ -281,7 +281,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：1 分钟前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -422,10 +422,10 @@
 <p>算法 5 概述了恢复 ww 依赖关系的主要步骤。下图中的示例进一步解释了该算法。待定交易（用蓝色虚线边框标记）、提交序列、新的 ww 依赖关系（用蓝色实线标记）和拓扑排序的迭代顺序的依赖关系图的示例。不考虑 Txn0 和 Txn3 之间的 ww 依赖性（用蓝色虚线标记），因为它是隐式的。红色的 Txn1 由于过时而需要修剪。交易年龄以斜体表示。</p>
 <p><img src="/Fabric-Sharp/16.png" srcset="/img/loading.gif" lazyload alt="Example"></p>
 <p>对于待定交易（PW）将要更新的每个 key，对其相关交易进行拓扑排序，并在可达性过滤器中选择尚未连接的第一对。在这样的对中，可以从第一个交易的所有 predecessors 到达第二个交易。如果一对中的交易已经在可达性过滤器中连接，这使得恢复是多余的：如图中 Txn0 和 Txn3。对于尚未连接的交易，需要更新它们的 successors。我们将交易放入 (head_txns) 集合中并根据拓扑排序更新 successors。这样可以在迭代中避免重复更新：例如 Txn8 在更新 A 和 B 时都可达，但使用这个算法可达性信息只会更新一次。</p>
-<h3 id="4-6-Dependency-Graph-Pruning"><a href="#4-6-Dependency-Graph-Pruning" class="headerlink" title="4.6 Dependency Graph Pruning"></a>4.6 Dependency Graph Pruning</h3><p>由于图 G 增长速度会很快，我们根据以下原则剪枝： (i) 根据非常旧的快照进行模拟，或者 (ii) 无法影响待定交易。</p>
-<p>对于第一种情况，我们引入一个参数 max_span 来限制交易的区块跨度（如果对块 M 模拟并在块 M+1 中提交，则其块跨度为1）。如果下一个区块号是 M，我们计算 snapshot threshold：H &#x3D; M − max_span。任何按照 H 或更早区块模拟的交易将会被中止。对于第二种情况，我们将交易 txn 的年龄定义为在 G 中的 txn 可到达交易的最后提交块的序列号。当 snapshot threshold 大于 txn 的年龄时，未来的交易不能与任何可以达到 txn 的交易并发。这种情况下 anti-rw 依赖就不会产生，并且这排除了任何包含 txn 的不可序列化的调度。因此，txn 可以安全地从 G 中剪枝。我们通过将 G 中的所有交易安排到按年龄加权的优先级队列中来修剪。对于要在块 M 中提交的新交易，我们在算法 4（第 7 行）中的遍历过程中将其可到达的交易的年龄增加到 M。为了安全起见，所有排序节点必须使用相同的 max_span 值。</p>
+<h3 id="4-6-Dependency-Graph-Pruning"><a href="#4-6-Dependency-Graph-Pruning" class="headerlink" title="4.6 Dependency Graph Pruning"></a>4.6 Dependency Graph Pruning</h3><p>由于图 G 增长速度会很快，我们根据以下原则剪枝：(i) 根据非常旧的快照进行模拟；(ii) 无法影响待定交易。</p>
+<p>对于第一种情况，我们引入一个参数 max_span 来限制交易的区块跨度（如果对块 M 模拟并在块 M+1 中提交，则其块跨度为 1）。如果下一个区块号是 M，我们计算 snapshot threshold：H &#x3D; M − max_span。任何按照 H 或更早区块模拟的交易将会被中止。对于第二种情况，我们将交易 txn 的年龄定义为在 G 中的 txn 可到达交易的最后提交块的序列号。当 snapshot threshold 大于 txn 的年龄时，未来的交易不能与任何可以达到 txn 的交易并发。这种情况下 anti-rw 依赖就不会产生，并且这排除了任何包含 txn 的不可序列化的调度。因此，txn 可以安全地从 G 中剪枝。我们通过将 G 中的所有交易安排到按年龄加权的优先级队列中来修剪。对于要在块 M 中提交的新交易，我们在算法 4（第 7 行）中的遍历过程中将其可到达的交易的年龄增加到 M。为了安全起见，所有排序节点必须使用相同的 max_span 值。</p>
 <h2 id="5-EXPERIMENTS"><a href="#5-EXPERIMENTS" class="headerlink" title="5 EXPERIMENTS"></a>5 EXPERIMENTS</h2><h3 id="5-1-Systems-and-Setup"><a href="#5-1-Systems-and-Setup" class="headerlink" title="5.1 Systems and Setup"></a>5.1 Systems and Setup</h3><p>基于 Hyperledger Fabric 1.3 改进并命名为 FabricSharp。与原生 Fabric 和两个采用 OCC 技术的系统比较。基于 FastFabric 改进并命名为 FastFabricSharp。每组实验采用两个排序节点，三个 Kafka 节点和四个对等节点。</p>
-<h3 id="5-2-Workloads-and-Benchmark-Driver"><a href="#5-2-Workloads-and-Benchmark-Driver" class="headerlink" title="5.2 Workloads and Benchmark Driver"></a>5.2 Workloads and Benchmark Driver</h3><p>我们采用与 Fabric++ 同样的工作负载—— Smallbank benchmark。一笔交易分别读取和写入 1 万个账户中的 4 个银行账户。我们将其中 1% 设置为热门账户。每次读取都有一定的概率访问热门帐户，由 Read hot ratio 参数控制。类似地，对热门帐户的写入由 Write hot ratio 控制。我们引入了另外两个工作负载参数，即 Client Delay 和 Read Interval。前者控制客户端在从对等节点接收到执行结果后向排序节点广播的延迟。此参数模拟客户端的网络传输延迟。后者通过控制连续读取之间的间隔来模拟计算量大的交易。</p>
+<h3 id="5-2-Workloads-and-Benchmark-Driver"><a href="#5-2-Workloads-and-Benchmark-Driver" class="headerlink" title="5.2 Workloads and Benchmark Driver"></a>5.2 Workloads and Benchmark Driver</h3><p>我们采用与 Fabric++ 同样的工作负载—— Smallbank benchmark。一笔交易分别读取和写入 1 万个账户中的 4 个银行账户。我们将其中 1% 设置为热门账户。每次读取都有一定的概率访问热门帐户，由 Read hot ratio 参数控制。类似地，对热门帐户的写入由 Write hot ratio 控制。我们引入了另外两个工作负载参数，即 Client Delay 和 Read Interval。前者控制客户端在从对等节点接收到执行结果后向排序节点广播的延迟，模拟客户端的网络传输延迟。后者通过控制连续读取之间的间隔来模拟计算量大的交易。</p>
 <p><img src="/Fabric-Sharp/17.png" srcset="/img/loading.gif" lazyload alt="Experiment Parameters"></p>
 <p>参数设置如图，画横线的是默认值。我们固定 max_span 为 10，请求速率 为 700 tps，这是因为 Fabric 在我们的设置中可以维持约 700 tps 的最大原始吞吐量。除非有特别说明，否则所有的吞吐量都指<strong>有效吞吐量</strong>，即通过序列化检验并持久化状态的交易。</p>
 <h3 id="5-3-The-Performance-of-FabricSharp"><a href="#5-3-The-Performance-of-FabricSharp" class="headerlink" title="5.3 The Performance of FabricSharp"></a>5.3 The Performance of FabricSharp</h3><ul>
