@@ -7,7 +7,7 @@ categories: 毕设项目
 banner_img:
 ---
 
-本文尝试编译 Fabric 源码来构建 Fabric 网络。
+本文尝试编译 Fabric 源码来构建网络。
 
 <!-- more -->
 
