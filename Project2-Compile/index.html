@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/5.png">
 <meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/7.png">
 <meta property="article:published_time" content="2023-05-09T07:09:12.000Z">
-<meta property="article:modified_time" content="2023-05-23T09:34:57.423Z">
+<meta property="article:modified_time" content="2023-05-25T06:38:40.662Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Project2-Compile/1.png">
@@ -265,7 +265,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 天前
+                    本文最后更新于：36 分钟前
                   
                 
               </p>
@@ -388,7 +388,7 @@
 <h4 id="测试编译"><a href="#测试编译" class="headerlink" title="测试编译"></a>测试编译</h4><p>我注意到网上的教程都需要我们把 fabric 的源码放在 <code>$GOPATH/src/github.com/heperledger/</code> 目录下，Makefile 文件中的编译路径也是：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs Makefile">PKGNAME = github.com/hyperledger/fabric<br><br>pkgmap.configtxgen    := <span class="hljs-variable">$(PKGNAME)</span>/cmd/configtxgen<br>pkgmap.configtxlator  := <span class="hljs-variable">$(PKGNAME)</span>/cmd/configtxlator<br>pkgmap.cryptogen      := <span class="hljs-variable">$(PKGNAME)</span>/cmd/cryptogen<br>pkgmap.discover       := <span class="hljs-variable">$(PKGNAME)</span>/cmd/discover<br>pkgmap.ledgerutil     := <span class="hljs-variable">$(PKGNAME)</span>/cmd/ledgerutil<br>pkgmap.orderer        := <span class="hljs-variable">$(PKGNAME)</span>/cmd/orderer<br>pkgmap.osnadmin       := <span class="hljs-variable">$(PKGNAME)</span>/cmd/osnadmin<br>pkgmap.peer           := <span class="hljs-variable">$(PKGNAME)</span>/cmd/peer<br></code></pre></td></tr></table></figure>
 
-<p>为了测试能否在自定义路径中编译源码，我修改了 <code>fabric/internal/peer/version</code> :</p>
+<p>为了测试能否在自定义路径中编译源码，我修改了 <code>fabric/internal/peer/version/version.go</code> :</p>
 <p><img src="/Project2-Compile/3.png" srcset="/img/loading.gif" lazyload alt="version.go"></p>
 <p>然后编译并执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make peer<br>$ export PATH=$PWD/build/bin<br>$ peer<br></code></pre></td></tr></table></figure>
@@ -459,7 +459,8 @@
 <p>启动：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ cd test-network<br>$ ./network.sh up<br></code></pre></td></tr></table></figure>
 
-<p>成功启动！但是在创建通道的时候组织二的节点无法加入，将 peer 的二进制文件更换为官方提供直接下载的则没有这个问题，初步推测下载的那个版本是在编译时为了适应 fabric-sample 做了某些修改。</p>
+<p>成功启动！</p>
+<p>但是在创建通道的时候组织二的节点无法加入，将 peer 的二进制文件更换为官方提供直接下载的则没有这个问题。</p>
 
                 
               </div>
