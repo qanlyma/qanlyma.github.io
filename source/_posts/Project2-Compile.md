@@ -85,7 +85,7 @@ pkgmap.osnadmin       := $(PKGNAME)/cmd/osnadmin
 pkgmap.peer           := $(PKGNAME)/cmd/peer
 ```
 
-为了测试能否在自定义路径中编译源码，我修改了 `fabric/internal/peer/version` :
+为了测试能否在自定义路径中编译源码，我修改了 `fabric/internal/peer/version/version.go` :
 
 ![version.go](3.png)
 
@@ -255,4 +255,6 @@ $ cd test-network
 $ ./network.sh up
 ```
 
-成功启动！但是在创建通道的时候组织二的节点无法加入，将 peer 的二进制文件更换为官方提供直接下载的则没有这个问题，初步推测下载的那个版本是在编译时为了适应 fabric-sample 做了某些修改。
+成功启动！
+
+但是在创建通道的时候组织二的节点无法加入，将 peer 的二进制文件更换为官方提供直接下载的则没有这个问题。

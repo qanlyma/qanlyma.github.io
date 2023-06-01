@@ -628,15 +628,18 @@ $ docker cp ./sacc.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/pee
 
 ## 5 测试一下
 
-按照之前教程使用 Caliper 测试的时候发现报错找不到 connection-org1.yaml 这个文件，看一下 fabric-sample 网络的启动脚本发现有一个 ccp-generate.sh 脚本是用来生成这个的，把脚本和 .json .yaml 复制过来修改一下再运行就 ok 了。发现测试结果和之前的 fabric-sample 差不多：
+按照之前教程安装 fabcar 并使用 Caliper 测试的时候发现报错：找不到 connection-org1.yaml 这个文件，看一下 fabric-sample 网络的启动脚本发现有一个 ccp-generate.sh 脚本是用来生成这个的，把脚本和 .json .yaml 复制过来修改一下再运行就 ok 了。发现测试结果和之前的 fabric-sample 差不多：
 
 ![结果](2.png)
 
 ## 6 清理操作
+
+删除上述步骤生成的文件与容器。
 
 ```Linux
 $ docker stop $(docker ps -a -q)
 $ docker rm $(docker ps -a -q)
 $ docker volume prune //清除旧的卷
 $ docker network prune //清理网络缓存
+$ docker rmi $(docker images | grep dev)
 ```
