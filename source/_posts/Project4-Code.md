@@ -81,7 +81,6 @@ func (e *Endorser) ProcessProposal(ctx context.Context, signedProp *pb.SignedPro
 	// 处理提案并生成提案响应
 	pResp, err := e.ProcessProposalSuccessfullyOrError(up)
 
-	return pResp, nil
 }
 ```
 
@@ -276,17 +275,13 @@ func (c *Chain) Submit(req *orderer.SubmitRequest, sender uint64) error {
 		lead := <-leadC
 
 		// 若当前集群中还没有选出一个 leader，共识功能暂时不可用
-		if lead == raft.None {
-			c.Metrics.ProposalFailures.Add(1)
-			return errors.Errorf("no Raft leader")
-		}
+		if lead == raft.None {...}
 
 		// 若当前节点不是 leader，将消息转发给 leader
 		if lead != c.raftID {
-			if err := c.forwardToLeader(lead, req); err != nil {
-				return err
-			}
+			if err := c.forwardToLeader(lead, req); err != nil {...}
 		}
+		
 	}
 
 }
@@ -673,6 +668,6 @@ func (vdb *versionedDB) ApplyUpdates(batch *statedb.UpdateBatch, height *version
 
 	// 将数据库更新批次写入到版本化数据库中，true 表示要求同步写入。
 	return vdb.db.WriteBatch(dbBatch, true)
-	
+
 }
 ```

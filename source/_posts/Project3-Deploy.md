@@ -541,10 +541,11 @@ $ docker exec -it cli2 bash
 
 ### 准备工作
 
-利用 fabric-samples/chaincode/sacc 进行链码测试：
+利用 caliper 中的简单转账链码进行链码测试：
 
 ```Linux
-$ cp -r /fabric-samples/chaincode/sacc /twoPeerNet/chaincode/go
+$ mkdir /twoPeerNet/chaincode/go/simple
+$ cp caliper-benchmarks/src/fabric/scenario/simple/go/* /twoPeerNet/chaincode/go/simple
 ```
 
 在 docker-compose 中，`/twoPeerNet/chaincode/go` 与容器内的目录实现了容器卷映射，将链码复制到该目录下，容器中也有了相应的链码。
@@ -558,7 +559,7 @@ $ cp -r /fabric-samples/chaincode/sacc /twoPeerNet/chaincode/go
 下载依赖：
 
 ```Linux
-# cd /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go/sacc
+# cd /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go/simple
 # go mod vendor
 
 # cd /opt/gopath/src/github.com/hyperledger/fabric/peer
@@ -569,15 +570,15 @@ $ cp -r /fabric-samples/chaincode/sacc /twoPeerNet/chaincode/go
 在 cli1 中打包链码：
 
 ```Linux
-# peer lifecycle chaincode package sacc.tar.gz --path /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go/sacc --label sacc_1.0
+# peer lifecycle chaincode package simple.tar.gz --path /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go/simple --label simple_1.0
 ```
 
 在容器外将 cli1 中打包的链码复制到 cli2：
 
 ```Linux
-$ docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/sacc.tar.gz ./
+$ docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/simple.tar.gz ./
 
-$ docker cp ./sacc.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
+$ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
 ```
 
 ### 安装链码
@@ -585,7 +586,7 @@ $ docker cp ./sacc.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/pee
 在两个 cli 中分别操作：
 
 ```Linux
-# peer lifecycle chaincode install sacc.tar.gz
+# peer lifecycle chaincode install simple.tar.gz
 ```
 
 ### 审批链码
@@ -599,13 +600,13 @@ $ docker cp ./sacc.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/pee
 在两个 cli 中分别操作：
 
 ```Linux
-# peer lifecycle chaincode approveformyorg --channelID mychannel --name sacc --version 1.0 --init-required --package-id sacc_1.0:5562f868f6fd43ff8873f403aa52bc6928161fec933065d0b81e2193f6038bd0 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+# peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:539969bf4773133bf852368737a5ba505443ca4d6b5eae92f5f4463fd8bbd171 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
 检测是否成功：
 
 ```Linux
-# peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name sacc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com
+# peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name simple --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com
 ```
 
 ### 提交链码
@@ -613,33 +614,74 @@ $ docker cp ./sacc.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/pee
 只需要在 cli1 执行即可：
 
 ```Linux
-# peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --name sacc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+# peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --name simple --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 ```
 
 ### 调用链码
 
-```Linux
-# peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n sacc --isInit --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["a","bb"]}'
+初始化：
 
-# peer chaincode query -C mychannel -n sacc -c '{"Args":["query","a"]}'
+```Linux
+# peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --isInit --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":[]}'
 ```
 
-![目录](1.png)
+调用其他方法：
+
+```Linux
+# peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["open","Qanly","1000"]}'
+
+# peer chaincode query -C mychannel -n simple -c '{"Args":["query","Qanly"]}'
+```
 
 ## 5 测试一下
 
-按照之前教程安装 fabcar 并使用 Caliper 测试的时候发现报错：找不到 connection-org1.yaml 这个文件，看一下 fabric-sample 网络的启动脚本发现有一个 ccp-generate.sh 脚本是用来生成这个的，把脚本和 .json .yaml 复制过来修改一下再运行就 ok 了。发现测试结果和之前的 fabric-sample 差不多：
+使用 Caliper 测试的时候发现报错：找不到 connection-org1.yaml 这个文件，看一下 fabric-sample 网络的启动脚本发现有一个 ccp-generate.sh 脚本是用来生成这个的，把脚本和 .json .yaml 复制到 `twoPeerNet/crypto-config` 中，修改一下再运行就 ok 了。
+
+![目录](1.png)
+
+记得要先修改 `caliper-benchmarks/networks/fabric/test-network.yaml` 中的配置。
+
+```Linux
+$ cd caliper-benchmarks
+
+$ npx caliper launch manager \
+    --caliper-workspace ./ \
+    --caliper-networkconfig networks/fabric/test-network.yaml \
+    --caliper-benchconfig benchmarks/scenario/simple/config.yaml \
+    --caliper-flow-only-test \
+    --caliper-fabric-gateway-enabled
+```
+
+测试时我生成了 10 个账户，并用 100 的 tps 进行 500 次交易，可以发现大部分都因为读写冲突被中止了，这也正是我毕设项目希望解决的一个问题。
 
 ![结果](2.png)
 
-## 6 清理操作
+## 6 查看日志
+
+创建容器后，可以单独开一个窗口查看输出的日志：
+
+```Linux
+$ docker logs -f peer0.org1.example.com
+$ docker logs -f orderer.example.com
+```
+
+## 7 清理操作
 
 删除上述步骤生成的文件与容器。
 
 ```Linux
 $ docker stop $(docker ps -a -q)
+$ docker ps -a | awk '/fabric/ {print $1}' | xargs -r docker stop
+
 $ docker rm $(docker ps -a -q)
-$ docker volume prune //清除旧的卷
-$ docker network prune //清理网络缓存
-$ docker rmi $(docker images | grep dev)
+$ docker ps -a | awk '/fabric/ {print $1}' | xargs -r docker rm -f
+
+$ docker volume prune // 清除旧的卷
+$ docker volume rm $(docker volume ls -qf 'name=fabric-*')
+
+$ docker network rm fabric_test // 清理网络缓存
+
+$ docker image prune -f //清理 none 镜像
+$ docker rmi $(docker images | grep dev) // 清理链码镜像
+$ docker rmi $(docker images -aq 'hyperledger/fabric-*')
 ```
