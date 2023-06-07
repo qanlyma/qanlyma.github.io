@@ -685,3 +685,88 @@ $ docker image prune -f //清理 none 镜像
 $ docker rmi $(docker images | grep dev) // 清理链码镜像
 $ docker rmi $(docker images -aq 'hyperledger/fabric-*')
 ```
+
+## 8 脚本文件
+
+记录一下自己第一次写脚本，主要是上述流程过于繁琐了，用这个脚本一键启动的感觉真的很爽！
+
+```Bash
+#!/bin/bash
+
+## Parse mode
+if [[ $# -lt 1 ]] ; then
+  echo "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
+  exit 0
+else
+  MODE=$1
+fi
+
+function networkUp() {
+  echo "===========================================Starting Test Network==========================================="
+
+  echo "Generating files..."
+  export PATH=$PWD/bin:/bin:/usr/bin
+  cryptogen generate --config=crypto-config.yaml
+  configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID test-channel
+  configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel
+  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
+  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
+
+  echo "Starting docker containers..."
+  docker-compose up -d
+  sleep 3
+
+  echo "Creating mychannel..."
+  docker exec cli1 peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/mychannel.block ./
+  docker cp ./mychannel.block cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
+  docker exec cli1 peer channel join -b mychannel.block
+  docker exec cli2 peer channel join -b mychannel.block
+  docker exec cli1 peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  docker exec cli2 peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+  echo "Installing test chaincode..."
+  docker cp ./simple.tar.gz cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer
+  docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
+  docker exec cli1 peer lifecycle chaincode install simple.tar.gz
+  docker exec cli2 peer lifecycle chaincode install simple.tar.gz
+  docker exec cli1 peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:539969bf4773133bf852368737a5ba505443ca4d6b5eae92f5f4463fd8bbd171 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  docker exec cli2 peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:539969bf4773133bf852368737a5ba505443ca4d6b5eae92f5f4463fd8bbd171 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  docker exec cli1 peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --name simple --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+  echo "Initializing the chaincode..."
+  docker exec cli1 peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --isInit --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":[]}'
+
+  cd crypto-config
+  ./ccp-generate.sh
+}
+
+function networkDown() {
+  echo "===========================================Ending Test Network==========================================="
+
+  echo "Stoping and Pruning fabric dockers..."
+  docker ps -a | awk '/fabric/ {print $1}' | xargs -r docker stop
+  docker ps -a | awk '/dev/ {print $1}' | xargs -r docker stop
+  docker ps -a | awk '/fabric/ {print $1}' | xargs -r docker rm -f
+  docker ps -a | awk '/dev/ {print $1}' | xargs -r docker rm -f
+  docker volume prune -f
+  docker network rm fabric_test
+  docker rmi $(docker images | grep dev)
+
+  echo "Removing files..."
+  rm -rf ./channel-artifacts
+  rm -rf ./crypto-config/ordererOrganizations
+  rm -rf ./crypto-config/peerOrganizations
+  rm ./mychannel.block
+}
+
+if [ "$MODE" == "up" ]; then
+  networkUp
+elif [ "$MODE" == "down" ]; then
+  networkDown
+else
+  echo "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
+  exit 1
+fi
+
+echo "====================================================Done===================================================="
+```
