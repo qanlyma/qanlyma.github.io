@@ -16,29 +16,41 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文以 leetcode 347 题为例，介绍一下堆结构，参考 Carl 的教程。">
+    <meta name="description" content="本文总结论文阅读中对于 Fabric 的改进方案，并梳理一下毕设的改进思路。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「Go」 堆结构">
-<meta property="og:url" content="https://qanlyma.github.io/Go-heap/index.html">
+<meta property="og:title" content="「毕」 5. Fabric 的改进">
+<meta property="og:url" content="https://qanlyma.github.io/Project5-Thinking/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="本文以 leetcode 347 题为例，介绍一下堆结构，参考 Carl 的教程。">
+<meta property="og:description" content="本文总结论文阅读中对于 Fabric 的改进方案，并梳理一下毕设的改进思路。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/Go-heap/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/Go-heap/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/Go-heap/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/Go-heap/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/Go-heap/5.png">
-<meta property="article:published_time" content="2023-03-11T02:02:59.000Z">
-<meta property="article:modified_time" content="2023-03-22T02:37:04.990Z">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/8.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/9.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/10.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/11.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/12.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/13.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/14.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/15.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/16.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/17.png">
+<meta property="article:published_time" content="2023-06-07T01:59:14.000Z">
+<meta property="article:modified_time" content="2023-06-07T07:31:46.563Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/Go-heap/3.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/Project5-Thinking/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「Go」 堆结构 - Qanly</title>
+  <title>「毕」 5. Fabric 的改进 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -179,7 +191,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「Go」 堆结构"></span>
+            <span id="subtitle" data-typed-text="「毕」 5. Fabric 的改进"></span>
           
         </div>
 
@@ -195,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-11 10:02" pubdate>
-          2023年3月11日 上午
+        <time datetime="2023-06-07 09:59" pubdate>
+          2023年6月7日 上午
         </time>
       </span>
     
@@ -258,12 +270,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「Go」 堆结构</h1>
+            <h1 style="display: none">「毕」 5. Fabric 的改进</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：3 个月前
+                    本文最后更新于：2 分钟前
                   
                 
               </p>
@@ -271,50 +283,118 @@
             
               <div class="markdown-body">
                 
-                <p>本文以 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/top-k-frequent-elements/">leetcode 347 题</a>为例，介绍一下堆结构，参考 <a target="_blank" rel="noopener" href="https://programmercarl.com/0347.%E5%89%8DK%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0.html">Carl 的教程</a>。</p>
+                <p>本文总结论文阅读中对于 Fabric 的改进方案，并梳理一下毕设的改进思路。</p>
 <span id="more"></span>
 
-<h2 id="题目介绍"><a href="#题目介绍" class="headerlink" title="题目介绍"></a>题目介绍</h2><p><code>给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按任意顺序返回答案。你所设计算法的时间复杂度必须优于 O(n*logn)，其中 n 是数组大小。</code></p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题目主要涉及到如下三块内容：</p>
+<h2 id="1-Fabric"><a href="#1-Fabric" class="headerlink" title="1 Fabric"></a>1 Fabric</h2><h3 id="1-1-交易流程"><a href="#1-1-交易流程" class="headerlink" title="1.1 交易流程"></a>1.1 交易流程</h3><p><img src="/Project5-Thinking/1.png" srcset="/img/loading.gif" lazyload alt="Fabric"></p>
 <ol>
-<li>要统计元素出现频率</li>
-<li>对频率排序</li>
-<li>找出前K个高频元素</li>
+<li>客户将其交易发送给一定数量的背书节点。</li>
+<li>每个背书节点在隔离环境中模拟执行交易，并计算相应的读写集以及访问的每个键的版本号。模拟成功后返回背书响应给客户端。</li>
+<li>客户端收集足够数量的背书，然后将这些响应打包发送给排序节点。</li>
+<li>排序节点首先对传入交易的顺序达成共识，然后将消息队列划分为块。</li>
+<li>块被传递给对等节点，然后由对等节点验证并提交它们。</li>
 </ol>
-<p>首先统计元素出现的频率，这一类的问题可以使用 map 来进行统计。</p>
-<p>然后是对频率进行排序，这里我们可以使用<strong>优先级队列</strong>。</p>
-<p><strong>堆</strong>就是优先级队列的一种实现。</p>
-<h2 id="堆（heap）"><a href="#堆（heap）" class="headerlink" title="堆（heap）"></a>堆（heap）</h2><p>堆是一棵<strong>完全二叉树</strong>，树中每个结点的值都不小于（或不大于）其左右孩子的值。 如果父亲结点是大于等于左右孩子就是<strong>大顶堆</strong>（根节点最大），小于等于左右孩子就是<strong>小顶堆</strong>（根节点最小）。</p>
-<p><img src="/Go-heap/3.png" srcset="/img/loading.gif" lazyload alt="heap"></p>
-<p>堆本身就是一个数组，因此创建一个数组来创建堆。</p>
-<p><img src="/Go-heap/4.png" srcset="/img/loading.gif" lazyload alt="存储"></p>
-<p>假设当前元素的索引位置为 i，可以得到规律：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs heap">parent(i) = i/2（取整）<br>left child(i) = 2*i<br>right child(i) = 2*i + 1<br></code></pre></td></tr></table></figure>
-
-<h3 id="插入元素"><a href="#插入元素" class="headerlink" title="插入元素"></a>插入元素</h3><p><img src="/Go-heap/1.png" srcset="/img/loading.gif" lazyload alt="插入"></p>
-<p>在完全二叉树中，插入的节点与它的父节点相比，如果比父节点小，就交换它们的位置，再往上和父节点相比，如果比父节点小，再交换位置，直到比父节点大为止。</p>
-<p>在数组中，插入的节点与 n&#x2F;2 位置的节点相比，如果比 n&#x2F;2 位置的节点小，就交换它们的位置，再往前与 n&#x2F;4 位置的节点相比，如果比 n&#x2F;4 位置的节点小，再交换位置，直到比 n&#x2F;(2^x) 位置的节点大为止。</p>
-<p>这就是插入元素时进行的堆化，也叫<strong>自下而上的堆化</strong>。</p>
-<p>插入元素的时间复杂度为 O(log n)。</p>
-<h3 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h3><p><img src="/Go-heap/2.png" srcset="/img/loading.gif" lazyload alt="删除"></p>
-<p>在完全二叉树中，移除根节点首先把最后一个节点放到堆顶，然后与左右子节点中<strong>小</strong>的交换位置（因为是小顶堆），依次往下，直到其比左右子节点都小为止。</p>
-<p>在数组中，把最后一个元素移到下标为 1 的位置，然后与下标为 2 和 3 的位置对比，发现 8 比 2 大，且 2 是 2 和 3 中间最小的，所以与 2 交换位置；然后再下标为 4 和 5 的位置对比，发现 8 比 5 大，且 5 是 5 和 7 中最小的，所以与 5 交换位置，没有左右子节点了，堆化结束。即 <code>parent = child; child = parent*2;</code>。</p>
-<p>这就是删除元素时进行的堆化，也叫<strong>自上而下的堆化</strong>。</p>
-<p>删除元素的时间复杂度为 O(log n)。</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>此题使用小顶堆，因为要统计最大前 k 个元素，只有小顶堆每次将最小的元素弹出，最后小顶堆里积累的才是前 k 个最大元素。</p>
-<p><img src="/Go-heap/5.png" srcset="/img/loading.gif" lazyload alt="过程"></p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>使用 go 标准库给我们提供的 heap，需要实现这些接口定义的方法：</p>
+<h3 id="1-2-阶段展示"><a href="#1-2-阶段展示" class="headerlink" title="1.2 阶段展示"></a>1.2 阶段展示</h3><p><img src="/Project5-Thinking/2.png" srcset="/img/loading.gif" lazyload alt="Phases"></p>
+<h3 id="1-3-改进思路"><a href="#1-3-改进思路" class="headerlink" title="1.3 改进思路"></a>1.3 改进思路</h3><p>有实验使用 Fabric 网络发送大量的转账交易，结果如下：</p>
+<p><img src="/Project5-Thinking/3.png" srcset="/img/loading.gif" lazyload alt="TPS"></p>
+<p>可以看出大量的交易因为读写冲突被中止了，而发送空白交易的对比试验总的 TPS 与发送转账交易的 TPS 相差不大，这说明系统的瓶颈并不在于智能合约的计算上。</p>
+<p>由此可以得出两种改进思路：</p>
 <ul>
-<li>Len() int</li>
-<li>Less(i, j int) bool</li>
-<li>Swap(i, j int)</li>
-<li>Push(x interface{})</li>
-<li>Pop() interface{}</li>
+<li><p>增加系统的整体吞吐量</p>
+</li>
+<li><p>将原本会被 Fabric 中止的交易变为成功的交易</p>
+</li>
 </ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 方法一：小顶堆</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">topKFrequent</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    map_num := <span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">int</span>&#123;&#125;<br>    <span class="hljs-comment">// 记录每个元素出现的次数</span><br>    <span class="hljs-keyword">for</span> _, item := <span class="hljs-keyword">range</span> nums&#123;<br>        map_num[item]++<br>    &#125;<br><br>    <span class="hljs-comment">// 初始化 heap</span><br>    h := &amp;IHeap&#123;&#125;<br>    heap.Init(h)<br>    <span class="hljs-comment">// 所有元素入堆，堆的长度为 k</span><br>    <span class="hljs-keyword">for</span> key, value := <span class="hljs-keyword">range</span> map_num &#123;<br>        heap.Push(h, [<span class="hljs-number">2</span>]<span class="hljs-type">int</span>&#123;key, value&#125;)<br>        <span class="hljs-keyword">if</span> h.Len() &gt; k &#123;<br>            <span class="hljs-comment">// heap.Pop 并非下方定义的 h.Pop</span><br>            heap.Pop(h)<br>        &#125;<br>    &#125;<br><br>    res := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, k)<br>    <span class="hljs-comment">// 按顺序返回堆中的元素</span><br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; k; i++ &#123;<br>        res[k-i<span class="hljs-number">-1</span>] = heap.Pop(h).([<span class="hljs-number">2</span>]<span class="hljs-type">int</span>)[<span class="hljs-number">0</span>]<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br><br><span class="hljs-comment">// 构建小顶堆</span><br><span class="hljs-keyword">type</span> IHeap [][<span class="hljs-number">2</span>]<span class="hljs-type">int</span><br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Len()<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(h)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Less(i, j <span class="hljs-type">int</span>) <span class="hljs-type">bool</span> &#123;<br>    <span class="hljs-comment">// 如果 h[i][1] &lt; h[j][1] 生成的就是小根堆，h[i][1] &gt; h[j][1] 生成的就是大根堆</span><br>    <span class="hljs-keyword">return</span> h[i][<span class="hljs-number">1</span>] &lt; h[j][<span class="hljs-number">1</span>]<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Swap(i, j <span class="hljs-type">int</span>) &#123;<br>    h[i], h[j] = h[j], h[i]<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h *IHeap)</span></span> Push(x <span class="hljs-keyword">interface</span>&#123;&#125;) &#123;<br>    *h = <span class="hljs-built_in">append</span>(*h, x.([<span class="hljs-number">2</span>]<span class="hljs-type">int</span>))<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h *IHeap)</span></span> Pop() <span class="hljs-keyword">interface</span>&#123;&#125; &#123;<br>    old := *h<br>    n := <span class="hljs-built_in">len</span>(old)<br>    x := old[n<span class="hljs-number">-1</span>]<br>    *h = old[<span class="hljs-number">0</span>:n<span class="hljs-number">-1</span>]<br>    <span class="hljs-keyword">return</span> x<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="2-增加吞吐量"><a href="#2-增加吞吐量" class="headerlink" title="2 增加吞吐量"></a>2 增加吞吐量</h2><h3 id="2-1-Optimizing-Fabric-1"><a href="#2-1-Optimizing-Fabric-1" class="headerlink" title="2.1 Optimizing Fabric [1]"></a>2.1 Optimizing Fabric [1]</h3><p>此文对 Fabric 1.0 做了大量测试，发现以下<strong>瓶颈</strong>：</p>
+<ol>
+<li>身份的加密操作</li>
+<li>区块中的交易串行验证</li>
+<li>对 CouchDB 的多个 REST API 调用</li>
+</ol>
+<p><strong>优化</strong>（单通道提升 16 倍）：</p>
+<ol>
+<li>MSP Cache</li>
+<li>并行 VSCC 验证</li>
+<li>区块 MVCC 验证时的批量读写</li>
+</ol>
+<h3 id="2-2-FastFabric-2"><a href="#2-2-FastFabric-2" class="headerlink" title="2.2 FastFabric [2]"></a>2.2 FastFabric [2]</h3><p><strong>优化</strong>：</p>
+<ol>
+<li>排序阶段仅使用交易 ID，并行处理多个交易，提高共识效率</li>
+<li>使用内存中的哈希表代替 LevelDB&#x2F;CouchDB 来储存世界状态，提高访问速度</li>
+<li>分离背书和验证的角色</li>
+<li>缓存解析的区块数据</li>
+<li>并行验证块和块中交易的有效性</li>
+</ol>
+<p><strong>结果</strong>：</p>
+<p><img src="/Project5-Thinking/4.png" srcset="/img/loading.gif" lazyload alt="Orderer"></p>
+<ul>
+<li>Opt O-I: 只使用交易 ID </li>
+<li>Opt O-II: 并行处理传入交易</li>
+</ul>
+<p><img src="/Project5-Thinking/5.png" srcset="/img/loading.gif" lazyload alt="Peer"></p>
+<ul>
+<li>Opt P-I: 使用内存哈希表</li>
+<li>Opt P-II: 验证与提交分离</li>
+<li>Opt P-III: 缓存解析数据</li>
+</ul>
+<h2 id="3-提高成功率"><a href="#3-提高成功率" class="headerlink" title="3 提高成功率"></a>3 提高成功率</h2><h3 id="3-1-Fabric-3"><a href="#3-1-Fabric-3" class="headerlink" title="3.1 Fabric++ [3]"></a>3.1 Fabric++ [3]</h3><p><strong>优化</strong>：</p>
+<ol>
+<li>事务重新排序机制（transaction reordering mechanism）</li>
+<li>早期中止（early abort）</li>
+</ol>
+<p><strong>重排算法</strong>：</p>
+<p><img src="/Project5-Thinking/6.png" srcset="/img/loading.gif" lazyload alt="Reordering"></p>
+<ol>
+<li>建立所有交易的冲突图</li>
+<li>识别冲突图中的所有环</li>
+<li>识别每一笔交易出现在哪个环中</li>
+<li>依次中止出现在最多环中的交易，直到图无环</li>
+<li>使用剩余的交易建立一个可串行化调度</li>
+</ol>
+<p><strong>早期中止</strong>：</p>
+<p><img src="/Project5-Thinking/7.png" srcset="/img/loading.gif" lazyload alt="Early Abort"></p>
+<p><strong>结果</strong>：</p>
+<p><img src="/Project5-Thinking/8.png" srcset="/img/loading.gif" lazyload alt="Result"></p>
+<h3 id="3-2-FabricSharp-4"><a href="#3-2-FabricSharp-4" class="headerlink" title="3.2 FabricSharp [4]"></a>3.2 FabricSharp [4]</h3><p><strong>优化</strong>：</p>
+<ol>
+<li>Fabric++ 过度中止了跨块读取的交易</li>
+<li>Fabric++ 没有考虑跨快并行交易之间的依赖，重排效果受限</li>
+<li>更好的早期中止和交易重排算法</li>
+</ol>
+<p><img src="/Project5-Thinking/9.png" srcset="/img/loading.gif" lazyload></p>
+<p>六种基本依赖：</p>
+<p><img src="/Project5-Thinking/10.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>Fabric&#x2F;Fabric++ 不允许在两个交易之间的 anti-rw，因为后一个交易将读取前一个更新的旧版本，因此必须中止。</p>
+</li>
+<li><p>如果两个交易 Txn1 和 Txn2 表现出 c-rw 或 anti-rw 依赖性，则改变顺序不会影响它们的依赖顺序。</p>
+</li>
+<li><p>如果两个交易 Txn1 和 Txn2 表现出 c-ww 依赖性，交换它们的顺序将翻转它们的依赖顺序。</p>
+</li>
+</ul>
+<p><img src="/Project5-Thinking/11.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>由上可知：如果环没有 c-ww 依赖关系，则无法重新排序为可序列化。</li>
+</ul>
+<p><img src="/Project5-Thinking/12.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>所以对于一个新交易，所有待排序交易（包括新交易）中除了 c-ww 的所有依赖项中如果存在依赖环，直接中止新交易。</li>
+</ul>
+<p><strong>Overview</strong></p>
+<p><img src="/Project5-Thinking/13.png" srcset="/img/loading.gif" lazyload><br><img src="/Project5-Thinking/14.png" srcset="/img/loading.gif" lazyload><br><img src="/Project5-Thinking/15.png" srcset="/img/loading.gif" lazyload><br><img src="/Project5-Thinking/16.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="4-毕设想法"><a href="#4-毕设想法" class="headerlink" title="4 毕设想法"></a>4 毕设想法</h2><h3 id="4-1-交易合并"><a href="#4-1-交易合并" class="headerlink" title="4.1 交易合并"></a>4.1 交易合并</h3><p>这是针对简单的转账交易的改进。</p>
+<p>假设有 Tx1(A –10–&gt;B)，Tx2(A –10–&gt;C)，在目前 Fabric 系统中如果将这两笔交易打包到一个区块中，即使 A 的余额充足（即大于 20），排在后面的一笔交易也会因为读写冲突被中止。同理 Tx3(B –10–&gt;A)，Tx4(C –10–&gt;A) 也是如此。</p>
+<p>那么我希望可以将由同一个 key 转出的，或者转入到同一个 key 的交易进行合并。</p>
+<h3 id="4-2-拆分子键"><a href="#4-2-拆分子键" class="headerlink" title="4.2 拆分子键"></a>4.2 拆分子键</h3><p>假设有 Tx1(A –10–&gt;B)，Tx2(B –10–&gt;C)，这两笔交易无法合并，那么可以采用子键的形式：</p>
+<p><img src="/Project5-Thinking/17.png" srcset="/img/loading.gif" lazyload alt="Sub-K"></p>
+<p>从主键 B 中拆分两个子键 B1 和 B2：B1 用于接收 A 的转账，B2 用于给 C 转账。导师建议我在最后将 B 的子键合并。</p>
+<h3 id="4-3-交易重排"><a href="#4-3-交易重排" class="headerlink" title="4.3 交易重排"></a>4.3 交易重排</h3><p>构建一个转账流图。利用之前的改进进行交易重排序。</p>
+<h3 id="4-4-并行验证"><a href="#4-4-并行验证" class="headerlink" title="4.4 并行验证"></a>4.4 并行验证</h3><p>在重排时生成依赖，对不存在依赖的独立交易链并行验证。</p>
+<h2 id="5-参考文献"><a href="#5-参考文献" class="headerlink" title="5 参考文献"></a>5 参考文献</h2><p>[1] Nathan S , Thakkar P , Vishwanathan B . Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform: IEEE, 10.1109&#x2F;MASCOTS.2018.00034[P]. 2018.</p>
+<p>[2] Gorenflo C ,  Lee S ,  Golab L , et al. FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second[J]. IEEE, 2019.</p>
+<p>[3] Sharma A ,  Schuhknecht F M ,  Agrawal D , et al. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric[C]&#x2F;&#x2F; ACM SIGMOD 2019. ACM, 2019.</p>
+<p>[4] Ruan P ,  Loghin D ,  Ta Q T , et al. A Transactional Perspective on Execute-order-validate Blockchains[J].  2020.</p>
 
-<p>另一个解法是先使用 map 存储元素与出现次数，然后将元素放入切片，再按照频率对切片排序。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 方法二：利用 O(nlogn) 排序</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">topKFrequent</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    ans := []<span class="hljs-type">int</span>&#123;&#125;<br>    map_num := <span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">int</span>&#123;&#125;<br>    <span class="hljs-keyword">for</span> _, item := <span class="hljs-keyword">range</span> nums &#123;<br>        map_num[item]++<br>    &#125;<br>    <span class="hljs-keyword">for</span> key, _ := <span class="hljs-keyword">range</span> map_num &#123;<br>        ans = <span class="hljs-built_in">append</span>(ans, key)<br>    &#125;<br><br>    <span class="hljs-comment">// 切片排序</span><br>    sort.Slice(ans, <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(a, b <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>        <span class="hljs-comment">// 第一个参数是：待排序数据</span><br>        <span class="hljs-comment">// 第二个参数是：排序判断方法</span><br>        <span class="hljs-comment">// 形参 a 代表后一个元素</span><br>        <span class="hljs-comment">// 形参 b 代表前一元素</span><br>        <span class="hljs-comment">// 返回值：代表 a, b 是否交换，true：交换，false：不交换</span><br>        <span class="hljs-keyword">return</span> map_num[ans[a]] &gt; map_num[ans[b]]<br>        <span class="hljs-comment">// 后一个大于前一个就交换，所以是降序</span><br>    &#125;)<br>    <span class="hljs-keyword">return</span> ans[:k]<br>&#125;<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -332,7 +412,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  <a href="/categories/%E6%AF%95%E8%AE%BE%E9%A1%B9%E7%9B%AE/" class="category-chain-item">毕设项目</a>
   
   
 
@@ -352,8 +432,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「Go」 堆结构</div>
-      <div>https://qanlyma.github.io/Go-heap/</div>
+      <div>「毕」 5. Fabric 的改进</div>
+      <div>https://qanlyma.github.io/Project5-Thinking/</div>
     </div>
     <div class="license-meta">
       
@@ -365,7 +445,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月11日</div>
+          <div>2023年6月7日</div>
         </div>
       
       
@@ -381,18 +461,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「训」 笔记(5)：规则引擎</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套">
-                        <span class="hidden-mobile">「训」 笔记(4)：框架三件套</span>
+                      <a href="/Project4-Code/" title="「毕」 4. Fabric 2.4.0 源码解析">
+                        <span class="hidden-mobile">「毕」 4. Fabric 2.4.0 源码解析</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -457,17 +531,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Golang"
-        id="heading-eda14e187a768b38eda999457c9cca1e" role="tab" data-toggle="collapse" href="#collapse-eda14e187a768b38eda999457c9cca1e"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="毕设项目"
+        id="heading-f081d380c266d8d857350bddc6f1b47c" role="tab" data-toggle="collapse" href="#collapse-f081d380c266d8d857350bddc6f1b47c"
         aria-expanded="true"
       >
-        Golang
-        <span class="list-group-count">(4)</span>
+        毕设项目
+        <span class="list-group-count">(5)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-eda14e187a768b38eda999457c9cca1e"
-           role="tabpanel" aria-labelledby="heading-eda14e187a768b38eda999457c9cca1e">
+      <div class="category-collapse collapse show" id="collapse-f081d380c266d8d857350bddc6f1b47c"
+           role="tabpanel" aria-labelledby="heading-f081d380c266d8d857350bddc6f1b47c">
         
         
           
@@ -476,37 +550,46 @@
     
       
       
-        <a href="/Go-KMP/" title="「Go」 KMP 算法"
+        <a href="/Project1-Test/" title="「毕」 1. 测试 Fabric 2.4.0"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「Go」 KMP 算法</span>
+          <span class="category-post">「毕」 1. 测试 Fabric 2.4.0</span>
         </a>
       
     
       
       
-        <a href="/Go-typeTransfer/" title="「Go」 各种类型相互转换"
+        <a href="/Project2-Compile/" title="「毕」 2. 编译 Fabric 源码"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「Go」 各种类型相互转换</span>
+          <span class="category-post">「毕」 2. 编译 Fabric 源码</span>
         </a>
       
     
       
       
-        <a href="/Go-backtrack/" title="「Go」 回溯算法"
+        <a href="/Project3-Deploy/" title="「毕」 3. 手动部署一个自定义网络"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「Go」 回溯算法</span>
+          <span class="category-post">「毕」 3. 手动部署一个自定义网络</span>
         </a>
       
     
       
       
-        <a href="/Go-heap/" title="「Go」 堆结构"
+        <a href="/Project4-Code/" title="「毕」 4. Fabric 2.4.0 源码解析"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 4. Fabric 2.4.0 源码解析</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project5-Thinking/" title="「毕」 5. Fabric 的改进"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「Go」 堆结构</span>
+          <span class="category-post">「毕」 5. Fabric 的改进</span>
         </a>
       
     
