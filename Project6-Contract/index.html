@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文学习之后会用于测试的智能合约：smallbank。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「毕」 6. 合约学习：smallbank">
+<meta property="og:url" content="https://qanlyma.github.io/Project6-Contract/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="本文学习之后会用于测试的智能合约：smallbank。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-26T09:25:11.000Z">
+<meta property="article:modified_time" content="2023-06-28T09:08:58.550Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「毕」 6. 合约学习：smallbank - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「毕」 6. 合约学习：smallbank"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-26 17:25" pubdate>
+          2023年6月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「毕」 6. 合约学习：smallbank</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文学习之后会用于测试的智能合约：smallbank。</p>
+<span id="more"></span>
+
+<h2 id="smallbank-go"><a href="#smallbank-go" class="headerlink" title="smallbank.go"></a>smallbank.go</h2><p>该合约是 caliper-benchmarks 自带的测试合约，模拟银行系统的基本操作，主要用于区块链性能测试和基准测试。</p>
+<p>每个账户都有自己的 ID 和 Name，还有两种余额：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">type</span> Account <span class="hljs-keyword">struct</span> &#123;<br>	CustomId        <span class="hljs-type">string</span><br>	CustomName      <span class="hljs-type">string</span><br>	SavingsBalance  <span class="hljs-type">int</span><br>	CheckingBalance <span class="hljs-type">int</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>下面介绍主要的几个函数（省略了部分错误处理）：</p>
+<h3 id="Init"><a href="#Init" class="headerlink" title="Init"></a>Init</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> Init(stub shim.ChaincodeStubInterface) pb.Response &#123;<br>	<span class="hljs-comment">// nothing to do</span><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>初始化函数，在链码实例化时执行，在这个示例中没有实际的操作。</p>
+<h3 id="Invoke"><a href="#Invoke" class="headerlink" title="Invoke"></a>Invoke</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> Invoke(stub shim.ChaincodeStubInterface) pb.Response &#123;<br>	function, args := stub.GetFunctionAndParameters()<br>	<span class="hljs-keyword">switch</span> function &#123;<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;create_account&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.CreateAccount(stub, args)<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;transact_savings&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.TransactSavings(stub, args)<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;deposit_checking&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.DepositChecking(stub, args)<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;send_payment&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.SendPayment(stub, args)<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;transferm&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.SendPayment(stub, args)<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;write_check&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.WriteCheck(stub, args)<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;amalgamate&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.Amalgamate(stub, args)<br>	<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;query&quot;</span>:<br>		<span class="hljs-keyword">return</span> t.Query(stub, args)<br>	<span class="hljs-keyword">default</span>:<br>		<span class="hljs-keyword">return</span> errormsg(ERROR_UNKNOWN_FUNC + <span class="hljs-string">&quot;: &quot;</span> + function)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>合约的主要逻辑入口函数，根据传入的函数名调用相应的功能函数。这里我加入了 <code>transferm</code> 作为可合并交易的标志，但是由于 Account 结构体的原因目前还不能实现。</p>
+<h3 id="CreateAccount"><a href="#CreateAccount" class="headerlink" title="CreateAccount"></a>CreateAccount</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> CreateAccount(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(args) != <span class="hljs-number">4</span> &#123; <span class="hljs-comment">//should be [customer_id, customer_name, initial_checking_balance, initial_savings_balance]</span><br>		<span class="hljs-keyword">return</span> errormsg(ERROR_WRONG_ARGS + <span class="hljs-string">&quot; create_account&quot;</span>)<br>	&#125;<br><br>	key := accountKey(args[<span class="hljs-number">0</span>])<br>	data, err := stub.GetState(key)<br>	<span class="hljs-keyword">if</span> data != <span class="hljs-literal">nil</span> &#123;<br>		<span class="hljs-keyword">return</span> errormsg(<span class="hljs-string">&quot;Can not create duplicated account&quot;</span>)<br>	&#125;<br><br>	checking, errcheck := strconv.Atoi(args[<span class="hljs-number">2</span>])<br><br>	saving, errsaving := strconv.Atoi(args[<span class="hljs-number">3</span>])<br><br>	account := &amp;Account&#123;<br>		CustomId:        args[<span class="hljs-number">0</span>],<br>		CustomName:      args[<span class="hljs-number">1</span>],<br>		SavingsBalance:  saving,<br>		CheckingBalance: checking&#125;<br>	err = saveAccount(stub, account)<br><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>创建账户函数，根据传入的参数 <code>[customer_id, customer_name, initial_checking_balance, initial_savings_balance]</code> 创建一个新的账户，并将账户信息保存到区块链状态数据库中。</p>
+<h3 id="DepositChecking"><a href="#DepositChecking" class="headerlink" title="DepositChecking"></a>DepositChecking</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> DepositChecking(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(args) != <span class="hljs-number">2</span> &#123; <span class="hljs-comment">// should be [amount, customer_id]</span><br>		<span class="hljs-keyword">return</span> errormsg(ERROR_WRONG_ARGS + <span class="hljs-string">&quot; deposit_checking&quot;</span>)<br>	&#125;<br>	account, err := loadAccount(stub, args[<span class="hljs-number">1</span>])<br><br>	amount, _ := strconv.Atoi(args[<span class="hljs-number">0</span>])<br>	account.CheckingBalance += amount<br>	err = saveAccount(stub, account)<br><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据传入的参数 <code>[amount, customer_id]</code> 将指定账户的 CheckingBalance 增加指定的金额。</p>
+<h3 id="WriteCheck"><a href="#WriteCheck" class="headerlink" title="WriteCheck"></a>WriteCheck</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> WriteCheck(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(args) != <span class="hljs-number">2</span> &#123; <span class="hljs-comment">// should be [amount, customer_id]</span><br>		<span class="hljs-keyword">return</span> errormsg(ERROR_WRONG_ARGS + <span class="hljs-string">&quot; write_check&quot;</span>)<br>	&#125;<br>	account, err := loadAccount(stub, args[<span class="hljs-number">1</span>])<br><br>	amount, _ := strconv.Atoi(args[<span class="hljs-number">0</span>])<br>	account.CheckingBalance -= amount<br>	err = saveAccount(stub, account)<br><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据传入的参数 <code>[amount, customer_id]</code> 将指定账户的 CheckingBalance 减少指定的金额。</p>
+<h3 id="TransactSavings"><a href="#TransactSavings" class="headerlink" title="TransactSavings"></a>TransactSavings</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> TransactSavings(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(args) != <span class="hljs-number">2</span> &#123; <span class="hljs-comment">// should be [amount, customer_id]</span><br>		<span class="hljs-keyword">return</span> errormsg(ERROR_WRONG_ARGS + <span class="hljs-string">&quot; transaction_savings&quot;</span>)<br>	&#125;<br>	account, err := loadAccount(stub, args[<span class="hljs-number">1</span>])<br><br>	amount, _ := strconv.Atoi(args[<span class="hljs-number">0</span>])<br>	account.SavingsBalance += amount<br>	err = saveAccount(stub, account)<br><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据传入的参数 <code>[amount, customer_id]</code> 将指定账户的 SavingsBalance 增加或减少指定的金额。</p>
+<h3 id="SendPayment"><a href="#SendPayment" class="headerlink" title="SendPayment"></a>SendPayment</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> SendPayment(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(args) != <span class="hljs-number">3</span> &#123; <span class="hljs-comment">// should be [amount, dest_customer_id, source_customer_id]</span><br>		<span class="hljs-keyword">return</span> errormsg(ERROR_WRONG_ARGS + <span class="hljs-string">&quot; send_payment&quot;</span>)<br>	&#125;<br>	destAccount, err1 := loadAccount(stub, args[<span class="hljs-number">1</span>])<br>	sourceAccount, err2 := loadAccount(stub, args[<span class="hljs-number">2</span>])<br>	<span class="hljs-keyword">if</span> err1 != <span class="hljs-literal">nil</span> || err2 != <span class="hljs-literal">nil</span> &#123;<br>		<span class="hljs-keyword">return</span> errormsg(ERR_NOT_FOUND)<br>	&#125;<br><br>	amount, _ := strconv.Atoi(args[<span class="hljs-number">0</span>])<br>	<span class="hljs-comment">// since the contract is only used for perfomance testing, we ignore this check</span><br>	<span class="hljs-comment">//if sourceAccount.CheckingBalance &lt; amount &#123;</span><br>	<span class="hljs-comment">//	return errormsg(&quot;Insufficient funds in source checking account&quot;)</span><br>	<span class="hljs-comment">//&#125;</span><br>	sourceAccount.CheckingBalance -= amount<br>	destAccount.CheckingBalance += amount<br>	err1 = saveAccount(stub, sourceAccount)<br>	err2 = saveAccount(stub, destAccount)<br>	<span class="hljs-keyword">if</span> err1 != <span class="hljs-literal">nil</span> || err2 != <span class="hljs-literal">nil</span> &#123;<br>		<span class="hljs-keyword">return</span> errormsg(ERROR_PUT_STATE)<br>	&#125;<br><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据传入的参数 <code>[amount, dest_customer_id, source_customer_id]</code> 从源账户向目标账户转账指定金额。</p>
+<h3 id="Amalgamate"><a href="#Amalgamate" class="headerlink" title="Amalgamate"></a>Amalgamate</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> Amalgamate(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(args) != <span class="hljs-number">2</span> &#123; <span class="hljs-comment">// should be [dest_customer_id, source_customer_id]</span><br>		<span class="hljs-keyword">return</span> errormsg(ERROR_WRONG_ARGS + <span class="hljs-string">&quot; amalgamate&quot;</span>)<br>	&#125;<br>	destAccount, err1 := loadAccount(stub, args[<span class="hljs-number">0</span>])<br>	sourceAccount, err2 := loadAccount(stub, args[<span class="hljs-number">1</span>])<br><br>	destAccount.CheckingBalance += sourceAccount.SavingsBalance<br>	sourceAccount.SavingsBalance = <span class="hljs-number">0</span><br>	err1 = saveAccount(stub, sourceAccount)<br>	err2 = saveAccount(stub, destAccount)<br><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据传入的参数 <code>[dest_customer_id, source_customer_id]</code> 将源账户的 SavingsBalance 转移到目标账户的 CheckingBalance 上，并将源账户的储蓄账户余额设为 0。</p>
+<h3 id="Testonly"><a href="#Testonly" class="headerlink" title="Testonly"></a>Testonly</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> Testonly(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(args) != <span class="hljs-number">2</span> &#123; <span class="hljs-comment">// should be [dest_customer_id, source_customer_id]</span><br>		<span class="hljs-keyword">return</span> errormsg(ERROR_WRONG_ARGS + <span class="hljs-string">&quot; amalgamate&quot;</span>)<br>	&#125;<br>	destAccount, err1 := loadAccount(stub, args[<span class="hljs-number">0</span>])<br>	sourceAccount, err2 := loadAccount(stub, args[<span class="hljs-number">1</span>])<br>	<span class="hljs-keyword">if</span> err1 != <span class="hljs-literal">nil</span> || err2 != <span class="hljs-literal">nil</span> &#123;<br>		<span class="hljs-keyword">return</span> errormsg(ERR_NOT_FOUND)<br>	&#125;<br><br>	destAccount.CheckingBalance += sourceAccount.SavingsBalance<br>	err1 = saveAccount(stub, destAccount)<br>	<span class="hljs-keyword">if</span> err1 != <span class="hljs-literal">nil</span> &#123;<br>		<span class="hljs-keyword">return</span> errormsg(ERROR_PUT_STATE)<br>	&#125;<br><br>	<span class="hljs-keyword">return</span> shim.Success(<span class="hljs-literal">nil</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据传入的参数 <code>[dest_customer_id, source_customer_id]</code> 将源账户的 SavingsBalance 转移到目标账户的 CheckingBalance 上。这是我为了测试交易重排添加的函数，可以看到它对 destAccount 做了读写操作，而对 sourceAccount 只做了读操作，所以调用此函数并不会在验证阶段改变 sourceAccount 的版本。</p>
+<h3 id="Query"><a href="#Query" class="headerlink" title="Query"></a>Query</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(t *SmallbankChaincode)</span></span> Query(stub shim.ChaincodeStubInterface, args []<span class="hljs-type">string</span>) pb.Response &#123;<br>	key := accountKey(args[<span class="hljs-number">0</span>])<br>	accountBytes, err := stub.GetState(key)<br><br>	<span class="hljs-keyword">return</span> shim.Success(accountBytes)<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>查询账户信息函数，根据传入的账户 ID 从区块链状态数据库中获取账户信息。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%AF%95%E8%AE%BE%E9%A1%B9%E7%9B%AE/" class="category-chain-item">毕设项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「毕」 6. 合约学习：smallbank</div>
+      <div>https://qanlyma.github.io/Project6-Contract/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月26日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Project5-Thinking/" title="「毕」 5. Fabric 的改进">
+                        <span class="hidden-mobile">「毕」 5. Fabric 的改进</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="毕设项目"
+        id="heading-f081d380c266d8d857350bddc6f1b47c" role="tab" data-toggle="collapse" href="#collapse-f081d380c266d8d857350bddc6f1b47c"
+        aria-expanded="true"
+      >
+        毕设项目
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-f081d380c266d8d857350bddc6f1b47c"
+           role="tabpanel" aria-labelledby="heading-f081d380c266d8d857350bddc6f1b47c">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Project1-Test/" title="「毕」 1. 测试 Fabric 2.4.0"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 1. 测试 Fabric 2.4.0</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project2-Compile/" title="「毕」 2. 编译 Fabric 源码"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 2. 编译 Fabric 源码</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project3-Deploy/" title="「毕」 3. 手动部署一个自定义网络"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 3. 手动部署一个自定义网络</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project4-Code/" title="「毕」 4. Fabric 2.4.0 源码解析"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 4. Fabric 2.4.0 源码解析</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project5-Thinking/" title="「毕」 5. Fabric 的改进"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 5. Fabric 的改进</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project6-Contract/" title="「毕」 6. 合约学习：smallbank"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「毕」 6. 合约学习：smallbank</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
