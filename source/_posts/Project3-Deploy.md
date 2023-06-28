@@ -633,26 +633,6 @@ $ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/p
 # peer chaincode query -C mychannel -n simple -c '{"Args":["query","Qanly"]}'
 ```
 
-### 复制专用
-
-open 1
-
-```Linux
-peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["open","Qanly","1000"]}'
-```
-
-open 2
-
-```Linux
-peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["open","Mark","1000"]}'
-```
-
-transfer
-
-```Linux
-peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["transfer","Mark","Qanly","100"]}'
-```
-
 ## 5 测试一下
 
 使用 Caliper 测试的时候发现报错：找不到 connection-org1.yaml 这个文件，看一下 fabric-sample 网络的启动脚本发现有一个 ccp-generate.sh 脚本是用来生成这个的，把脚本和 .json .yaml 复制到 `twoPeerNet/crypto-config` 中，修改一下再运行就 ok 了。
@@ -708,7 +688,7 @@ $ docker rmi $(docker images -aq 'hyperledger/fabric-*')
 
 ## 8 脚本文件
 
-记录一下自己第一次写脚本，主要是上述流程过于繁琐了，用这个脚本一键启动的感觉真的很爽！
+记录一下自己第一次写脚本。
 
 ```Bash
 #!/bin/bash
