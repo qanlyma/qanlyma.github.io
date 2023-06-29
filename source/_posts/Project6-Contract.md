@@ -57,6 +57,8 @@ func (t *SmallbankChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Respons
 		return t.WriteCheck(stub, args)
 	case "amalgamate":
 		return t.Amalgamate(stub, args)
+	case "test":
+		return t.Testonly(stub, args)
 	case "query":
 		return t.Query(stub, args)
 	default:
