@@ -1,7 +1,7 @@
 ---
 title: 「Go」 堆结构
 category_bar: true
-date: 2023-03-11 10:02:59
+date: 2023-07-13 15:49:50
 tags:
 categories: Golang
 banner_img:
@@ -163,12 +163,12 @@ func topKFrequent(nums []int, k int) []int {
     sort.Slice(ans, func (a, b int) bool {
         // 第一个参数是：待排序数据
         // 第二个参数是：排序判断方法
-        // 形参 a 代表后一个元素
-        // 形参 b 代表前一元素
         // 返回值：代表 a, b 是否交换，true：交换，false：不交换
         return map_num[ans[a]] > map_num[ans[b]]
-        // 后一个大于前一个就交换，所以是降序
+        // < 是升序；> 是降序
     })
     return ans[:k]
 }
 ```
+
+当匿名函数返回值为 true 时，表示 a 索引处的元素应该在 b 索引处的元素之前。相反，当返回值为 false 时，表示 a 索引处的元素应该在 b 索引处的元素之后。
