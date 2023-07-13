@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/7.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-2/8.png">
 <meta property="article:published_time" content="2023-03-05T04:07:42.000Z">
-<meta property="article:modified_time" content="2023-03-08T07:45:19.547Z">
+<meta property="article:modified_time" content="2023-07-11T09:17:24.753Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-2/2.png">
@@ -266,7 +266,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 个月前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -279,17 +279,21 @@
 
 <h2 id="1-性能优化建议"><a href="#1-性能优化建议" class="headerlink" title="1 性能优化建议"></a>1 性能优化建议</h2><h3 id="1-1-Slice"><a href="#1-1-Slice" class="headerlink" title="1.1 Slice"></a>1.1 Slice</h3><p><strong>预分配内存</strong>：使用 <code>make()</code> 初始化切片时提供容量信息。</p>
 <ul>
-<li>切片本质是一个数组片段的描述，包括：<ul>
+<li><p>切片本质是一个数组片段的描述，包括：</p>
+<ul>
 <li>数组指针</li>
 <li>片段的长度</li>
 <li>片段的容量</li>
 </ul>
 </li>
-<li>切片操作并不复制切片指向的元素</li>
-<li>创建一个新的切片会复用原来切片的底层数组</li>
-<li>切片有三个属性，指针(ptr)、长度(len) 和容量(cap)。append 时有两种场景：<ul>
+<li><p>切片操作并不复制切片指向的元素</p>
+</li>
+<li><p>创建一个新的切片会复用原来切片的底层数组</p>
+</li>
+<li><p>切片有三个属性，指针(ptr)、长度(len) 和容量(cap)。append 时有两种场景：</p>
+<ul>
 <li>当 append 之后的长度小于等于 cap，将会直接利用原底层数组剩余的空间</li>
-<li>当 append 后的长度大于 cap 时，则会分配一块更大的区域来容纳新的底层数组</li>
+<li>当 append 后的长度大于 cap 时，则会分配一块更大的区域来容纳新的底层数组（此时切片地址发生改变）</li>
 </ul>
 </li>
 </ul>
@@ -298,6 +302,7 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">NoPreAlloc</span><span class="hljs-params">(size <span class="hljs-type">int</span>)</span></span> &#123;<br>	data := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-number">0</span>)<br>	<span class="hljs-keyword">for</span> k := <span class="hljs-number">0</span>; k &lt; size; k++ &#123;<br>		data = <span class="hljs-built_in">append</span>(data, k)<br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">PreAlloc</span><span class="hljs-params">(size <span class="hljs-type">int</span>)</span></span> &#123;<br>	data := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-number">0</span>, size)<br>	<span class="hljs-keyword">for</span> k := <span class="hljs-number">0</span>; k &lt; size; k++ &#123;<br>		data = <span class="hljs-built_in">append</span>(data, k)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p><img src="/ByteDance-2/1.png" srcset="/img/loading.gif" lazyload alt="result"></p>
+<p>此外，在切片开头添加元素一般都会导致内存的重新分配，而且会导致已有元素全部被复制 1 次，因此从切片的开头添加元素的性能要比从尾部追加元素的性能差很多。</p>
 <p><strong>另一个陷阱</strong>：大内存得不到释放。</p>
 <p>在已有切片的基础上进行切片，不会创建新的底层数组。因为原来的底层数组没有发生变化，内存会一直占用，直到没有变量引用该数组因此很可能出现这么一种情况，原切片由大量的元素构成，但是我们在原切片的基础上切片，虽然只使用了很小一段，但底层数组在内存中仍然占据了大量空间，得不到释放。</p>
 <p>推荐的做法：<strong>使用 copy 替代 re-slice</strong></p>
@@ -493,7 +498,7 @@
         aria-expanded="true"
       >
         字节青训
-        <span class="list-group-count">(12)</span>
+        <span class="list-group-count">(13)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -610,6 +615,15 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「训」 笔记(12)：存储和数据库</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-13/" title="「训」 Q &amp; A"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 Q &amp; A</span>
         </a>
       
     

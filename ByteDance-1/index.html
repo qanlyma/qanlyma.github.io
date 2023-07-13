@@ -23,6 +23,7 @@
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="关于 Go 语言的基础和进阶教程，示例代码在我的 Github 上：基础代码，进阶代码">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/12.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/1.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/3.png">
@@ -30,14 +31,16 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/5.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/6.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/11.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/13.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/8.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/9.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/10.png">
 <meta property="article:published_time" content="2023-02-18T07:38:59.000Z">
-<meta property="article:modified_time" content="2023-03-08T07:45:29.575Z">
+<meta property="article:modified_time" content="2023-07-11T09:08:54.471Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-1/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-1/12.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -268,7 +271,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 个月前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -279,7 +282,13 @@
                 <p>关于 Go 语言的基础和进阶教程，示例代码在我的 Github 上：<br><a target="_blank" rel="noopener" href="https://github.com/qanlyma/go-by-example">基础代码</a>，<a target="_blank" rel="noopener" href="https://github.com/qanlyma/go-project-example/tree/V0">进阶代码</a></p>
 <span id="more"></span>
 
-<h2 id="1-Go-语言基础"><a href="#1-Go-语言基础" class="headerlink" title="1 Go 语言基础"></a>1 Go 语言基础</h2><h3 id="1-1-Go-语言简介"><a href="#1-1-Go-语言简介" class="headerlink" title="1.1 Go 语言简介"></a>1.1 Go 语言简介</h3><ul>
+<h2 id="1-Go-语言基础"><a href="#1-Go-语言基础" class="headerlink" title="1 Go 语言基础"></a>1 Go 语言基础</h2><h3 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h3><p>在早期 CPU 都是以单核的形式顺序执行机器指令。Go 语言的祖先 C 语言正是这种顺序编程语言的代表。顺序编程语言中的顺序是指：所有的指令都是以串行的方式执行，在相同的时刻有且仅有一个 CPU 在顺序执行程序的指令。</p>
+<p>随着处理器技术的发展，单核时代以提升处理器频率来提高运行效率的方式遇到了瓶颈，单核 CPU 发展的停滞，给多核 CPU 的发展带来了机遇。相应地，编程语言也开始逐步向并行化的方向发展。</p>
+<p>Go 语言正是在多核和网络化的时代背景下诞生的原生支持并发的编程语言。Go 语言从底层原生支持并发，无须第三方库，开发人员可以很轻松地在编写程序时决定怎么使用 CPU 资源。</p>
+<p>Go 语言的并发是基于 goroutine 的，goroutine 类似于线程但并非线程。可以将 goroutine 理解为一种虚拟线程。Go 语言运行时会参与调度 goroutine，并将 goroutine 合理地分配到每个 CPU 中，最大限度地使用 CPU 性能。</p>
+<p>多个 goroutine 中，Go 语言使用通道（channel）进行通信，通道是一种内置的数据结构，可以让用户在不同的 goroutine 之间同步发送具有类型的消息。这让编程模型更倾向于在 goroutine 之间发送消息，而不是让多个 goroutine 争夺同一个数据的使用权。程序可以将需要并发的环节设计为生产者模式和消费者的模式，将数据放入通道。通道另外一端的代码将这些数据进行并发计算并返回结果。<strong>Go 语言通过通道可以实现多个 goroutine 之间内存共享</strong>。</p>
+<p><strong>特点</strong>：</p>
+<ul>
 <li>高性能、高并发</li>
 <li>语法简单、学习曲线平滑</li>
 <li>丰富的标准库</li>
@@ -289,7 +298,46 @@
 <li>跨平台</li>
 <li>垃圾回收</li>
 </ul>
-<h3 id="1-2-基础语法"><a href="#1-2-基础语法" class="headerlink" title="1.2 基础语法"></a>1.2 基础语法</h3><p>Golang 的安装和基础使用，可以参考<a target="_blank" rel="noopener" href="https://www.runoob.com/go/go-tutorial.html">菜鸟教程</a>。</p>
+<h3 id="1-2-容器"><a href="#1-2-容器" class="headerlink" title="1.2 容器"></a>1.2 容器</h3><h4 id="1-2-1-array"><a href="#1-2-1-array" class="headerlink" title="1.2.1 array"></a>1.2.1 array</h4><p>数组是一段固定长度的<strong>连续内存区域</strong>。在 Go 语言中，数组从声明时就确定，使用时可以修改数组成员，但是数组大小不可变化，因此在 Go 语言中很少直接使用数组。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> 数组变量名 [元素数量]Type<br></code></pre></td></tr></table></figure>
+
+<p>也可以是多维数组：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> array_name [size1][size2]...[sizen] array_type<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-2-2-slice"><a href="#1-2-2-slice" class="headerlink" title="1.2.2 slice"></a>1.2.2 slice</h4><p>切片（slice）是对数组的一个连续片段的引用（左闭右开），所以切片是一个引用类型。Go 语言中切片的内部结构包含地址、大小和容量。</p>
+<p>切片默认指向一段连续内存区域，可以是数组，也可以是切片本身：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">slice [开始位置 : 结束位置]<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>取出的元素数量为：结束位置 - 开始位置；</li>
+<li>取出元素不包含结束位置对应的索引，切片最后一个元素使用 slice[len(slice)] 获取；</li>
+<li>当缺省开始位置时，表示从连续区域开头到结束位置；</li>
+<li>当缺省结束位置时，表示从开始位置到整个连续区域末尾；</li>
+<li>两者同时缺省时，与切片本身等效；</li>
+<li>两者同时为 0 时，等效于空切片，一般用于<strong>切片复位</strong>。</li>
+</ul>
+<p>切片类型也可以被声明:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> name1 []Type<br><br>name2 := <span class="hljs-built_in">make</span>([]Type, size, <span class="hljs-built_in">cap</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>使用 make() 函数生成的切片一定发生了内存分配操作，但给定开始与结束位置（包括切片复位）的切片只是将新的切片结构指向已经分配好的内存区域，设定开始与结束位置，不会发生内存分配操作。</strong></p>
+<p>多维切片：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">slice := [][]<span class="hljs-type">int</span>&#123;&#123;<span class="hljs-number">10</span>&#125;, &#123;<span class="hljs-number">100</span>, <span class="hljs-number">200</span>&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/ByteDance-1/12.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="1-2-3-map"><a href="#1-2-3-map" class="headerlink" title="1.2.3 map"></a>1.2.3 map</h4><p>Go语言中 map 是一种特殊的数据结构，一种元素对（pair）的<strong>无序</strong>集合，pair 对应一个 key（索引）和一个 value（值），所以这个结构也称为关联数组或字典，这是一种能够快速寻找值的理想结构，给定 key，就可以迅速找到对应的 value。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> mapname <span class="hljs-keyword">map</span>[keytype]valuetype<br>mapname = <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[keytype]valuetype)<br></code></pre></td></tr></table></figure>
+
+<p>使用 delete() 内建函数从 map 中删除一组键值对：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-built_in">delete</span>(<span class="hljs-keyword">map</span>, 键)<br></code></pre></td></tr></table></figure>
+
+<p>Go 语言中并没有为 map 提供任何清空所有元素的函数、方法，清空 map 的唯一办法就是重新 make 一个新的 map，不用担心垃圾回收的效率，Go 语言中的并行垃圾回收效率比写一个清空函数要高效的多。</p>
+<h4 id="1-2-4-list"><a href="#1-2-4-list" class="headerlink" title="1.2.4 list"></a>1.2.4 list</h4><p>列表是一种非连续的存储容器，由多个节点组成，节点通过一些变量记录彼此之间的关系，列表有多种实现方法，如单链表、双链表等。</p>
+<p>在 Go 语言中，列表使用 <code>container/list</code> 包来实现，内部的实现原理是双链表，列表能够高效地进行任意位置的元素插入和删除操作。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go">list1 := list.New()<br><br><span class="hljs-keyword">var</span> list2 list.List<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-2-5-nil"><a href="#1-2-5-nil" class="headerlink" title="1.2.5 nil"></a>1.2.5 nil</h4><p>在 Go 语言中，布尔类型的零值（初始值）为 <code>false</code>，数值类型的零值为 <code>0</code>，字符串类型的零值为空字符串 <code>&quot;&quot;</code>，而指针、切片、映射、通道、函数和接口的零值则是 <code>nil</code>。</p>
+<p><strong>不同类型的 nil 是不能比较的</strong>，不同类型的 nil 值占用的内存大小可能是不一样的。</p>
+<h3 id="1-3-基础语法"><a href="#1-3-基础语法" class="headerlink" title="1.3 基础语法"></a>1.3 基础语法</h3><p>Golang 的安装和基础使用，可以参考<a target="_blank" rel="noopener" href="https://www.runoob.com/go/go-tutorial.html">菜鸟教程</a>。</p>
 <p>补充几点：</p>
 <ol>
 <li>错误处理</li>
@@ -304,9 +352,10 @@
 </ol>
 <p><img src="/ByteDance-1/3.png" srcset="/img/loading.gif" lazyload alt="字符串格式化"></p>
 <ol start="4">
-<li>JSON 处理</li>
+<li><p>JSON 处理</p>
+<p> 对于一个已有的结构体，只要保证每个字段的第一个字母是大写（公开字段），就可以用 JSON.Marshal 序列化成一个 JSON 字符串。</p>
+</li>
 </ol>
-<p>对于一个已有的结构体，只要保证每个字段的第一个字母是大写（公开字段），就可以用 JSON.Marshal 序列化成一个 JSON 字符串。</p>
 <p><img src="/ByteDance-1/4.png" srcset="/img/loading.gif" lazyload alt="JSON 处理"></p>
 <ol start="5">
 <li>时间处理</li>
@@ -320,31 +369,12 @@
 <li>进程信息</li>
 </ol>
 <p><img src="/ByteDance-1/7.png" srcset="/img/loading.gif" lazyload alt="进程信息"></p>
-<h3 id="1-3-项目实战"><a href="#1-3-项目实战" class="headerlink" title="1.3 项目实战"></a>1.3 项目实战</h3><ol>
-<li><p>猜谜游戏</p>
-<ul>
-<li>生成随机数：用时间戳来初始化随机数种子</li>
-</ul>
- <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs Go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    maxNum := <span class="hljs-number">100</span> <br>    rand.Seed(time.Now().UnixNano()) <br>    secretNumber := rand.Intn(maxNum) <br>    fmt.Println(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<ul>
-<li>读取用户输入</li>
-</ul>
- <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs Go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    maxNum := <span class="hljs-number">100</span><br>    rand.Seed(time.Now().UnixNano())<br>    secretNumber := rand.Intn(maxNum)<br>    fmt.Println(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br><br>    fmt.Println(<span class="hljs-string">&quot;Please input your guess&quot;</span>)<br>    reader := bufio.NewReader(os.Stdin)<br><br>    <span class="hljs-comment">//读取一行输入</span><br>    input, err := reader.ReadString(<span class="hljs-string">&#x27;\n&#x27;</span>)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        fmt.Println(<span class="hljs-string">&quot;An error occured while reading input. Please try again&quot;</span>, err)<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    <span class="hljs-comment">//去掉换行符</span><br>    input = strings.Trim(input, <span class="hljs-string">&quot;\r\n&quot;</span>)<br>    <span class="hljs-comment">//转换为数字</span><br>    guess, err := strconv.Atoi(input)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        fmt.Println(<span class="hljs-string">&quot;Invalid input. Please enter an integer value&quot;</span>)<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    fmt.Println(<span class="hljs-string">&quot;You guess is&quot;</span>, guess)<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<ul>
-<li>逻辑判断 + 游戏循环：略</li>
-</ul>
-</li>
-</ol>
-<hr>
-<ol start="2">
-<li>命令行词典</li>
-</ol>
-<hr>
-<ol start="3">
-<li>SOCKS5 代理</li>
-</ol>
+<h3 id="1-4-关键字和标识符"><a href="#1-4-关键字和标识符" class="headerlink" title="1.4 关键字和标识符"></a>1.4 关键字和标识符</h3><p>Go 语言中的关键字一共有 25 个：</p>
+<p><img src="/ByteDance-1/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>预定义标识符一共有 36 个：</p>
+<p><img src="/ByteDance-1/13.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>make 和 new</strong>：</p>
+<p>make 用于初始化内置的数据结构，如数组、切片和 Channel 等；new 用于分配并创建一个指向对应类型的指针。</p>
 <h2 id="2-Go-语言进阶"><a href="#2-Go-语言进阶" class="headerlink" title="2 Go 语言进阶"></a>2 Go 语言进阶</h2><h3 id="2-1-Goroutine"><a href="#2-1-Goroutine" class="headerlink" title="2.1 Goroutine"></a>2.1 Goroutine</h3><ul>
 <li><strong>线程</strong>：程序执行的最小单元，是由寄存器集合和堆栈组成，线程是进程中的一个实体，可共享同一进程中所拥有的全部资源。</li>
 <li><strong>协程</strong>：Goroutine 是一种比线程更加轻量级的存在。一个进程可以有多个线程，一个线程可以有多个协程。</li>
@@ -364,6 +394,25 @@
 <h3 id="2-5-WaitGroup"><a href="#2-5-WaitGroup" class="headerlink" title="2.5 WaitGroup"></a>2.5 WaitGroup</h3><p>计数器：开启协程 +1；执行结束 -1；主协程阻塞直到计数器为 0。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ManyGoWait</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">var</span> wg sync.WaitGroup<br>	wg.Add(<span class="hljs-number">5</span>)                   <span class="hljs-comment">// 计数器 +5</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++ &#123;<br>		<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(j <span class="hljs-type">int</span>)</span></span> &#123;<br>			<span class="hljs-keyword">defer</span> wg.Done()     <span class="hljs-comment">// 计数器 -1</span><br>			hello(j)<br>		&#125;(i)<br>	&#125;<br>	wg.Wait()                   <span class="hljs-comment">// 阻塞直到计数器为 0</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
+<h3 id="2-6-指针"><a href="#2-6-指针" class="headerlink" title="2.6 指针"></a>2.6 指针</h3><p>Go 语言为程序员提供了控制数据结构指针的能力，但是并不能进行指针运算。Go 语言允许你控制特定集合的数据结构、分配的数量以及内存访问模式。</p>
+<h4 id="2-6-1-基础概念"><a href="#2-6-1-基础概念" class="headerlink" title="2.6.1 基础概念"></a>2.6.1 基础概念</h4><p>指针（pointer）在 Go 语言中可以被拆分为两个核心概念：</p>
+<ul>
+<li><p>类型指针，允许对这个指针类型的数据进行修改，传递数据可以直接使用指针，而无须拷贝数据，类型指针不能进行偏移和运算。</p>
+</li>
+<li><p>切片，由指向起始元素的原始指针、元素数量和容量组成。</p>
+</li>
+</ul>
+<p>受益于这样的约束和拆分，Go 语言的指针类型变量即拥有指针高效访问的特点，又不会发生指针偏移，从而避免了非法修改关键性数据的问题。同时，垃圾回收也比较容易对不会发生偏移的指针进行检索和回收。</p>
+<p>一个指针变量可以指向任何一个值的内存地址，它所指向的值的内存地址在 32 和 64 位机器上分别占用 4 或 8 个字节，占用字节的大小与所指向的值的大小无关。当一个指针被定义后没有分配到任何变量时，它的默认值为 nil。</p>
+<p>每个变量在运行时都拥有一个地址，这个地址代表变量在内存中的位置。Go 语言中使用在变量名前面添加 <code>&amp;</code> 操作符（前缀）来获取变量的内存地址（取地址操作），格式如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go">ptr := &amp;v    <span class="hljs-comment">// v 的类型为 T</span><br>value := *ptr<br></code></pre></td></tr></table></figure>
+<p>取地址操作符 <code>&amp;</code> 和取值操作符 <code>*</code> 是一对互补操作符，<code>&amp;</code> 取出地址，<code>*</code> 根据地址取出地址指向的值。</p>
+<h4 id="2-6-2-使用指针修改值"><a href="#2-6-2-使用指针修改值" class="headerlink" title="2.6.2 使用指针修改值"></a>2.6.2 使用指针修改值</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">swap</span><span class="hljs-params">(a, b *<span class="hljs-type">int</span>)</span></span> &#123;<br>    <span class="hljs-comment">// 取 a 指针的值, 赋给临时变量 t</span><br>    t := *a<br>    <span class="hljs-comment">// 取 b 指针的值, 赋给 a 指针指向的变量</span><br>    *a = *b<br>    <span class="hljs-comment">// 将 a 指针的值赋给 b 指针指向的变量</span><br>    *b = t<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    x, y := <span class="hljs-number">1</span>, <span class="hljs-number">2</span><br>    swap(&amp;x, &amp;y)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>*</code> 操作符作为<strong>右值</strong>时，意义是取指针的值，作为<strong>左值</strong>时，也就是放在赋值操作符的左边时，表示 a 指针指向的变量。其实归纳起来，<code>*</code> 操作符的根本意义就是操作指针指向的变量。</p>
+<h4 id="2-6-3-new-函数"><a href="#2-6-3-new-函数" class="headerlink" title="2.6.3 new() 函数"></a>2.6.3 new() 函数</h4><p>Go 语言还提供了另外一种方法来创建指针变量：<code>new(类型)</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go">str := <span class="hljs-built_in">new</span>(<span class="hljs-type">string</span>)<br>*str = <span class="hljs-string">&quot;Go语言教程&quot;</span><br>fmt.Println(*str)<br></code></pre></td></tr></table></figure>
+
+<p>new() 函数可以创建一个对应类型的指针，创建过程会分配内存，被创建的指针指向默认值。</p>
 <h2 id="3-依赖管理"><a href="#3-依赖管理" class="headerlink" title="3 依赖管理"></a>3 依赖管理</h2><ul>
 <li><strong>GOPATH</strong>：设置环境变量，项目代码依赖 src 下的代码。无法实现 package 的多版本控制。</li>
 <li><strong>Go Vendor</strong>：项目目录下增加 vendor 文件存放依赖包副本。同一项目无法依赖一个 package 的两个不同版本。</li>
@@ -546,7 +595,7 @@
         aria-expanded="true"
       >
         字节青训
-        <span class="list-group-count">(12)</span>
+        <span class="list-group-count">(13)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -663,6 +712,15 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「训」 笔记(12)：存储和数据库</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-13/" title="「训」 Q &amp; A"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 Q &amp; A</span>
         </a>
       
     

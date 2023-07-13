@@ -28,8 +28,8 @@
 <meta property="og:image" content="https://qanlyma.github.io/Go-heap/1.png">
 <meta property="og:image" content="https://qanlyma.github.io/Go-heap/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/Go-heap/5.png">
-<meta property="article:published_time" content="2023-03-11T02:02:59.000Z">
-<meta property="article:modified_time" content="2023-03-22T02:37:04.990Z">
+<meta property="article:published_time" content="2023-07-13T07:49:50.000Z">
+<meta property="article:modified_time" content="2023-07-13T08:21:12.034Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Go-heap/3.png">
@@ -195,8 +195,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-11 10:02" pubdate>
-          2023年3月11日 上午
+        <time datetime="2023-07-13 15:49" pubdate>
+          2023年7月13日 下午
         </time>
       </span>
     
@@ -263,7 +263,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：3 个月前
+                    本文最后更新于：4 分钟前
                   
                 
               </p>
@@ -314,7 +314,10 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 方法一：小顶堆</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">topKFrequent</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    map_num := <span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">int</span>&#123;&#125;<br>    <span class="hljs-comment">// 记录每个元素出现的次数</span><br>    <span class="hljs-keyword">for</span> _, item := <span class="hljs-keyword">range</span> nums&#123;<br>        map_num[item]++<br>    &#125;<br><br>    <span class="hljs-comment">// 初始化 heap</span><br>    h := &amp;IHeap&#123;&#125;<br>    heap.Init(h)<br>    <span class="hljs-comment">// 所有元素入堆，堆的长度为 k</span><br>    <span class="hljs-keyword">for</span> key, value := <span class="hljs-keyword">range</span> map_num &#123;<br>        heap.Push(h, [<span class="hljs-number">2</span>]<span class="hljs-type">int</span>&#123;key, value&#125;)<br>        <span class="hljs-keyword">if</span> h.Len() &gt; k &#123;<br>            <span class="hljs-comment">// heap.Pop 并非下方定义的 h.Pop</span><br>            heap.Pop(h)<br>        &#125;<br>    &#125;<br><br>    res := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, k)<br>    <span class="hljs-comment">// 按顺序返回堆中的元素</span><br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; k; i++ &#123;<br>        res[k-i<span class="hljs-number">-1</span>] = heap.Pop(h).([<span class="hljs-number">2</span>]<span class="hljs-type">int</span>)[<span class="hljs-number">0</span>]<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br><br><span class="hljs-comment">// 构建小顶堆</span><br><span class="hljs-keyword">type</span> IHeap [][<span class="hljs-number">2</span>]<span class="hljs-type">int</span><br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Len()<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(h)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Less(i, j <span class="hljs-type">int</span>) <span class="hljs-type">bool</span> &#123;<br>    <span class="hljs-comment">// 如果 h[i][1] &lt; h[j][1] 生成的就是小根堆，h[i][1] &gt; h[j][1] 生成的就是大根堆</span><br>    <span class="hljs-keyword">return</span> h[i][<span class="hljs-number">1</span>] &lt; h[j][<span class="hljs-number">1</span>]<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h IHeap)</span></span> Swap(i, j <span class="hljs-type">int</span>) &#123;<br>    h[i], h[j] = h[j], h[i]<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h *IHeap)</span></span> Push(x <span class="hljs-keyword">interface</span>&#123;&#125;) &#123;<br>    *h = <span class="hljs-built_in">append</span>(*h, x.([<span class="hljs-number">2</span>]<span class="hljs-type">int</span>))<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(h *IHeap)</span></span> Pop() <span class="hljs-keyword">interface</span>&#123;&#125; &#123;<br>    old := *h<br>    n := <span class="hljs-built_in">len</span>(old)<br>    x := old[n<span class="hljs-number">-1</span>]<br>    *h = old[<span class="hljs-number">0</span>:n<span class="hljs-number">-1</span>]<br>    <span class="hljs-keyword">return</span> x<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>另一个解法是先使用 map 存储元素与出现次数，然后将元素放入切片，再按照频率对切片排序。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 方法二：利用 O(nlogn) 排序</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">topKFrequent</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    ans := []<span class="hljs-type">int</span>&#123;&#125;<br>    map_num := <span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">int</span>&#123;&#125;<br>    <span class="hljs-keyword">for</span> _, item := <span class="hljs-keyword">range</span> nums &#123;<br>        map_num[item]++<br>    &#125;<br>    <span class="hljs-keyword">for</span> key, _ := <span class="hljs-keyword">range</span> map_num &#123;<br>        ans = <span class="hljs-built_in">append</span>(ans, key)<br>    &#125;<br><br>    <span class="hljs-comment">// 切片排序</span><br>    sort.Slice(ans, <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(a, b <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>        <span class="hljs-comment">// 第一个参数是：待排序数据</span><br>        <span class="hljs-comment">// 第二个参数是：排序判断方法</span><br>        <span class="hljs-comment">// 形参 a 代表后一个元素</span><br>        <span class="hljs-comment">// 形参 b 代表前一元素</span><br>        <span class="hljs-comment">// 返回值：代表 a, b 是否交换，true：交换，false：不交换</span><br>        <span class="hljs-keyword">return</span> map_num[ans[a]] &gt; map_num[ans[b]]<br>        <span class="hljs-comment">// 后一个大于前一个就交换，所以是降序</span><br>    &#125;)<br>    <span class="hljs-keyword">return</span> ans[:k]<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 方法二：利用 O(nlogn) 排序</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">topKFrequent</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    ans := []<span class="hljs-type">int</span>&#123;&#125;<br>    map_num := <span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">int</span>&#123;&#125;<br>    <span class="hljs-keyword">for</span> _, item := <span class="hljs-keyword">range</span> nums &#123;<br>        map_num[item]++<br>    &#125;<br>    <span class="hljs-keyword">for</span> key, _ := <span class="hljs-keyword">range</span> map_num &#123;<br>        ans = <span class="hljs-built_in">append</span>(ans, key)<br>    &#125;<br><br>    <span class="hljs-comment">// 切片排序</span><br>    sort.Slice(ans, <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(a, b <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>        <span class="hljs-comment">// 第一个参数是：待排序数据</span><br>        <span class="hljs-comment">// 第二个参数是：排序判断方法</span><br>        <span class="hljs-comment">// 返回值：代表 a, b 是否交换，true：交换，false：不交换</span><br>        <span class="hljs-keyword">return</span> map_num[ans[a]] &gt; map_num[ans[b]]<br>        <span class="hljs-comment">// &lt; 是升序；&gt; 是降序</span><br>    &#125;)<br>    <span class="hljs-keyword">return</span> ans[:k]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当匿名函数返回值为 true 时，表示 a 索引处的元素应该在 b 索引处的元素之前。相反，当返回值为 false 时，表示 a 索引处的元素应该在 b 索引处的元素之后。</p>
+
                 
               </div>
             
@@ -365,7 +368,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月11日</div>
+          <div>2023年7月13日</div>
         </div>
       
       
@@ -381,18 +384,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「训」 笔记(5)：规则引擎</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套">
-                        <span class="hidden-mobile">「训」 笔记(4)：框架三件套</span>
+                      <a href="/Go-stack/" title="「Go」 栈与队列">
+                        <span class="hidden-mobile">「Go」 栈与队列</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -462,7 +459,7 @@
         aria-expanded="true"
       >
         Golang
-        <span class="list-group-count">(4)</span>
+        <span class="list-group-count">(9)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -485,6 +482,51 @@
     
       
       
+        <a href="/Go-backtrack/" title="「Go」 回溯算法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「Go」 回溯算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Go-array/" title="「Go」 数组"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「Go」 数组</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Go-list/" title="「Go」 链表"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「Go」 链表</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Go-map/" title="「Go」 哈希表"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「Go」 哈希表</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Go-string/" title="「Go」 字符串"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「Go」 字符串</span>
+        </a>
+      
+    
+      
+      
         <a href="/Go-KMP/" title="「Go」 KMP 算法"
            class="list-group-item list-group-item-action
            ">
@@ -494,19 +536,19 @@
     
       
       
-        <a href="/Go-heap/" title="「Go」 堆结构"
+        <a href="/Go-stack/" title="「Go」 栈与队列"
            class="list-group-item list-group-item-action
-           active">
-          <span class="category-post">「Go」 堆结构</span>
+           ">
+          <span class="category-post">「Go」 栈与队列</span>
         </a>
       
     
       
       
-        <a href="/Go-backtrack/" title="「Go」 回溯算法"
+        <a href="/Go-heap/" title="「Go」 堆结构"
            class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「Go」 回溯算法</span>
+           active">
+          <span class="category-post">「Go」 堆结构</span>
         </a>
       
     
