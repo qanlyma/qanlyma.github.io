@@ -11,7 +11,7 @@ Golang 数组相关题目。
 
 <!-- more -->
 
-## 二分查找
+## 1 二分查找
 
 ### [leetcode 704 题](https://leetcode.cn/problems/binary-search/)
 
@@ -44,7 +44,7 @@ func search(nums []int, target int) int {
 * 暴力解法时间复杂度：O(n)
 * 二分法时间复杂度：O(logn)
 
-## 快慢指针
+## 2 快慢指针
 
 ### [leetcode 27 题](https://leetcode.cn/problems/remove-element/)
 
@@ -76,7 +76,7 @@ func removeElement(nums []int, val int) int {
 * 暴力解法时间复杂度：O(n^2)
 * 双指针时间复杂度：O(n)
 
-## 双指针法
+## 3 双指针法
 
 ### [leetcode 977 题](https://leetcode.cn/problems/squares-of-a-sorted-array/)
 
@@ -90,7 +90,7 @@ func removeElement(nums []int, val int) int {
 
 3. 如果 `A[i] * A[i] >= A[j] * A[j]` 那么 `result[k] = A[i] * A[i]`，`i++`。
 
-## 滑动窗口
+## 4 滑动窗口
 
 ### [leetcode 209 题](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 
