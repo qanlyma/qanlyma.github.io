@@ -1,7 +1,7 @@
 ---
 title: 「训」 笔记(7)：分布式理论
 category_bar: true
-date: 2023-04-02 14:36:16
+date: 2023-03-25 14:36:16
 tags:
 categories: 字节青训
 banner_img:

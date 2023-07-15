@@ -1,7 +1,7 @@
 ---
 title: 「训」 笔记(6)：架构初探
 category_bar: true
-date: 2023-03-29 08:35:45
+date: 2023-03-19 08:35:45
 tags:
 categories: 字节青训
 banner_img:

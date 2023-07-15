@@ -1,7 +1,7 @@
 ---
 title: 「研」 QUIC 协议理解
 category_bar: true
-date: 2023-02-28 23:11:02
+date: 2023-07-14 23:11:02
 tags:
 categories: 理论研究
 banner_img:
@@ -64,7 +64,7 @@ HTTP/1.1 的主要缺点：
 
 ### HTTP/2.0
 
-HTTP/2 可以说是 SPDY 的升级版（其实原本也是基于 SPDY 设计的），但是 HTTP/2 跟 SPDY 仍有不同的地方：
+HTTP/2 是基于 HTTPS 的，可以说是 SPDY 的升级版（其实原本也是基于 SPDY 设计的），但是 HTTP/2 跟 SPDY 仍有不同的地方：
 
 * HTTP/2 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS。
 * HTTP/2 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE。
