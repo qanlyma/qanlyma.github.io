@@ -27,8 +27,8 @@
 <meta property="og:image" content="https://qanlyma.github.io/TCP-IP-handshake/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/TCP-IP-handshake/3.png">
 <meta property="og:image" content="https://qanlyma.github.io/TCP-IP-handshake/4.png">
-<meta property="article:published_time" content="2023-02-26T14:22:13.000Z">
-<meta property="article:modified_time" content="2023-03-01T06:29:02.278Z">
+<meta property="article:published_time" content="2023-07-13T14:22:13.000Z">
+<meta property="article:modified_time" content="2023-07-15T08:13:35.537Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/TCP-IP-handshake/1.png">
@@ -194,8 +194,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-02-26 22:22" pubdate>
-          2023年2月26日 晚上
+        <time datetime="2023-07-13 22:22" pubdate>
+          2023年7月13日 晚上
         </time>
       </span>
     
@@ -262,7 +262,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 个月前
+                    本文最后更新于：6 分钟前
                   
                 
               </p>
@@ -293,16 +293,19 @@
 <li>服务器收到连接释放报文，发出确认报文，ACK&#x3D;1，ack&#x3D;u+1，并且带上自己的序列号 seq&#x3D;v，此时，服务端就进入了 CLOSE-WAIT（关闭等待）状态。TCP 服务器通知高层的应用进程，客户端向服务器的方向就释放了，这时候处于半关闭状态，即客户端已经没有数据要发送了，但是服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个 CLOSE-WAIT 状态持续的时间。</li>
 <li>客户端收到服务器的确认请求后，此时，客户端就进入 FIN-WAIT-2（终止等待 2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最后的数据）。</li>
 <li>服务器将最后的数据发送完毕后，就向客户端发送连接释放报文，FIN&#x3D;1，ack&#x3D;u+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为 seq&#x3D;w，此时，服务器就进入了 LAST-ACK（最后确认）状态，等待客户端的确认。</li>
-<li>客户端收到服务器的连接释放报文后，必须发出确认，ACK&#x3D;1，ack&#x3D;w+1，而自己的序列号是 seq&#x3D;u+1，此时，客户端就进入了 TIME-WAIT（时间等待）状态。注意此时 TCP 连接还没有释放，必须经过 2?MSL（最长报文段寿命）的时间后，当客户端撤销相应的 TCB 后，才进入 CLOSED 状态。</li>
+<li>客户端收到服务器的连接释放报文后，必须发出确认，ACK&#x3D;1，ack&#x3D;w+1，而自己的序列号是 seq&#x3D;u+1，此时，客户端就进入了 TIME-WAIT（时间等待）状态。注意此时 TCP 连接还没有释放，必须经过 2MSL（最长报文段寿命）的时间后，当客户端撤销相应的 TCB 后，才进入 CLOSED 状态。</li>
 <li>服务器只要收到了客户端发出的确认，立即进入 CLOSED 状态。同样，撤销 TCB 后，就结束了这次的 TCP 连接。可以看到，服务器结束 TCP 连接的时间要比客户端早一些。</li>
 </ol>
 <blockquote>
 <p><strong>为什么客户端最后还要等待 2MSL？</strong></p>
-<p>MSL（Maximum Segment Lifetime），TCP 允许不同的实现可以设置不同的 MSL 值。<br>第一，保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，站在服务器的角度看来，我已经发送了 FIN+ACK 报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个 2MSL 时间段内收到这个重传的报文，接着给出回应报文，并且会重启 2MSL 计时器。<br>第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个 2MSL 时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文。</p>
+<p>MSL（Maximum Segment Lifetime），TCP 允许不同的实现可以设置不同的 MSL 值。</p>
+<p>第一，保证客户端发送的最后一个 ACK 报文能够到达服务器，因为这个 ACK 报文可能丢失，站在服务器的角度看来，我已经发送了 FIN+ACK 报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个 2MSL 时间段内收到这个重传的报文，接着给出回应报文，并且会重启 2MSL 计时器。</p>
+<p>第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个 2MSL 时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文。</p>
 </blockquote>
 <blockquote>
 <p><strong>为什么建立连接是三次握手，关闭连接确是四次挥手呢？</strong></p>
-<p>建立连接的时候， 服务器在 LISTEN 状态下，收到建立连接请求的 SYN 报文后，把 ACK 和 SYN 放在一个报文里发送给客户端。<br>而关闭连接时，服务器收到对方的 FIN 报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了，所以己方可以立即关闭，也可以发送一些数据给对方后，再发送 FIN 报文给对方来表示同意现在关闭连接，因此，己方 ACK 和 FIN 一般都会分开发送，从而导致多了一次。</p>
+<p>建立连接的时候， 服务器在 LISTEN 状态下，收到建立连接请求的 SYN 报文后，把 ACK 和 SYN 放在一个报文里发送给客户端。</p>
+<p>而关闭连接时，服务器收到对方的 FIN 报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了，所以己方可以立即关闭，也可以发送一些数据给对方后，再发送 FIN 报文给对方来表示同意现在关闭连接，因此，己方 ACK 和 FIN 一般都会分开发送，从而导致多了一次。</p>
 </blockquote>
 <h2 id="TLS-x2F-SSL-握手"><a href="#TLS-x2F-SSL-握手" class="headerlink" title="TLS&#x2F;SSL 握手"></a>TLS&#x2F;SSL 握手</h2><p>SSL（Secure Socket Layer 安全套接层）是 TCP&#x2F;IP 协议中位于 HTTP 之下，TCP 之上的一个可选协议层。起初 HTTP 在传输数据时使用的是明文，是不安全的。为了解决这个隐患，网景（Netscap）公司推出了 SSL。</p>
 <p>HTTPS（HTTP+SSL）的推出受到了很多人的欢迎，在 SSL 更新到 3.0 时， 互联网工程任务组（IETF）对 SSL3.0 进行了标准化，并添加了少数机制，并将其更名为 TLS1.0（Transport Layer Security 安全传输层协议）。</p>
@@ -387,7 +390,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年2月26日</div>
+          <div>2023年7月13日</div>
         </div>
       
       
@@ -403,9 +406,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Tutorial-Docker/" title="「学」 Docker 使用教程">
+                      <a href="/QUIC/" title="「研」 QUIC 协议理解">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「学」 Docker 使用教程</span>
+                        <span class="hidden-mobile">「研」 QUIC 协议理解</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -507,6 +510,15 @@
     
       
       
+        <a href="/Block/" title="「研」 以太坊区块结构和数据存储"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 以太坊区块结构和数据存储</span>
+        </a>
+      
+    
+      
+      
         <a href="/TCP-IP-fiveLayers/" title="「研」 TCP/IP 分层结构"
            class="list-group-item list-group-item-action
            ">
@@ -529,15 +541,6 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「研」 QUIC 协议理解</span>
-        </a>
-      
-    
-      
-      
-        <a href="/Block/" title="「研」 以太坊区块结构和数据存储"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「研」 以太坊区块结构和数据存储</span>
         </a>
       
     
