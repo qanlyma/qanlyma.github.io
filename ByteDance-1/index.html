@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/9.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/10.png">
 <meta property="article:published_time" content="2023-02-18T07:38:59.000Z">
-<meta property="article:modified_time" content="2023-07-11T09:08:54.471Z">
+<meta property="article:modified_time" content="2023-07-17T02:53:34.263Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-1/12.png">
@@ -271,7 +271,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 天前
+                    本文最后更新于：10 小时前
                   
                 
               </p>
@@ -304,7 +304,7 @@
 <p>也可以是多维数组：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> array_name [size1][size2]...[sizen] array_type<br></code></pre></td></tr></table></figure>
 
-<h4 id="1-2-2-slice"><a href="#1-2-2-slice" class="headerlink" title="1.2.2 slice"></a>1.2.2 slice</h4><p>切片（slice）是对数组的一个连续片段的引用（左闭右开），所以切片是一个引用类型。Go 语言中切片的内部结构包含地址、大小和容量。</p>
+<h4 id="1-2-2-slice"><a href="#1-2-2-slice" class="headerlink" title="1.2.2 slice"></a>1.2.2 slice</h4><p>切片（slice）是对数组的一个连续片段的引用（左闭右开），所以切片是一个引用类型。Go 语言中切片的内部结构包含地址（指针）、大小和容量。</p>
 <p>切片默认指向一段连续内存区域，可以是数组，也可以是切片本身：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">slice [开始位置 : 结束位置]<br></code></pre></td></tr></table></figure>
 
@@ -324,7 +324,14 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">slice := [][]<span class="hljs-type">int</span>&#123;&#123;<span class="hljs-number">10</span>&#125;, &#123;<span class="hljs-number">100</span>, <span class="hljs-number">200</span>&#125;&#125;<br></code></pre></td></tr></table></figure>
 
 <p><img src="/ByteDance-1/12.png" srcset="/img/loading.gif" lazyload></p>
-<h4 id="1-2-3-map"><a href="#1-2-3-map" class="headerlink" title="1.2.3 map"></a>1.2.3 map</h4><p>Go语言中 map 是一种特殊的数据结构，一种元素对（pair）的<strong>无序</strong>集合，pair 对应一个 key（索引）和一个 value（值），所以这个结构也称为关联数组或字典，这是一种能够快速寻找值的理想结构，给定 key，就可以迅速找到对应的 value。</p>
+<h4 id="1-2-3-map"><a href="#1-2-3-map" class="headerlink" title="1.2.3 map"></a>1.2.3 map</h4><p>Go 语言中 map 是一种特殊的数据结构，一种元素对（pair）的<strong>无序</strong>集合，pair 对应一个 key（索引）和一个 value（值），所以这个结构也称为关联数组或字典，这是一种能够快速寻找值的理想结构，给定 key，就可以迅速找到对应的 value。</p>
+<p>在 Go 的内部实现中，map 是通过哈希表来实现的。哈希表是一种基于哈希函数的数据结构，它可以将键映射到对应的值上。map 的底层数据结构是一个哈希表的数组，每个元素都是一个桶（bucket）。每个桶中存储了一个键值对，如果多个键映射到同一个桶中，它们会以链表的形式连接起来。</p>
+<ul>
+<li><p>当我们插入一个键值对时，首先会根据键的哈希值计算出对应的桶的索引。然后，如果该桶为空，直接将键值对放入其中；如果不为空，则需要遍历链表，查找是否已经存在相同的键。如果存在相同的键，那么会更新对应的值；如果不存在相同的键，会将新的键值对添加到链表的末尾。</p>
+</li>
+<li><p>当我们查询一个键的值时，也是通过计算哈希值找到对应的桶，然后遍历链表查找是否存在相同的键。如果找到了相同的键，就返回对应的值；如果遍历完链表仍然没有找到相同的键，就表示该键不存在。</p>
+</li>
+</ul>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> mapname <span class="hljs-keyword">map</span>[keytype]valuetype<br>mapname = <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[keytype]valuetype)<br></code></pre></td></tr></table></figure>
 
 <p>使用 delete() 内建函数从 map 中删除一组键值对：</p>
