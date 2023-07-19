@@ -29,7 +29,7 @@ Golang 二叉树相关题目。
 
 3. 二叉搜索树
 
-二叉搜索树是一个有序树。
+二叉搜索树（BST）是一个有序树。
 
 * 若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值
 * 若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值
@@ -248,3 +248,124 @@ func sumOfLeftLeaves(root *TreeNode) int {
     return sum
 }
 ```
+
+### 3.4 [leetcode 106 题](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+
+从中序与后序遍历序列构造二叉树。
+
+![](7.png)
+
+1. 如果数组大小为零的话，说明是空节点了。
+2. 如果不为空，那么取后序数组最后一个元素作为节点元素。
+3. 找到后序数组最后一个元素在中序数组的位置，作为切割点
+4. 切割中序数组，切成中序左数组和中序右数组。
+5. 切割后序数组，切成后序左数组和后序右数组。
+6. 递归处理左区间和右区间。
+
+```go
+func buildTree(inorder []int, postorder []int) *TreeNode {
+    root := &TreeNode{}
+    if len(inorder) == 0 {
+        return nil
+    }
+    v := postorder[len(postorder)-1]
+    var cut int
+    for i := 0; i < len(inorder); i++ {
+        if inorder[i] == v {
+            cut = i
+            break
+        }
+    }
+    root.Val = v
+    root.Left = buildTree(inorder[:cut], postorder[:cut])
+    root.Right = buildTree(inorder[cut+1:], postorder[cut:len(postorder)-1])
+    return root
+}
+```
+
+### 3.5 [leetcode 503 题](https://leetcode.cn/problems/minimum-absolute-difference-in-bst/submissions/)
+
+给你一棵所有节点为非负值的二叉搜索树，请你计算树中任意两节点的差的绝对值的最小值。
+
+**二叉搜索树采用中序遍历，其实就是一个有序数组。**最直观的想法，就是把二叉搜索树转换成有序数组，然后遍历一遍数组，就统计出来最小差值了。
+
+其实在二叉搜素树中序遍历的过程中，我们就可以直接计算了。需要用一个 pre 节点记录一下 cur 节点的前一个节点。
+
+```go
+func getMinimumDifference(root *TreeNode) int {
+    var prev *TreeNode
+    min := math.MaxInt64
+    var travel func(node *TreeNode)
+    travel = func(node *TreeNode) {
+        if node == nil {
+            return 
+        }
+        travel(node.Left)
+        if prev != nil && node.Val - prev.Val < min {
+            min = node.Val - prev.Val
+        }
+        prev = node
+        travel(node.Right)
+    }
+    travel(root)
+    return min
+}
+```
+
+### 3.6 [leetcode 503 题](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+给定一个二叉树，找到该树中两个指定节点的最近公共祖先。
+
+求最小公共祖先，需要从底向上遍历，那么二叉树只能通过后序遍历（即：回溯）实现从底向上的遍历方式。
+
+```go
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+    if root == nil || root == p || root == q {
+        return root
+    }
+
+    left := lowestCommonAncestor(root.Left, p, q)
+    right := lowestCommonAncestor(root.Right, p, q)
+    if right != nil && left != nil {
+        return root
+    } else if right == nil {
+        return left
+    }
+    return right
+}
+```
+
+在回溯的过程中，必然要遍历整棵二叉树，即使已经找到结果了，依然要把其他节点遍历完，因为要使用递归函数的返回值（也就是代码中的 left 和 right）做逻辑判断。
+
+### 3.7 [leetcode 701 题](https://leetcode.cn/problems/insert-into-a-binary-search-tree/)
+
+给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。
+
+```go
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+    if root == nil {
+        root = &TreeNode{Val: val}
+        return root
+    }
+    if root.Val > val {
+        root.Left = insertIntoBST(root.Left, val)
+    } else {
+        root.Right = insertIntoBST(root.Right, val)
+    }
+    return root
+}
+```
+
+### 3.8 [leetcode 450 题](https://leetcode.cn/problems/delete-node-in-a-bst/)
+
+给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。
+
+单层递归的逻辑有以下五种情况：
+
+1. 没找到删除的节点，遍历到空节点直接返回了
+2. 删除节点的左右孩子都为空（叶子节点），直接删除节点， 返回NULL为根节点
+3. 删除节点的左孩子为空，右孩子不为空，删除节点，右孩子补位，返回右孩子为根节点
+4. 删除节点的右孩子为空，左孩子不为空，删除节点，左孩子补位，返回左孩子为根节点
+5. 删除节点的左右孩子节点都不为空，则将删除节点的左子树头结点（左孩子）放到删除节点的右子树的最左面节点的左孩子上，返回删除节点右孩子为新的根节点。
+
+![](1.gif)
