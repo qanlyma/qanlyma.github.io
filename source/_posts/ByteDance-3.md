@@ -39,7 +39,7 @@ banner_img:
 
     ![扫描过程](2.png)
 
-    1. 标记根对象 (GC roots): 静态变量、全局变量、常量、线程栈等
+    1. 标记根对象 (GC roots)：静态变量、全局变量、常量、线程栈等
 
     2. 标记：找到所有可达对象
 
@@ -98,9 +98,11 @@ Go 内存管理构成了多级缓存机制，从 OS 分配得的内存被内存�
 
 ![多级缓存](6.png)
 
-* g：gorotine（协程）
-* m：machine（内核线程）
-* p：processor（调度器）
+* g：goroutine（协程/轻量级的线程）
+* m：machine（机器线程/内核线程）
+  * m 负责管理 goroutine 的执行，它与操作系统线程（OS Thread）一一对应。Go 运行时会根据需要创建 m，并在多个 m 之间调度 goroutine
+* p：processor（处理器线程）
+  * p 负责执行 goroutine，它维护了一个 goroutine 的队列，当 m 空闲时，会从队列中获取 goroutine 来执行
 * 每个 p 包含一个 mcache 用于快速分配，用于为绑定于 p 上的 g 分配对象
 * mcache 管理一组 mspan
 * 当 mchache 中的 mspan 分配完毕，向 mcentral 申请带有未分配块的 mspan

@@ -73,7 +73,7 @@ RPC —— Remote Procedure Calls。
 **TLV 编码**
 
 * Tag：标签，可以理解为类型
-* Lenght：长度
+* Length：长度
 * Value：值，Value 也可以是个 TLV 结构
 
 ![](4.png)
