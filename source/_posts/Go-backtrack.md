@@ -149,3 +149,142 @@ func combine(n int, k int) [][]int {
     return res
 }
 ```
+
+### 2.2 [leetcode 40 题](https://leetcode.cn/problems/combination-sum-ii/)
+
+给定一个数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+
+candidates 中的每个数字在每个组合中只能使用一次。解集不能包含重复的组合。
+
+这道题的难点在于去重。要去重的是同一树层上的“使用过”，同一树枝上的都是一个组合里的元素，不用去重。
+
+![](5.png)
+
+* `used[i - 1] == true`，说明同一树枝 candidates[i - 1] 使用过，是进入下一层递归
+* `used[i - 1] == false`，说明同一树层 candidates[i - 1] 使用过，是回溯而来的
+
+```go
+func combinationSum2(candidates []int, target int) [][]int {
+    sort.Ints(candidates)
+    var res [][]int
+    var path []int
+    used := make([]bool, len(candidates))
+    var sum int
+    var backtracking func(start int)
+    backtracking = func(start int) {
+        if sum > target {
+            return
+        } else if sum == target {
+            tmp := make([]int, len(path))
+            copy(tmp, path)
+            res = append(res, tmp)
+        }
+
+        for i := start; i < len(candidates); i++ {
+            if i > 0 && candidates[i] == candidates[i-1] && !used[i-1] {
+                continue
+            }
+            sum += candidates[i]
+            path = append(path, candidates[i])
+            used[i] = true
+            backtracking(i+1)
+            sum -= candidates[i]
+            path = path[:len(path)-1]
+            used[i] = false
+        }
+    }
+    backtracking(0)
+    return res
+}
+```
+
+### 2.3 [leetcode 131 题](https://leetcode.cn/problems/palindrome-partitioning/)
+
+给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。
+
+切割问题本质上和组合问题是一样的。
+
+```go
+func partition(s string) [][]string {
+    var res [][]string
+    var path []string
+    var backtracking func(sub string) 
+    backtracking = func(sub string) {
+        if len(sub) == 0 {
+            tmp := make([]string, len(path))
+            copy(tmp, path)
+            res = append(res, tmp)
+        }
+
+        for i := 1; i <= len(sub); i++ {
+            if ifStr(sub[0:i]) {
+                path = append(path, sub[0:i])
+                backtracking(sub[i:])
+                path = path[:len(path)-1]
+            }
+        }
+    }
+    backtracking(s)
+    return res
+}
+
+func ifStr(s string) bool {
+    b := []byte(s)
+    for i, j := 0, len(b)-1; i < j; i, j = i+1, j-1 {
+        if b[i] != b[j] {
+            return false
+        }
+    }
+    return true
+}
+```
+
+### 2.4 [leetcode 90 题](https://leetcode.cn/problems/subsets-ii/)
+
+给你一个整数数组 nums，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
+
+### 2.5 [leetcode 491 题](https://leetcode.cn/problems/non-decreasing-subsequences/submissions/)
+
+给你一个整数数组 nums，找出并返回所有该数组中不同的递增子序列，数组中可能含有重复元素。
+
+不能对数组进行排序，在每一层新建一个 map 进行去重。
+
+```go
+func findSubsequences(nums []int) [][]int {
+    var res [][]int
+    var path []int
+    var backtracking func(start int) 
+    backtracking = func(start int) {
+        if len(path) >= 2 {
+            tmp := make([]int, len(path))
+            copy(tmp, path)
+            res = append(res, tmp)
+        }
+
+        usedmap := make(map[int]bool)
+        for i := start; i < len(nums); i++ {
+            if (len(path) != 0 && nums[i] < path[len(path)-1]) || usedmap[nums[i]] {
+                continue
+            }
+            path = append(path, nums[i])
+            usedmap[nums[i]] = true
+            backtracking(i+1)
+            path = path[:len(path)-1]
+        }
+    }
+    backtracking(0)
+    return res
+}
+```
+
+### 2.6 [leetcode 47 题](https://leetcode.cn/problems/permutations-ii/submissions/)
+
+给定一个可包含重复数字的序列 nums，按任意顺序返回所有不重复的全排列。
+
+### 2.7 [leetcode 51 题](https://leetcode.cn/problems/n-queens/)
+
+N 皇后。
+
+### 2.8 [leetcode 37 题](https://leetcode.cn/problems/sudoku-solver/)
+
+解数独。
