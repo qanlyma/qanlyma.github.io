@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/7.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/8.png">
 <meta property="article:published_time" content="2023-03-06T04:13:09.000Z">
-<meta property="article:modified_time" content="2023-07-20T05:33:12.203Z">
+<meta property="article:modified_time" content="2023-07-20T13:24:54.496Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-3/1.png">
@@ -266,7 +266,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：8 小时前
+                    本文最后更新于：3 天前
                   
                 
               </p>
@@ -360,6 +360,7 @@
 <li>p 负责执行 goroutine，它维护了一个 goroutine 的队列，当 m 空闲时，会从队列中获取 goroutine 来执行</li>
 </ul>
 </li>
+<li>每个 p 和一个 m 绑定，m 是真正的执行 p 中 goroutine 的实体</li>
 <li>每个 p 包含一个 mcache 用于快速分配，用于为绑定于 p 上的 g 分配对象</li>
 <li>mcache 管理一组 mspan</li>
 <li>当 mchache 中的 mspan 分配完毕，向 mcentral 申请带有未分配块的 mspan</li>
