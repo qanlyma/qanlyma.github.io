@@ -100,3 +100,31 @@ func canCompleteCircuit(gas []int, cost []int) int {
 ### 2.8 [leetcode 968 题](https://leetcode.cn/problems/binary-tree-cameras/)
 
 监控二叉树。
+
+```go
+func minCameraCover(root *TreeNode) (res int) {
+    // 节点状态：0 表示未覆盖，1 表示有监控，2 表示被覆盖
+    var DFS func(node *TreeNode) int
+    DFS = func(node *TreeNode) int {
+        if node == nil {
+            return 2
+        }
+
+        left := DFS(node.Left)
+        right := DFS(node.Right)
+        if left == 0 || right == 0 {
+            res++
+            return 1
+        }
+        if left == 1 || right == 1 {
+            return 2
+        }
+        return 0
+    }
+
+    if DFS(root) == 0 {
+        res++
+    }
+    return
+}
+```
