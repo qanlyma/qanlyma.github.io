@@ -23,10 +23,12 @@
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="思考和总结的一些问题。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-13/1.png">
 <meta property="article:published_time" content="2023-07-15T11:20:30.000Z">
-<meta property="article:modified_time" content="2023-07-25T01:47:06.626Z">
+<meta property="article:modified_time" content="2023-07-28T08:30:57.026Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-13/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -257,7 +259,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：11 小时前
+                    本文最后更新于：1 天前
                   
                 
               </p>
@@ -330,7 +332,7 @@
 </ol>
 <h4 id="Q：Cookie-和-Session-的区别"><a href="#Q：Cookie-和-Session-的区别" class="headerlink" title="Q：Cookie 和 Session 的区别"></a>Q：Cookie 和 Session 的区别</h4><ul>
 <li>Cookie 是浏览器支持的一种本地存储机制。一般由服务端设置生成，在响应请求时被自动存储在浏览器中，用于辨别用户身份。</li>
-<li>创建 Session 的时候， 服务端会在 http 协议中告诉客服端，需要在 Cookie 里记录一个 sessionid, 以后每次请求把这个 id 发送到服务器，就知道用户身份了。</li>
+<li>创建 Session 的时候， 服务端会在 http 协议中告诉客户端，需要在 Cookie 里记录一个 sessionid，以后每次请求把这个 id 发送到服务器，就知道用户身份了。</li>
 <li>Token 是一种基于令牌的认证机制，常见于无状态（Stateless）的 Web 应用中（移动端也推荐用 Token）。在使用 Token 认证时，当用户登录成功后，服务器会生成一个加密的 Token，并将其返回给客户端。客户端在后续的请求中需要携带这个 Token 作为身份凭证，通常通过请求头（如 Authorization 头）或查询参数来传递。</li>
 </ul>
 <p><strong>区别</strong>： </p>
@@ -346,9 +348,9 @@
 <li><p>存储方式：Cookie 通过在 HTTP 响应头中的 Set-Cookie 字段发送给客户端，客户端将其存储在本地。之后，每次请求中都会通过 Cookie 头字段将 Cookie 发送回服务器。Session 通过在服务器上创建唯一的标识符（通常是会话 ID）来跟踪用户会话，并将该标识符存储在 Cookie 中或通过 URL 重写传递给客户端。</p>
 </li>
 </ol>
-<h4 id="Q：什么是跨站脚本攻击-XSS-和-HttpOnly"><a href="#Q：什么是跨站脚本攻击-XSS-和-HttpOnly" class="headerlink" title="Q：什么是跨站脚本攻击 XSS 和 HttpOnly"></a>Q：什么是跨站脚本攻击 XSS 和 HttpOnly</h4><p>XSS 是跨站脚本攻击（Cross Site Scripting）。恶意攻击者往 Web 页面里插入恶意 Script 代码，当用户浏览该页之时，Script 代码会被执行从而达到恶意攻击用户的目的。如，盗取用户 Cookie、破坏页面结构、重定向到其它网站（流量劫持）等。</p>
+<h4 id="Q：什么是跨站脚本攻击-XSS-和-HttpOnly"><a href="#Q：什么是跨站脚本攻击-XSS-和-HttpOnly" class="headerlink" title="Q：什么是跨站脚本攻击 XSS 和 HttpOnly"></a>Q：什么是跨站脚本攻击 XSS 和 HttpOnly</h4><p>XSS 是跨站脚本攻击（Cross Site Scripting）。恶意攻击者往 Web 页面里插入 Script 代码，当用户浏览时，Script 代码会被执行从而达到攻击用户的目的。如盗取用户 Cookie、破坏页面结构、重定向到其它网站（流量劫持）等。</p>
 <p>HttpOnly 是一个标记，用于设置 HTTP Cookie 的属性。当设置了 HttpOnly 属性后，浏览器将限制该 Cookie 只能通过 HTTP 或 HTTPS 协议进行传输，禁止通过脚本（如 JavaScript）访问该 Cookie。</p>
-<p>HttpOnly 属性的作用是增加 Web 应用程序的安全性，防止跨站脚本攻击（XSS）的一种方式。</p>
+<p>HttpOnly 属性的作用是增加 Web 应用程序的安全性，是防止跨站脚本攻击（XSS）的一种方式。</p>
 <h4 id="Q：GET-和-POST-的区别"><a href="#Q：GET-和-POST-的区别" class="headerlink" title="Q：GET 和 POST 的区别"></a>Q：GET 和 POST 的区别</h4><ul>
 <li>GET 重点在从服务器上获取资源，一般用于获取&#x2F;查询资源信息。是无副作用的，是幂等的，且可缓存。</li>
 <li>POST 重点在向服务器发送数据，一般用于更新资源信息。有副作用，非幂等，不可缓存。</li>
@@ -378,9 +380,10 @@
 <li>确认应答</li>
 <li>超时重传</li>
 <li>连接管理</li>
-<li>流量控制：滑动窗口机制基于接收方的反馈信息来动态调整发送方的发送速率</li>
+<li>流量管理：滑动窗口机制基于接收方的反馈信息来动态调整发送方的发送速率</li>
 <li>拥塞控制：慢启动、拥塞避免、快速重传、超时重传</li>
 </ul>
+<p><img src="/ByteDance-13/1.png" srcset="/img/loading.gif" lazyload></p>
 <h4 id="Q：长连接与短连接的区别"><a href="#Q：长连接与短连接的区别" class="headerlink" title="Q：长连接与短连接的区别"></a>Q：长连接与短连接的区别</h4><p>长连接，也叫持久连接，在 TCP 层握手成功后，不立即断开连接，并在此连接的基础上进行多次消息交互，直至连接的任意一方（客户端 OR 服务端）主动断开连接，此过程称为一次完整的长连接。在 HTTP 请求和响应中，通过设置 Connection 头字段来指示是否使用长连接 <code>Connection: keep-alive</code>。</p>
 <p>早期 HTTP&#x2F;1.0 性能上的一个很大的问题，那就是每发起一个请求，都要新建一次 TCP 连接（三次握手），而且是串行请求，增加了通信开销。HTTP&#x2F;1.1 最重要的新特性就是引入了长连接。</p>
 <p>短连接，客户端收到服务端的响应后，立刻发送 FIN 消息，主动释放连接。也有服务端主动断连的情况，凡是在一次消息交互之后立刻断开连接的情况都称为短连接。</p>
@@ -574,6 +577,12 @@
 <li><code>&gt;</code> : 重定向操作符，将命令的输出保存到文件中。</li>
 <li><code>&gt;&gt;</code> : 追加重定向操作符，将命令的输出追加到文件末尾。</li>
 </ul>
+<h4 id="Q：Linux-如何查看某个文件中某个关键字的后-5-行"><a href="#Q：Linux-如何查看某个文件中某个关键字的后-5-行" class="headerlink" title="Q：Linux 如何查看某个文件中某个关键字的后 5 行"></a>Q：Linux 如何查看某个文件中某个关键字的后 5 行</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">grep -n <span class="hljs-string">&quot;keyword&quot;</span> example.txt | <span class="hljs-built_in">tail</span> -n 5<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>grep -n “keyword” example.txt: 使用 grep 命令查找文件中包含关键字 keyword 的所有行，并显示它们的行号。选项 -n 表示显示行号。</li>
+<li>tail -n 5: 使用 tail 命令显示最后 5 行。因为前面已经使用 grep 命令找到了匹配的行并显示了行号，这里只需要用 tail 命令显示最后 5 行即可。</li>
+</ul>
 <h4 id="Q：Linux-如何查看系统日志"><a href="#Q：Linux-如何查看系统日志" class="headerlink" title="Q：Linux 如何查看系统日志"></a>Q：Linux 如何查看系统日志</h4><ul>
 <li>使用 journalctl 命令</li>
 <li>查看特定日志文件：<code>/var/log</code> 目录下的不同文件中</li>
@@ -667,11 +676,17 @@
 <li>docker info: 显示 Docker 系统信息。</li>
 <li>docker-compose: 使用 Docker Compose 来管理多个容器的应用。</li>
 </ul>
+<h4 id="Q：Dockerfile-中-COPY-和-ADD-有什么区别"><a href="#Q：Dockerfile-中-COPY-和-ADD-有什么区别" class="headerlink" title="Q：Dockerfile 中 COPY 和 ADD 有什么区别"></a>Q：Dockerfile 中 COPY 和 ADD 有什么区别</h4><ul>
+<li>COPY 只能复制本地主机的文件或目录，不能复制网络资源或从 URL 下载文件。</li>
+<li>COPY 在复制文件时，不会自动解压缩压缩文件，即使文件是归档文件（例如 .tar, .gz 等），也会按照原样复制到镜像中。</li>
+<li>除了复制本地文件外，ADD 还支持复制网络资源和从 URL 下载文件。如果 &lt;源路径&gt; 是一个 URL，ADD 命令会自动下载文件并复制到镜像中。</li>
+<li>ADD 在复制文件时，如果文件是归档文件（例如 .tar, .gz 等），会自动解压缩压缩文件并复制到镜像中。</li>
+</ul>
 <h4 id="Q：Docker-容器如何实现隔离的"><a href="#Q：Docker-容器如何实现隔离的" class="headerlink" title="Q：Docker 容器如何实现隔离的"></a>Q：Docker 容器如何实现隔离的</h4><p>Docker 容器实现隔离是通过一系列 Linux 内核特性和技术实现的。这些特性允许每个 Docker 容器拥有独立的文件系统、进程空间、网络和用户空间，从而使它们相互隔离。</p>
 <p>每个容器运行在它自己的命名空间（Namespaces）中，但是，确实与其它运行中的容器共用相同的系统内核。隔离的产生是由于系统内核清楚地知道命名空间及其中的进程，且这些进程调用系统 API 时，内核保证进程只能访问属于其命名空间中的资源。</p>
 <h4 id="Q：什么是-Docker-compose"><a href="#Q：什么是-Docker-compose" class="headerlink" title="Q：什么是 Docker compose"></a>Q：什么是 Docker compose</h4><p>用于定义和管理多个 Docker 容器的应用程序。它允许你使用简单的 YAML 文件来描述多个容器之间的关系和配置，从而实现快速、方便地部署和管理复杂的多容器应用。</p>
 <h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><h4 id="Q：索引是什么"><a href="#Q：索引是什么" class="headerlink" title="Q：索引是什么"></a>Q：索引是什么</h4><p>数据库索引是数据库管理系统中一个排序的数据结构，包含着对数据表里所有记录的引用指针。以协助快速查询、更新数据库表中数据。如果没有索引，数据库引擎需要扫描整个数据表来找到匹配的记录。而有了索引，数据库引擎可以直接跳到索引中存储的位置，快速定位到匹配的记录，从而大大加快查询速度。</p>
-<p>但过度使用索引也可能会导致一些问题。索引需要占用额外的存储空间，并且在数据插入、更新和删除时需要额外的维护成本。</p>
+<p>但索引需要占用额外的存储空间，并且在数据插入、更新和删除时需要额外的维护成本。</p>
 <p>关系型数据库索引的实现通常使用 B 树及其变种 B+ 树。</p>
 <h4 id="Q：索引的类型"><a href="#Q：索引的类型" class="headerlink" title="Q：索引的类型"></a>Q：索引的类型</h4><ul>
 <li>普通索引（INDEX）：这是最基本的索引，它没有任何限制。</li>
@@ -685,39 +700,49 @@
 <li>全文索引（FULLTEXT）：快速定位特定数据。</li>
 </ul>
 <h4 id="Q：为什么说-B-树更适合数据库索引"><a href="#Q：为什么说-B-树更适合数据库索引" class="headerlink" title="Q：为什么说 B+ 树更适合数据库索引"></a>Q：为什么说 B+ 树更适合数据库索引</h4><ul>
-<li><p>B+ 树的磁盘读写代价更低：B+ 树的内部节点并没有指向关键字具体信息的指针，因此其内部节点相对 B 树更小，如果把所有同一内部节点的关键字存放在同一盘块中，那么盘块所能容纳的关键字数量也越多，一次性读入内存的需要查找的关键字也就越多，相对 IO 读写次数就降低了。B 树中每个节点中不仅包含数据的 key 值，还有 data 值。而每一个页的存储空间是有限的，如果 data 数据较大时将会导致每个节点（即一个页）能存储的 key 的数量很小，当存储的数据量很大时同样会导致 B 树的深度较大，增大查询时的磁盘 I&#x2F;O 次数，进而影响查询效率。</p>
+<li><p>B+ 树的磁盘读写代价更低：B+ 树的内部节点并没有指向关键字具体信息的指针，因此其内部节点相对 B 树更小，盘块所能容纳的关键字数量也越多，一次性读入内存的查找的关键字也就越多，相对 IO 读写次数就降低了。</p>
 </li>
-<li><p>B+ 树的查询效率更加稳定：由于非终结点并不是最终指向文件内容的结点，而只是叶子结点中关键字的索引。所以任何关键字的查找必须走一条从根结点到叶子结点的路。所有关键字查询的路径长度相同，导致每一个数据的查询效率相当。</p>
+<li><p>B 树中每个节点中不仅包含数据的 key 值，还有 data 值。而每一个页的存储空间是有限的，如果 data 数据较大时将会导致每个节点（即一个页）能存储的 key 的数量很小，当存储的数据量很大时同样会导致 B 树的深度较大，增大查询时的磁盘 I&#x2F;O 次数，进而影响查询效率。</p>
 </li>
-<li><p>B+ 树的数据都存储在叶子结点中，分支结点均为索引，方便扫库，只需要扫一遍叶子结点即可，但是 B 树因为其分支结点同样存储着数据，我们要找到具体的数据，需要进行一次中序遍历按序来扫，所以 B+ 树更加适合在区间查询的情况，所以通常 B+ 树用于数据库索引。</p>
+<li><p>B+ 树的查询效率更加稳定：由于中间结点并不指向文件内容，而只是叶子结点中关键字的索引。所以任何关键字的查找必须走一条从根结点到叶子结点的路。所有关键字查询的路径长度相同，每一个数据的查询效率相当。</p>
+</li>
+<li><p>B+ 树的数据都存储在叶子结点中方便扫库，只需要扫一遍叶子结点即可，但是 B 树因为其分支结点同样存储着数据，需要进行一次中序遍历按序来扫，所以 B+ 树更加适合在区间查询的情况。</p>
 </li>
 </ul>
-<h4 id="Q：最左前缀原则和最左匹配原则"><a href="#Q：最左前缀原则和最左匹配原则" class="headerlink" title="Q：最左前缀原则和最左匹配原则"></a>Q：最左前缀原则和最左匹配原则</h4><p>最左前缀原则是指当数据库使用复合索引进行查询时，查询条件必须是复合索引的最左边的一个或多个字段，才能充分利用索引加速查询。</p>
-<p>最左匹配原则是最左前缀原则的一个扩展，它指的是数据库可以利用复合索引中的最左边的连续一段字段来加速查询。这意味着在满足最左前缀原则的前提下，数据库可以只使用复合索引中的前几个字段来匹配查询条件。</p>
+<h4 id="Q：最左前缀原则和最左匹配原则"><a href="#Q：最左前缀原则和最左匹配原则" class="headerlink" title="Q：最左前缀原则和最左匹配原则"></a>Q：最左前缀原则和最左匹配原则</h4><ul>
+<li><p>最左前缀原则是指当数据库使用复合索引进行查询时，查询条件必须是复合索引的最左边的一个或多个字段，才能充分利用索引加速查询。</p>
+</li>
+<li><p>最左匹配原则是最左前缀原则的一个扩展，它指的是数据库可以利用复合索引中的最左边的连续一段字段来加速查询。这意味着在满足最左前缀原则的前提下，数据库可以只使用复合索引中的前几个字段来匹配查询条件。</p>
+</li>
+</ul>
 <h4 id="Q：聚簇索引"><a href="#Q：聚簇索引" class="headerlink" title="Q：聚簇索引"></a>Q：聚簇索引</h4><p>聚簇索引直接将表的数据行存储在索引结构中，而非聚簇索引则将索引和数据行分开存储。优点是查询速度快，缺点是数据更新代价高。</p>
 <h4 id="Q：事务并发问题"><a href="#Q：事务并发问题" class="headerlink" title="Q：事务并发问题"></a>Q：事务并发问题</h4><ol>
 <li>脏读（Dirty Reads）：脏读是指在一个事务处理过程里读取了另一个未提交的事务中的数据。</li>
 <li>不可重复读（Non-Repeatable Reads）：不可重复读是指在对于数据库中的某个数据，一个事务范围内多次查询却返回了不同的数据值，这是由于在查询间隔，被另一个事务修改并提交了。</li>
 <li>幻读（Phantom Reads）：事务 A 修改全表的数据，在事务 A 未提交时，事务 B 向表中插入或删除数据并提交，导致事务 A 读取的数据与需要修改的数据不一致。</li>
 </ol>
-<p>不可重复读和脏读的区别是，脏读是某一事务读取了另一个事务未提交的脏数据，而不可重复读则是读取了前一事务提交的数据。</p>
+<p>脏读是某一事务读取了另一个事务未提交的脏数据，而不可重复读则是读取了前一事务提交的数据。</p>
 <p>实现事物隔离性主要有两种方式：读写锁和 MVCC。</p>
 <h4 id="Q：数据库四种隔离等级"><a href="#Q：数据库四种隔离等级" class="headerlink" title="Q：数据库四种隔离等级"></a>Q：数据库四种隔离等级</h4><ol>
-<li>Serializable (串行化)：可避免脏读、不可重复读、幻读的发生。<ul>
-<li>完全的串行化读，所有 SELECT 语句都被隐式的转换成 SELECT … LOCK IN SHARE MODE，即读取使用表级共享锁，读写相互都会阻塞。隔离级别最高。</li>
-<li>提供严格的事务隔离。它要求事务序列化执行，事务只能一个接着一个地执行，不能并发执行。</li>
+<li>Serializable (串行化)：<ul>
+<li>可避免脏读、不可重复读、幻读的发生。</li>
+<li>读取使用表级共享锁，读写相互都会阻塞。</li>
+<li>要求事务序列化执行，事务只能一个接着一个地执行，不能并发执行。</li>
 </ul>
 </li>
-<li>Repeatable read (可重复读)：可避免脏读、不可重复读的发生。<ul>
-<li>在第一个事务中的两次读数据之间，即使第二个事务对数据进行修改，第一个事务两次读到的的数据是一样的。(写锁，等读完)</li>
+<li>Repeatable read (可重复读)：<ul>
+<li>可避免脏读、不可重复读的发生。</li>
+<li>多次读取同一数据，确保在事务执行期间，同一数据的值保持不变。</li>
 </ul>
 </li>
-<li>Read committed (读已提交、不可重复读)：可避免脏读的发生。<ul>
-<li>只能读取到已经提交的数据。即解决了脏读，但未解决不可重复读。（读锁，等写完）</li>
+<li>Read committed (读已提交、不可重复读)：<ul>
+<li>可避免脏读的发生。</li>
+<li>只能读取到已经提交的数据，但不能读取未提交的数据。</li>
 </ul>
 </li>
-<li>Read uncommitted (读未提交)：最低级别，任何情况都无法保证。<ul>
-<li>如果一个事务已经开始写数据，则另外一个事务则不允许同时进行写操作，但允许其他事务读此行数据。</li>
+<li>Read uncommitted (读未提交)：<ul>
+<li>最低级别，任何情况都无法保证。</li>
+<li>允许事务读取其他事务所做的未提交的数据。</li>
 </ul>
 </li>
 </ol>
@@ -849,7 +874,7 @@
 <li><p>灰盒测试是综合运用黑盒测试和白盒测试技术的一种混合测试方法。</p>
 </li>
 </ul>
-<h4 id="Q：冒烟测试"><a href="#Q：冒烟测试" class="headerlink" title="Q：冒烟测试"></a>Q：冒烟测试</h4><p>确保开发人员修复了 bug 后，这个 bug 的修复没有影响到其他功能模块。</p>
+<h4 id="Q：冒烟测试"><a href="#Q：冒烟测试" class="headerlink" title="Q：冒烟测试"></a>Q：冒烟测试</h4><p>冒烟测试是一种快速的功能测试，验证核心功能是否正常，目的是确认软件是否值得进行更详细的测试。</p>
 <h4 id="Q：接口测试"><a href="#Q：接口测试" class="headerlink" title="Q：接口测试"></a>Q：接口测试</h4><p>接口测试其实最主要的验证接口逻辑，可用性，边界值，异常检查。</p>
 <p>主要用于检测外部系统与系统之间以及内部各个子系统之间的交互点。测试的重点是要检查数据的交换，传递和控制管理过程，以及系统间的相互逻辑依赖关系等。</p>
 <h4 id="Q：为什么要做接口测试"><a href="#Q：为什么要做接口测试" class="headerlink" title="Q：为什么要做接口测试"></a>Q：为什么要做接口测试</h4><ol>
@@ -877,7 +902,7 @@
 </li>
 </ul>
 <h4 id="Q：软件测试的关键点"><a href="#Q：软件测试的关键点" class="headerlink" title="Q：软件测试的关键点"></a>Q：软件测试的关键点</h4><ul>
-<li>尽早发现缺陷：伴随软件开发的各个环节，及时发现问题解决问题，避免最后问题堆积导致无法解决或解决工程量巨大。</li>
+<li>尽早发现缺陷，避免最后问题堆积导致无法解决或解决工程量巨大。</li>
 <li>用尽量少的测试用例发现尽可能多的缺陷。</li>
 <li>提升发现缺陷的效率。</li>
 </ul>
