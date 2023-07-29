@@ -81,6 +81,50 @@ func isAnagram2(s, t string) bool {
 
 快乐数。
 
-### 2.3 [leetcode 454 题](https://leetcode.cn/problems/4sum-ii/)
+```go
+func isHappy(n int) bool {
+    sumMap := map[int]bool{}
+    for n != 1 {
+        if sumMap[n] == true {
+            return false
+        } else {
+            sumMap[n] = true
+        }
+        n = sqSum(n)
+    }
+    return true
+}
+
+func sqSum(n int) int {
+    var sum int
+    for n > 0 {
+        sum += (n%10) * (n%10)
+        n /= 10
+    }
+    return sum
+}
+```
+
+### 2.3 [leetcode 1 题](https://leetcode.cn/problems/two-sum/)
+
+两数之和。
+
+```go
+func twoSum(nums []int, target int) []int {
+    m := make(map[int]int)
+    for index, val := range nums {
+        if preIndex, ok := m[target-val]; ok {
+            return []int{preIndex, index}
+        } else {
+            m[val] = index
+        }
+    }
+    return []int{}
+}
+```
+
+### 2.4 [leetcode 15 题](https://leetcode.cn/problems/3sum/)
+
+### 2.5 [leetcode 454 题](https://leetcode.cn/problems/4sum-ii/)
 
 四数之和。

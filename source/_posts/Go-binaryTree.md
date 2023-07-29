@@ -312,7 +312,7 @@ func getMinimumDifference(root *TreeNode) int {
 }
 ```
 
-### 3.6 [leetcode 503 题](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
+### 3.6 [leetcode 236 题](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
 
 给定一个二叉树，找到该树中两个指定节点的最近公共祖先。
 

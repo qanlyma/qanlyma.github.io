@@ -188,7 +188,6 @@ func evalRPN(tokens []string) int {
 }
 ```
 
-### 2.2 [leetcode 239 题](https://leetcode.cn/problems/sliding-window-maximum/)
+### 2.3 [leetcode 239 题](https://leetcode.cn/problems/sliding-window-maximum/)
 
 滑动窗口最大值。
-

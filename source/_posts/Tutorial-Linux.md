@@ -159,14 +159,14 @@ var 是 variable(变量) 的缩写，这个目录中存放着在不断扩充着�
 
 ## Linux 常用命令
 
-* ls （list files）: 列出目录及文件名
+* ls （list files）：列出目录及文件名
 * cd （change directory）：切换目录
 * pwd （print work directory）：显示目前的目录
 * mkdir （make directory）：创建一个新的目录
 * rmdir （remove directory）：删除一个空的目录
-* cp （copy file）: 复制文件或目录
-* rm （remove）: 删除文件或目录
-* mv （move file）: 移动文件与目录，或修改文件与目录的名称
+* cp （copy file）：复制文件或目录
+* rm （remove）：删除文件或目录
+* mv （move file）：移动文件与目录，或修改文件与目录的名称
 * cat （concatenate）：显示文件内容或是将多个文件合并成一个文件
 * yum（Yellow dog Updater, Modified）：一个在 Fedora 和 RedHat 以及 SUSE 中的 Shell 前端软件包管理器
 * apt（Advanced Packaging Tool）：一个在 Debian 和 Ubuntu 中的 Shell 前端软件包管理器

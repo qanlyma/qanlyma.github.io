@@ -90,15 +90,59 @@ func removeElement(nums []int, val int) int {
 
 3. 如果 `A[i] * A[i] >= A[j] * A[j]` 那么 `result[k] = A[i] * A[i]`，`i++`。
 
+```go
+func sortedSquares(nums []int) []int {
+	n := len(nums)
+	i, j, k := 0, n-1, n-1
+	ans := make([]int, n)
+	for i <= j {
+		lm, rm := nums[i]*nums[i], nums[j]*nums[j]
+		if lm > rm {
+			ans[k] = lm
+			i++
+		} else {
+			ans[k] = rm
+			j--
+		}
+		k--
+	}
+	return ans
+}
+```
+
 ## 4 滑动窗口
 
 ### [leetcode 209 题](https://leetcode.cn/problems/minimum-size-subarray-sum/)
+
+给定一个含有 n 个正整数的数组和一个正整数 s，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。
 
 实现滑动窗口，主要确定如下三点：
 
 * 窗口内是什么？
 * 如何移动窗口的起始位置？（本题使用 for 循环一次移动多位）
 * 如何移动窗口的结束位置？（本题一次移动一位）
+
+```go
+func minSubArrayLen(target int, nums []int) int {
+    res := len(nums) + 1
+    l, r, sum := 0, 0, 0
+    for r < len(nums) {
+        sum += nums[r]
+        for sum >= target {
+            if res > (r - l + 1) {
+                res = r - l + 1
+            }
+            sum -= nums[l]
+            l++
+        } 
+        r++
+    }
+    if res == len(nums) + 1 {
+        return 0
+    }
+    return res
+}
+```
 
 * 暴力解法时间复杂度：O(n^2)
 * 滑动窗口时间复杂度：O(n)

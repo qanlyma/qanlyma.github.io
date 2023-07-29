@@ -20,7 +20,7 @@ Go 使用的 UTF-8 变长编码，每个字符所占的字节是不一样的：
 ```go
 func utf_8Test() {
 	str := "英文名为Jamison"
-	fmt.Println(len(str)) //19
+	fmt.Println(len(str)) // 19
 	// 四个汉字每个汉字三个字节，其余英文每个一字节
 	// 所以含有一个字节以上的字符不能使用传统 for 循环遍历，应该使用 for range
 	for _, s := range str {
@@ -76,4 +76,83 @@ func reverseString(s []byte) {
 2. 将整个字符串反转
 3. 将每个单词反转
 
+```go
+func reverseWords(s string) string {
+    fast, slow := 0, 0
+    b := []byte(s)
+    lens := len(b)
+
+    // top sp
+    for ; fast < lens; fast++ {
+        if b[fast] != ' ' {
+           break 
+        }
+    }
+
+    // mid sp
+    for ; fast < lens; fast++ {
+        if fast-1 > 0 && b[fast]==' ' && b[fast-1]==' ' {
+            continue
+        }
+        b[slow] = b[fast]
+        slow++
+    }
+
+    // end sp
+    if b[slow-1] == ' ' {
+        b = b[:slow-1]
+    } else {
+        b = b[:slow]
+    }
+    
+    reverseStr(b, 0, len(b)-1)
+
+    for i, j := 0, 0; j <= len(b); j++ {
+        if j == len(b) {
+            reverseStr(b, i, len(b)-1)
+            break
+        }
+        if b[j] == ' ' {
+            reverseStr(b, i, j-1)
+            i = j + 1
+        }
+    }
+
+    return string(b)
+}
+
+func reverseStr(b []byte, begin int, end int) {
+    for i, j := begin, end; i < j; i, j = i+1, j-1 {
+        (b)[i], (b)[j] = (b)[j], (b)[i]
+    }
+}
+```
+
 注：在 Go 中，字符串是不可变的，也就是说无法直接通过下标操作来修改字符串的内容。因此，无法直接通过下标操作来实现字符串的反转。要反转字符串，可以将字符串转换为字节数组（[]byte）。
+
+### 2.4 [leetcode 3 题](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+
+无重复字符的最长子串。
+
+```go
+func lengthOfLongestSubstring(s string) (res int) {
+    b := []byte(s)
+    bmap := make(map[byte]int)
+    i := 0
+    for j := 0; j < len(b); j++ {
+        bmap[b[j]]++
+        if bmap[b[j]] > 1 {
+            for bmap[b[i]] != bmap[b[j]] {
+                bmap[b[i]]--
+                i++
+            }
+            bmap[b[i]]--
+            i++
+        }
+        if (j-i+1) > res {
+            res = j-i+1
+        }
+    }
+    return
+}
+```
