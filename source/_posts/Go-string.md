@@ -134,6 +134,8 @@ func reverseStr(b []byte, begin int, end int) {
 
 无重复字符的最长子串。
 
+滑动窗口。
+
 ```go
 func lengthOfLongestSubstring(s string) (res int) {
     b := []byte(s)

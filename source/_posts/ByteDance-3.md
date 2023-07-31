@@ -98,18 +98,29 @@ Go 内存管理构成了多级缓存机制，从 OS 分配得的内存被内存�
 
 ![多级缓存](6.png)
 
-* g：goroutine（协程/轻量级的线程）
-* m：machine（机器线程/内核线程）
-  * m 负责管理 goroutine 的执行，它与操作系统线程（OS Thread）一一对应。Go 运行时会根据需要创建 m，并在多个 m 之间调度 goroutine
-* p：processor（处理器线程）
-  * p 负责执行 goroutine，它维护了一个 goroutine 的队列，当 m 空闲时，会从队列中获取 goroutine 来执行
-* 每个 p 和一个 m 绑定，m 是真正的执行 p 中 goroutine 的实体
 * 每个 p 包含一个 mcache 用于快速分配，用于为绑定于 p 上的 g 分配对象
 * mcache 管理一组 mspan
 * 当 mchache 中的 mspan 分配完毕，向 mcentral 申请带有未分配块的 mspan
 * 当 mspan 中没有分配的对象，mspan 会缓存在 mcentral 中，而不是立即释放并归还给 OS
 
-### 2.3 优化方案
+### 2.3 GMP
+
+* G：goroutine
+* M：machine（机器线程/内核线程）
+* P：processor（处理器）
+
+![](9.png)
+
+* M 负责管理 goroutine 的执行，它与操作系统线程（OS Thread）一一对应。Go 运行时会根据需要创建 M，并在多个 M 之间调度 goroutine
+* P 负责执行 goroutine，它维护了一个 goroutine 的队列，当 M 空闲时，会从队列中获取 goroutine 来执行
+* 每个 P 和一个 M 绑定，M 是真正的执行 P 中 goroutine 的实体
+
+模型优点：
+
+* 复⽤线程：避免频繁的创建销毁线程
+* 多核并⾏
+
+### 2.4 优化方案
 
 **Go 内存管理的问题**：对象分配是非常高频的操作，每秒分配 GB 级别的内存；Go 的内存分配流程很长，占用很多 CPU
 
