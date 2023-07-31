@@ -29,10 +29,11 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/4.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/5.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/9.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/7.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/8.png">
 <meta property="article:published_time" content="2023-03-06T04:13:09.000Z">
-<meta property="article:modified_time" content="2023-07-20T13:24:54.496Z">
+<meta property="article:modified_time" content="2023-07-30T08:21:56.337Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-3/1.png">
@@ -266,7 +267,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：9 天前
+                    本文最后更新于：1 天前
                   
                 
               </p>
@@ -351,22 +352,28 @@
 <h3 id="2-2-缓存"><a href="#2-2-缓存" class="headerlink" title="2.2 缓存"></a>2.2 缓存</h3><p>Go 内存管理构成了多级缓存机制，从 OS 分配得的内存被内存管理回收后，也不会立刻归还给 OS，而是在 Go runtime 内部先缓存起来，从而避免频繁向 OS 申请内存。</p>
 <p><img src="/ByteDance-3/6.png" srcset="/img/loading.gif" lazyload alt="多级缓存"></p>
 <ul>
-<li>g：goroutine（协程&#x2F;轻量级的线程）</li>
-<li>m：machine（机器线程&#x2F;内核线程）<ul>
-<li>m 负责管理 goroutine 的执行，它与操作系统线程（OS Thread）一一对应。Go 运行时会根据需要创建 m，并在多个 m 之间调度 goroutine</li>
-</ul>
-</li>
-<li>p：processor（处理器线程）<ul>
-<li>p 负责执行 goroutine，它维护了一个 goroutine 的队列，当 m 空闲时，会从队列中获取 goroutine 来执行</li>
-</ul>
-</li>
-<li>每个 p 和一个 m 绑定，m 是真正的执行 p 中 goroutine 的实体</li>
 <li>每个 p 包含一个 mcache 用于快速分配，用于为绑定于 p 上的 g 分配对象</li>
 <li>mcache 管理一组 mspan</li>
 <li>当 mchache 中的 mspan 分配完毕，向 mcentral 申请带有未分配块的 mspan</li>
 <li>当 mspan 中没有分配的对象，mspan 会缓存在 mcentral 中，而不是立即释放并归还给 OS</li>
 </ul>
-<h3 id="2-3-优化方案"><a href="#2-3-优化方案" class="headerlink" title="2.3 优化方案"></a>2.3 优化方案</h3><p><strong>Go 内存管理的问题</strong>：对象分配是非常高频的操作，每秒分配 GB 级别的内存；Go 的内存分配流程很长，占用很多 CPU</p>
+<h3 id="2-3-GMP"><a href="#2-3-GMP" class="headerlink" title="2.3 GMP"></a>2.3 GMP</h3><ul>
+<li>G：goroutine</li>
+<li>M：machine（机器线程&#x2F;内核线程）</li>
+<li>P：processor（处理器）</li>
+</ul>
+<p><img src="/ByteDance-3/9.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>M 负责管理 goroutine 的执行，它与操作系统线程（OS Thread）一一对应。Go 运行时会根据需要创建 M，并在多个 M 之间调度 goroutine</li>
+<li>P 负责执行 goroutine，它维护了一个 goroutine 的队列，当 M 空闲时，会从队列中获取 goroutine 来执行</li>
+<li>每个 P 和一个 M 绑定，M 是真正的执行 P 中 goroutine 的实体</li>
+</ul>
+<p>模型优点：</p>
+<ul>
+<li>复⽤线程：避免频繁的创建销毁线程</li>
+<li>多核并⾏</li>
+</ul>
+<h3 id="2-4-优化方案"><a href="#2-4-优化方案" class="headerlink" title="2.4 优化方案"></a>2.4 优化方案</h3><p><strong>Go 内存管理的问题</strong>：对象分配是非常高频的操作，每秒分配 GB 级别的内存；Go 的内存分配流程很长，占用很多 CPU</p>
 <p><strong>字节跳动的优化方案</strong>：Balanced GC</p>
 <p>核心：将 noscan 对象在 per-g allocation buffer (GAB) 上分配，并使用移动对象 GC 管理这部分内存，提高对象分配和回收效率。</p>
 <p><img src="/ByteDance-3/7.png" srcset="/img/loading.gif" lazyload alt="GAB"></p>
