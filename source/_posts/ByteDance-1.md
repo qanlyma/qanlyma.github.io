@@ -229,7 +229,6 @@ func CalSquare() {
 		}
 	}()
 	for i := range dest {
-		//复杂操作
 		println(i)
 	}
 }
