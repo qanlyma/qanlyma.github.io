@@ -68,6 +68,40 @@ func reverseString(s []byte) {
 
 从前向后填充就是 O(n^2) 的算法了，因为每次添加元素都要将添加元素之后的所有元素向后移动。
 
+```go
+func replaceSpace(s string) string {
+    b := []byte(s)
+    length := len(b)
+    spaceCount := 0
+    // 计算空格数量
+    for _, v := range b {
+        if v == ' ' {
+            spaceCount++
+        }
+    }
+    // 扩展原有切片
+    resizeCount := spaceCount * 2
+    tmp := make([]byte, resizeCount)
+    b = append(b, tmp...)
+    i := length - 1
+    j := len(b) - 1
+    for i >= 0 {
+        if b[i] != ' ' {
+            b[j] = b[i]
+            i--
+            j--
+        } else {
+            b[j] = '0'
+            b[j-1] = '2'
+            b[j-2] = '%'
+            i--
+            j = j - 3
+        }
+    }
+    return string(b)
+}
+```
+
 ### 2.3 [leetcode 151 题](https://leetcode.cn/problems/reverse-words-in-a-string/)
 
 翻转字符串里的单词，不使用辅助空间，空间复杂度要求为 O(1)：

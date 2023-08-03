@@ -83,16 +83,15 @@ func isAnagram2(s, t string) bool {
 
 ```go
 func isHappy(n int) bool {
-    sumMap := map[int]bool{}
-    for n != 1 {
-        if sumMap[n] == true {
-            return false
-        } else {
-            sumMap[n] = true
+    resMap := make(map[int]bool)
+    for resMap[n] == false {
+        if sqSum(n) == 1 {
+            return true
         }
+        resMap[n] = true
         n = sqSum(n)
     }
-    return true
+    return false
 }
 
 func sqSum(n int) int {
@@ -124,6 +123,46 @@ func twoSum(nums []int, target int) []int {
 ```
 
 ### 2.4 [leetcode 15 题](https://leetcode.cn/problems/3sum/)
+
+三数之和。
+
+此题使用哈希表去重非常困难，建议使用双指针。
+
+```go
+func threeSum(nums []int) [][]int {
+    res := [][]int{}
+    sort.Ints(nums)
+    for i := 0; i < len(nums)-2; i++ {
+        left, right := i+1, len(nums)-1 
+        target := -nums[i]
+        if target < 0 {
+            break
+        }
+        if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+        for left < right {
+            if nums[left] + nums[right] > target {
+                right--
+            } else if nums[left] + nums[right] < target {
+                left++
+            } else {
+                res = append(res, []int{nums[i], nums[left], nums[right]})
+                left++
+                right--
+                // Skip duplicates
+                for left < right && nums[left] == nums[left-1] {
+                    left++
+                }
+                for left < right && nums[right] == nums[right+1] {
+                    right--
+                }
+            }
+        }
+    }
+    return res
+}
+```
 
 ### 2.5 [leetcode 454 题](https://leetcode.cn/problems/4sum-ii/)
 

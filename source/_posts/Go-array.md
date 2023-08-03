@@ -28,7 +28,7 @@ Golang 数组相关题目。
 func search(nums []int, target int) int {
     i, j := 0, len(nums)-1
     for i <= j {
-        m := (i+j) / 2
+        m := i + (j-i)/2
         if nums[m] < target {
             i = m + 1
         } else if nums[m] > target {
@@ -92,21 +92,19 @@ func removeElement(nums []int, val int) int {
 
 ```go
 func sortedSquares(nums []int) []int {
-	n := len(nums)
-	i, j, k := 0, n-1, n-1
-	ans := make([]int, n)
-	for i <= j {
-		lm, rm := nums[i]*nums[i], nums[j]*nums[j]
-		if lm > rm {
-			ans[k] = lm
-			i++
-		} else {
-			ans[k] = rm
-			j--
-		}
-		k--
-	}
-	return ans
+    res := make([]int, len(nums))
+    pos := len(nums) - 1
+    for i, j := 0, len(nums)-1; i <= j; {
+        if nums[i] * nums[i] > nums[j] * nums[j] {
+            res[pos] = nums[i] * nums[i]
+            i++
+        } else {
+            res[pos] = nums[j] * nums[j]
+            j--
+        }
+        pos--
+    }
+    return res
 }
 ```
 
@@ -146,3 +144,45 @@ func minSubArrayLen(target int, nums []int) int {
 
 * 暴力解法时间复杂度：O(n^2)
 * 滑动窗口时间复杂度：O(n)
+
+## 5 模拟过程
+
+### [leetcode 59 题](https://leetcode.cn/problems/spiral-matrix-ii/)
+
+给你一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix。
+
+```go
+func generateMatrix(n int) [][]int {
+    top, bottom := 0, n-1
+    left, right := 0, n-1
+    num := 1
+    tar := n * n
+    matrix := make([][]int, n)
+    for i := 0; i < n; i++ {
+        matrix[i] = make([]int, n)
+    }
+    for num <= tar {
+        for i := left; i <= right; i++ {
+            matrix[top][i] = num
+            num++
+        }
+        top++
+        for i := top; i <= bottom; i++ {
+            matrix[i][right] = num
+            num++
+        }
+        right--
+        for i := right; i >= left; i-- {
+            matrix[bottom][i] = num
+            num++
+        }
+        bottom--
+        for i := bottom; i >= top; i-- {
+            matrix[i][left] = num
+            num++
+        }
+        left++
+    }
+    return matrix
+}
+```

@@ -230,7 +230,7 @@ String 类型 value 的字节数大于 10KB 即为大 key；Hash/Set/Zset/list �
 用户访问一个 Key 的 QPS 特别高，导致 Server 实例出现 CPU 负载突增或者不均的情况。
 
 **解决方法**：
-1. 设置 Localcache：在访问 Redis 前，在业务服务侧设置 Localcache，降低访问 Redis 的 QPS。LocalCache 中缓存过期或未命中，则从 Redis 中将数据更新到 LocalCache
+1. 设置 Localcache：在访问 Redis 前，在业务服务侧设置 LocalCache，降低访问 Redis 的 QPS。LocalCache 中缓存过期或未命中，则从 Redis 中将数据更新到 LocalCache
 2. 拆分：将 key:value 这一个热 Key 复制写入多份，例如 keyl:value，key2:value，访问的时候访问多个 key，但 value 是同一个，以此将 QPS 分散到不同实例上，降低负载。代价是，更新时需要更新多个 key，存在数据短暂不一致的风险
 
 #### 5.3.3 慢查询

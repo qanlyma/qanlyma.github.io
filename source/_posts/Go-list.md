@@ -81,19 +81,17 @@ func removeElements(head *ListNode, val int) *ListNode {
 
 ```go
 func swapPairs(head *ListNode) *ListNode {
-    dummy := &ListNode{
-        Next: head,
+    dmHead := &ListNode{Next: head}
+    pre, cur := dmHead, head
+    for cur != nil && cur.Next != nil {
+        next := cur.Next.Next
+        pre.Next = cur.Next
+        cur.Next.Next = cur
+        cur.Next = next
+        pre = cur
+        cur = next
     }
-    pre := dummy 
-    for head != nil && head.Next != nil {
-        pre.Next = head.Next
-        next := head.Next.Next
-        head.Next.Next = head
-        head.Next = next
-        pre = head  // pre=list[(i+2)-1]
-        head = next // head=list[(i+2)]
-    }
-    return dummy.Next
+    return dmHead.Next
 }
 ```
 
@@ -157,5 +155,26 @@ func detectCycle(head *ListNode) *ListNode {
         }
     }
     return nil
+}
+```
+
+### 2.5 [leetcode 206 题](https://leetcode.cn/problems/reverse-linked-list/)
+
+反转链表。
+
+注意申明 pre 的时候不可以用 `pre := &ListNode{}`，否则其值是 0 而不是 nil。
+
+```go
+func reverseList(head *ListNode) *ListNode {
+    var pre *ListNode
+    cur := head
+
+    for cur != nil {
+        next := cur.Next
+        cur.Next = pre
+        pre = cur
+        cur = next
+    }
+    return pre
 }
 ```

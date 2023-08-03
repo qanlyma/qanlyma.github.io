@@ -26,7 +26,28 @@ banner_img:
 
 ### 2.1 [leetcode 376 题](https://leetcode.cn/problems/wiggle-subsequence/)
 
-给你一个整数数组 nums，返回 nums 中作为摆动序列的 最长子序列的长度。
+给你一个整数数组 nums，返回 nums 中作为摆动序列的最长子序列的长度。
+
+```go
+func wiggleMaxLength(nums []int) int {
+    if len(nums) < 2 {
+        return len(nums)
+    }
+    res := 1
+    pre := nums[1] - nums[0]
+    if pre != 0 {
+        res++
+    }
+    for i := 2; i < len(nums); i++ {
+        cur := nums[i] - nums[i-1]
+        if pre >= 0 &&  cur < 0 || pre <= 0 &&  cur > 0 {
+            res++
+            pre = cur
+        }
+    }
+    return res
+}
+```
 
 ### 2.2 [leetcode 55 题](https://leetcode.cn/problems/jump-game/)
 
@@ -35,21 +56,13 @@ banner_img:
 ```go
 func canJump(nums []int) bool {
     cover := 0
-    n := len(nums) - 1
-    for i := 0; i <= cover; i++ { // 每次与覆盖值比较
-        cover = max(i+nums[i], cover) // 每走一步都将 cover 更新为最大值
-        if cover >= n {
+    for i := 0; i <= cover; i++ {
+        cover = max(cover, nums[i] + i)
+        if cover >= len(nums)-1 {
             return true
         }
     }
     return false
-}
-
-func max(a, b int) int {
-    if a > b {
-        return a
-    }
-    return b
 }
 ```
 
@@ -85,17 +98,107 @@ func canCompleteCircuit(gas []int, cost []int) int {
 
 分发糖果。
 
+```go
+func candy(ratings []int) int {
+    need := make([]int, len(ratings))
+    sum := 0
+    for i := 0; i < len(ratings); i++ {
+        need[i] = 1
+    }
+    // 1. 先从左到右，当右边的大于左边的就加 1
+    for i := 0; i < len(ratings)-1; i++ {
+        if ratings[i] < ratings[i+1] {
+            need[i+1] = need[i] + 1
+        }
+    }
+    // 2. 再从右到左，当左边的大于右边的就加 1
+    for i := len(ratings)-1; i > 0; i-- {
+        if ratings[i-1] > ratings[i] {
+            need[i-1] = max(need[i-1], need[i]+1)
+        }
+    }
+    // 3. 计算总共糖果
+    for i := 0; i < len(ratings); i++ {
+        sum += need[i]
+    }
+    return sum
+}
+```
+
 ### 2.5 [leetcode 452 题](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/)
 
 用最少数量的箭引爆气球。
+
+```go
+func findMinArrowShots(points [][]int) int {
+    sort.Slice(points, func(a, b int) bool {
+        return points[a][0] < points[b][0]
+    })
+    res := 1
+    right := points[0][1]
+
+    for i := 1; i < len(points); i++ {
+        if points[i][0] <= right {
+            right = min(right, points[i][1])
+        } else {
+            right = points[i][1]
+            res++
+        }
+    }
+    return res
+}
+```
 
 ### 2.6 [leetcode 435 题](https://leetcode.cn/problems/non-overlapping-intervals/)
 
 给定一个区间的集合 intervals ，其中 intervals[i] = [starti, endi]。返回需要移除区间的最小数量，使剩余区间互不重叠。
 
+```go
+func eraseOverlapIntervals(intervals [][]int) int {
+    sort.Slice(intervals, func(a, b int) bool {
+        return intervals[a][0] < intervals[b][0]
+    })
+    res := 0
+    right := intervals[0][1]
+    
+    for i := 1; i < len(intervals); i++ {
+        if intervals[i][0] < right {
+            right = min(right, intervals[i][1])
+            res++
+        } else {
+            right = intervals[i][1]
+        }
+    }
+    return res
+}
+```
+
 ### 2.7 [leetcode 763 题](https://leetcode.cn/problems/partition-labels/)
 
 划分字母区间。
+
+```go
+func partitionLabels(s string) []int {
+    var res []int
+    bMap := make(map[byte]int)
+    b := []byte(s)
+    for i := 0; i < len(b); i++ {
+        bMap[b[i]] = i
+    }
+    var maxPos, lenth int
+    for i, v := range b {
+        lenth++
+        if bMap[v] > maxPos {
+            maxPos = bMap[v]
+        }
+        if i == maxPos {
+            res = append(res, lenth)
+            lenth = 0
+        }
+    }
+    return res
+}
+```
 
 ### 2.8 [leetcode 968 题](https://leetcode.cn/problems/binary-tree-cameras/)
 

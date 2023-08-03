@@ -217,11 +217,11 @@ func isSymmetric(root *TreeNode) bool {
 而根节点的高度就是二叉树的最大深度，所以本题中我们通过后序求的根节点高度来求的二叉树最大深度。
 
 ```go
-func maxdepth(root *treenode) int {
+func maxdepth(root *Treenode) int {
     if root == nil {
-        return 0;
+        return 0
     }
-    return max(maxdepth(root.left), maxdepth(root.right)) + 1;
+    return max(maxdepth(root.Left), maxdepth(root.Right)) + 1
 }
 ```
 
@@ -249,18 +249,57 @@ func sumOfLeftLeaves(root *TreeNode) int {
 }
 ```
 
-### 3.4 [leetcode 106 题](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+### 3.4 [leetcode 112 题](https://leetcode.cn/problems/path-sum/)
+
+给你二叉树的根节点 root 和一个表示目标和的整数 targetSum。判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和 targetSum。如果存在，返回 true；否则，返回 false。
+
+```go
+func hasPathSum(root *TreeNode, targetSum int) bool {
+    if root == nil {
+        return false
+    }
+    var res bool
+    var dfs func(node *TreeNode, sum int)
+    dfs = func(node *TreeNode, sum int) {
+        if node == nil {
+            return
+        }
+        sum += node.Val
+        if node.Left == nil && node.Right == nil && sum == targetSum {
+            res = true
+        }
+        dfs(node.Left, sum)
+        dfs(node.Right, sum)
+    }
+    dfs(root, 0)
+    return res
+}
+
+func hasPathSum(root *TreeNode, targetSum int) bool {
+    if root == nil {
+        return false
+    }
+
+    targetSum -= root.Val // 将 targetSum 在遍历每层的时候都减去本层节点的值
+    if root.Left == nil && root.Right == nil && targetSum == 0 { // 如果剩余的 targetSum 为 0, 则正好就是符合的结果
+        return true
+    }
+    return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum) // 否则递归找
+}
+```
+
+### 3.5 [leetcode 106 题](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
 从中序与后序遍历序列构造二叉树。
 
 ![](7.png)
 
-1. 如果数组大小为零的话，说明是空节点了。
-2. 如果不为空，那么取后序数组最后一个元素作为节点元素。
+1. 如果数组大小为零的话，说明是空节点了
+2. 如果不为空，那么取后序数组最后一个元素作为节点元素
 3. 找到后序数组最后一个元素在中序数组的位置，作为切割点
-4. 切割中序数组，切成中序左数组和中序右数组。
-5. 切割后序数组，切成后序左数组和后序右数组。
-6. 递归处理左区间和右区间。
+4. 切割中序数组，切成中序左数组和中序右数组
+5. 切割后序数组，切成后序左数组和后序右数组
+6. 递归处理左区间和右区间
 
 ```go
 func buildTree(inorder []int, postorder []int) *TreeNode {
@@ -283,7 +322,7 @@ func buildTree(inorder []int, postorder []int) *TreeNode {
 }
 ```
 
-### 3.5 [leetcode 503 题](https://leetcode.cn/problems/minimum-absolute-difference-in-bst/submissions/)
+### 3.6 [leetcode 503 题](https://leetcode.cn/problems/minimum-absolute-difference-in-bst/submissions/)
 
 给你一棵所有节点为非负值的二叉搜索树，请你计算树中任意两节点的差的绝对值的最小值。
 
@@ -312,7 +351,7 @@ func getMinimumDifference(root *TreeNode) int {
 }
 ```
 
-### 3.6 [leetcode 236 题](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
+### 3.7 [leetcode 236 题](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
 
 给定一个二叉树，找到该树中两个指定节点的最近公共祖先。
 
@@ -337,7 +376,7 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 
 在回溯的过程中，必然要遍历整棵二叉树，即使已经找到结果了，依然要把其他节点遍历完，因为要使用递归函数的返回值（也就是代码中的 left 和 right）做逻辑判断。
 
-### 3.7 [leetcode 701 题](https://leetcode.cn/problems/insert-into-a-binary-search-tree/)
+### 3.8 [leetcode 701 题](https://leetcode.cn/problems/insert-into-a-binary-search-tree/)
 
 给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。
 
@@ -356,7 +395,7 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 }
 ```
 
-### 3.8 [leetcode 450 题](https://leetcode.cn/problems/delete-node-in-a-bst/)
+### 3.9 [leetcode 450 题](https://leetcode.cn/problems/delete-node-in-a-bst/)
 
 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。
 

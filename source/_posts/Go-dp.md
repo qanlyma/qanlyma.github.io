@@ -103,7 +103,7 @@ func bag_problem(weight, value []int, bagWeight int) int {
 
 #### 完全背包
 
-01 背包和完全背包唯一不同就是体现在遍历顺序上，01背包内嵌的循环是从大到小遍历，为了保证每个物品仅被添加一次。而完全背包的物品是可以添加多次的，所以要从小到大去遍历。
+01 背包和完全背包唯一不同就是体现在遍历顺序上，01 背包内嵌的循环是从大到小遍历，为了保证每个物品仅被添加一次。而完全背包的物品是可以添加多次的，所以要从小到大去遍历。
 
 物品和背包先遍历哪个都可以。
 
@@ -143,11 +143,54 @@ func fib2(n int) int {
 
 爬楼梯。
 
+```go
+func climbStairs(n int) int {
+    dp := make([]int, n+1)
+    dp[0], dp[1] = 1, 1
+    for i := 2; i <= n; i++ {
+        dp[i] = dp[i-1] + dp[i-2]
+    }
+    return dp[n]
+}
+```
+
 ### 2.2 [leetcode 63 题](https://leetcode.cn/problems/unique-paths-ii/)
 
 一个机器人位于一个 m x n 网格的左上角，机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角。
 
 现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+
+```go
+func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+    dp := make([][]int, len(obstacleGrid))
+    way := 1
+    for i, _ := range dp {
+        dp[i] = make([]int, len(obstacleGrid[0]))
+        if obstacleGrid[i][0] == 1 {
+            way = 0
+        }
+        dp[i][0] = way
+    }
+    way = 1
+    for i, _ := range dp[0] {
+        if obstacleGrid[0][i] == 1 {
+            way = 0
+        }
+        dp[0][i] = way
+    }
+
+    for i := 1; i < len(obstacleGrid); i++ {
+        for j := 1; j < len(obstacleGrid[0]); j++ {
+            if obstacleGrid[i][j] == 1 {
+                dp[i][j] = 0
+            } else {
+                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+            }
+        }
+    }
+    return dp[len(obstacleGrid)-1][len(obstacleGrid[0])-1]
+}
+```
 
 ### 2.3 [leetcode 343 题](https://leetcode.cn/problems/integer-break/)
 
@@ -164,19 +207,12 @@ func fib2(n int) int {
 func integerBreak(n int) int {
     dp := make([]int, n+1)
     dp[1] = 1
-    dp[2] = 1
-    for i := 3; i < n+1; i++ {
-        for j := 1; j < i-1; j++ {
-            dp[i] = max(dp[i], max(j*(i-j), j*dp[i-j]))
+    for i := 2; i <= n; i++ {
+        for j := 1; j < i; j++ {
+            dp[i] = max(dp[i], max(dp[i-j]*j, (i-j)*j))
         }
     }
     return dp[n]
-}
-func max(a, b int) int{
-    if a > b {
-        return a
-    }
-    return b
 }
 ```
 
@@ -199,7 +235,7 @@ func numTrees(n int) int {
 
 ### 2.4 [leetcode 416 题](https://leetcode.cn/problems/partition-equal-subset-sum/)
 
-给你一个 只包含正整数的非空数组 nums。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+给你一个只包含正整数的非空数组 nums。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
 
 ```go
 func canPartition(nums []int) bool {
@@ -236,6 +272,30 @@ left - (sum - left) = target 推导出 left = (target + sum) / 2 。
 dp[j] 表示：填满 j（包括 j）这么大容积的包，有 dp[j] 种方法。
 
 递推公式：`dp[j] += dp[j - nums[i]]`
+
+```go
+func findTargetSumWays(nums []int, target int) int {
+    var sum int
+    for _, v := range nums {
+        sum += v
+    }
+    if target < 0 {
+        target = -target
+    }
+    if (target + sum) % 2 == 1 || target > sum {
+        return 0
+    }
+    bag := (target + sum) / 2 
+    dp := make([]int, bag+1)
+    dp[0] = 1
+    for i := 0; i < len(nums); i++ {
+        for j := bag; j >= nums[i]; j-- {
+            dp[j] += dp[j-nums[i]]
+        }
+    }
+    return dp[bag]
+}
+```
 
 ### 2.6 [leetcode 518 题](https://leetcode.cn/problems/coin-change-ii/)
 
@@ -281,9 +341,48 @@ func combinationSum4(nums []int, target int) int {
 
 单词拆分。
 
+```go
+func wordBreak(s string,wordDict []string) bool  {
+	wordDictSet := make(map[string]bool)
+	for _, w := range wordDict {
+		wordDictSet[w] = true
+	}
+	dp := make([]bool, len(s)+1)
+	dp[0] = true
+	for i := 1; i <= len(s); i++ {
+		for j := 0; j < i; j++ {
+			if dp[j] && wordDictSet[s[j:i]] { 
+				dp[i] = true
+				break
+			}
+		}
+	}
+	return dp[len(s)]
+}
+```
+
 ### 2.9 [leetcode 337 题](https://leetcode.cn/problems/house-robber-iii/)
 
 打劫二叉树。
+
+```go
+func rob(root *TreeNode) int {
+    var dfs func(node *TreeNode) []int 
+    dfs = func(node *TreeNode) []int {
+        if node == nil {
+            return []int{0, 0}
+        }
+        dp := make([]int, 2)
+        left := dfs(node.Left)
+        right := dfs(node.Right)
+        dp[0] = max(left[0], left[1]) + max(right[0], right[1])
+        dp[1] = left[0] + right[0] + node.Val
+        return dp
+    }
+    res := dfs(root)
+    return max(res[0], res[1])
+} 
+```
 
 ### 2.10 [leetcode 121 题](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
 
@@ -324,9 +423,73 @@ func maxProfit(prices []int) int {
 
 给两个整数数组 nums1 和 nums2，返回两个数组中公共的、长度最长的子数组的长度。
 
+```go
+func findLength(nums1 []int, nums2 []int) int {
+    var res int
+    dp := make([][]int, len(nums1)+1)
+    for i, _ := range dp {
+        dp[i] = make([]int, len(nums2)+1)
+    }
+
+    for i := 1; i <= len(nums1); i++ {
+        for j := 1; j <= len(nums2); j++ {
+            if nums1[i-1] == nums2[j-1] {
+                dp[i][j] = dp[i-1][j-1] + 1
+            } 
+            res = max(res, dp[i][j])
+        }
+    }
+    return res
+}
+```
+
+### 2.12 [leetcode 1143 题](https://leetcode.cn/problems/longest-common-subsequence/)
+
+给定两个字符串 text1 和 text2，返回这两个字符串的最长公共子序列的长度。
+
+```go
+func longestCommonSubsequence(text1 string, text2 string) int {
+    dp := make([][]int, len(text1)+1)
+    for i, _ := range dp {
+        dp[i] = make([]int, len(text2)+1)
+    } 
+
+    for i := 1; i <= len(text1); i++ {
+        for j := 1; j <= len(text2); j++ {
+            if text1[i-1] == text2[j-1] {
+                dp[i][j] = dp[i-1][j-1] + 1
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+            }
+        }
+    }
+    return dp[len(text1)][len(text2)]
+}
+```
+
 ### 2.12 [leetcode 1035 题](https://leetcode.cn/problems/uncrossed-lines/)
 
 不相交的线。
+
+```go
+func maxUncrossedLines(nums1 []int, nums2 []int) int {
+    dp := make([][]int, len(nums1)+1)
+    for i, _ := range dp {
+        dp[i] = make([]int, len(nums2)+1)
+    }
+
+    for i := 1; i <= len(nums1); i++ {
+        for j := 1; j <= len(nums2); j++ {
+            if nums1[i-1] == nums2[j-1] {
+                dp[i][j] = dp[i-1][j-1] + 1
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+            }
+        }
+    }
+    return dp[len(nums1)][len(nums2)]
+}
+```
 
 ### 2.13 [leetcode 53 题](https://leetcode.cn/problems/maximum-subarray/)
 
@@ -334,6 +497,48 @@ func maxProfit(prices []int) int {
 
 最大连续子数组的和要用一个变量记录下来比较，不连续的子序列则不需要，直接输出 dp 的最后一个值即可。
 
+```go
+func maxSubArray(nums []int) int {
+    dp := make([]int, len(nums))
+    res := nums[0]
+    dp[0] = nums[0]
+    for i := 1; i < len(nums); i++ {
+        dp[i] = max(dp[i-1]+nums[i], nums[i])
+        if dp[i] > res {
+            res = dp[i]
+        }
+    }
+    return res
+}
+```
+
 ### 2.14 [leetcode 72 题](https://leetcode.cn/problems/edit-distance/)
 
 编辑距离。
+
+```go
+func minDistance(word1 string, word2 string) int {
+    // dp[i][j] 表示以下标 i-1 为结尾的字符串 word1，和以下标 j-1 为结尾的字符串 word2，最近编辑距离为 dp[i][j]
+    dp := make([][]int, len(word1)+1)
+    for i, _ := range dp {
+        dp[i] = make([]int, len(word2)+1)
+    }
+    for i := 0; i <= len(word1); i++ {
+        dp[i][0] = i
+    } 
+    for j := 0; j <= len(word2); j++ {
+        dp[0][j] = j
+    }
+
+    for i := 1; i <= len(word1); i++ {
+        for j := 1; j <= len(word2); j++ {
+            if word1[i-1] == word2[j-1] {
+                dp[i][j] = dp[i-1][j-1]
+            } else {
+                dp[i][j] = min(min(dp[i][j-1], dp[i-1][j])+1, dp[i-1][j-1]+1)
+            }
+        }
+    }
+    return dp[len(word1)][len(word2)]
+}
+```

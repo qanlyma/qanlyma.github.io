@@ -281,6 +281,37 @@ func findSubsequences(nums []int) [][]int {
 
 给定一个可包含重复数字的序列 nums，按任意顺序返回所有不重复的全排列。
 
+```go
+func permuteUnique(nums []int) [][]int {
+    sort.Ints(nums)
+    var res [][]int 
+    var path []int
+    var backtracking func() 
+    used := make([]bool, len(nums))
+    backtracking = func() {
+        if len(path) == len(nums) {
+            tmp := make([]int, len(path))
+            copy(tmp, path)
+            res = append(res, tmp)
+            return
+        }
+        for i := 0; i < len(nums); i++ {
+            // used[i] 表示在上一层用过，!used[i-1] 表示在同一层用过
+            if used[i] || (i > 0 && nums[i] == nums[i-1] && !used[i-1]) {
+                continue
+            }
+            path = append(path, nums[i])
+            used[i] = true
+            backtracking()
+            path = path[:len(path)-1]
+            used[i] = false
+        }
+    }
+    backtracking()
+    return res
+}
+```
+
 ### 2.7 [leetcode 51 题](https://leetcode.cn/problems/n-queens/)
 
 N 皇后。

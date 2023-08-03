@@ -187,13 +187,13 @@ var 是 variable(变量) 的缩写，这个目录中存放着在不断扩充着�
 
 * Shell 是一个应用程序，它连接了用户和 Linux 内核，让用户能够更加高效、安全、低成本地使用 Linux 内核，不启动 Shell 的话，用户就没办法使用 Linux。
 
-* Shell 是一个命令语言解释器, 在操作系统的最外层, 是用户（用户程序）与操作系统（Linux）内核的接口程序，用户输入的每个命令都由 Shell 先翻译再传给 Linux 内核, 并将处理后的结果输出至屏幕。
+* Shell 是一个命令语言解释器，在操作系统的最外层，是用户（用户程序）与操作系统（Linux）内核的接口程序，用户输入的每个命令都由 Shell 先翻译再传给 Linux 内核, 并将处理后的结果输出至屏幕。
 
-常用的 Shell 功能有两种形式外在形式： GUI 和 cmdline。
+常用的 Shell 功能有两种形式外在形式：GUI 和 cmdline。
 
 Shell 的使用方法有两种：1. 直接输入命令； 2. 使用 .sh 脚本。 对于脚本语法感兴趣请学习 [Shell 教程](https://www.runoob.com/linux/linux-shell.html)。
 
-Bash (GUN Bourne-Again Shell）是许多 Linux 发行版本默认的 Shell。
+Bash（GUN Bourne-Again Shell）是许多 Linux 发行版本默认的 Shell。
 
 ## 写在最后
 
