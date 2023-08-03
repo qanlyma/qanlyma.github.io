@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-10/8.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-10/9.png">
 <meta property="article:published_time" content="2023-04-14T07:40:45.000Z">
-<meta property="article:modified_time" content="2023-07-20T06:01:16.729Z">
+<meta property="article:modified_time" content="2023-08-01T11:57:58.200Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-10/1.png">
@@ -268,7 +268,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：11 天前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -314,7 +314,7 @@
 <p> 通过上面的分析，我们可以发现对于一个 Broker 的重启来说，需要进行数据复制，所以时间成本会比较大，比如一个节点重启需要 10 分钟，一个集群有 1000 个节点，如果该集群需要重启升级，则需要 10000 分钟，那差不多就是一个星期。如果并发多台重启，在一个两副本的集群中，重启了两台机器，对某一分片来讲，可能两个分片都在这台机器上面，则会导致该集群处于不可用的状态，这是更不能接受的。在替换、扩容、缩容的过程中也会遇到数据复制的时间成本问题。</p>
 </li>
 <li><p>负载不均衡</p>
-<p> 某个 Broker 负载较高时，需要将 某分片迁移到负载小的机器上，但是数据复制的过程又会加大该 Broker 的负载。所以其负载均衡非常复杂。</p>
+<p> 某个 Broker 负载较高时，需要将某分片迁移到负载小的机器上，但是数据复制的过程又会加大该 Broker 的负载。所以其负载均衡非常复杂。</p>
 </li>
 <li><p>没有自己的缓存，完全依赖 Page Cache</p>
 </li>

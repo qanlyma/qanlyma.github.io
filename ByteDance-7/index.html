@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/5.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-7/6.png">
 <meta property="article:published_time" content="2023-03-25T06:36:16.000Z">
-<meta property="article:modified_time" content="2023-07-20T05:54:39.576Z">
+<meta property="article:modified_time" content="2023-08-01T11:51:25.807Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-7/1.png">
@@ -264,7 +264,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：11 天前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -322,7 +322,7 @@
 <p>  进而能够证明，当有 3m+1 个将军，m 个“叛徒”时，可以进行 m 轮协商，最终达成一致。</p>
 </li>
 </ul>
-<h3 id="2-3-共识和一致性"><a href="#2-3-共识和一致性" class="headerlink" title="2.3 共识和一致性"></a>2.3 共识和一致性</h3><p>不同客户端A和B看到客户端C写入，因为时机的不同，产生数据读取的偏差。</p>
+<h3 id="2-3-共识和一致性"><a href="#2-3-共识和一致性" class="headerlink" title="2.3 共识和一致性"></a>2.3 共识和一致性</h3><p>不同客户端 A 和 B 看到客户端 C 写入，因为时机的不同，产生数据读取的偏差。</p>
 <ul>
 <li>Eventuallyconsistent（最终一致性）<br>  客户端 A 读到 x&#x3D;0，当客户端 C 正在写入时，客户端 A 和 B 可能读到 0 或者 1。但是当 C 写入完成后，A 和 B 最终能读到一致的数据。</li>
 </ul>
@@ -439,7 +439,7 @@
 </ol>
 <h3 id="5-3-Paxos-协议"><a href="#5-3-Paxos-协议" class="headerlink" title="5.3 Paxos 协议"></a>5.3 Paxos 协议</h3><p><strong>Paxos 算法与 RAFT 算法区别</strong>：</p>
 <ul>
-<li><p>Multi-Paxos 可以并发修改日志，而Raft写日志操作必须是连续的</p>
+<li><p>Multi-Paxos 可以并发修改日志，而 Raft 写日志操作必须是连续的</p>
 </li>
 <li><p>Multi-Paxos 可以随机选主，不必最新最全的节点当选 Leader</p>
 </li>
