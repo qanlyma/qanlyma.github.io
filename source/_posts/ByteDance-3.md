@@ -105,15 +105,17 @@ Go 内存管理构成了多级缓存机制，从 OS 分配得的内存被内存�
 
 ### 2.3 GMP
 
-* G：goroutine
-* M：machine（机器线程/内核线程）
-* P：processor（处理器）
-
 ![](9.png)
 
-* M 负责管理 goroutine 的执行，它与操作系统线程（OS Thread）一一对应。Go 运行时会根据需要创建 M，并在多个 M 之间调度 goroutine
-* P 负责执行 goroutine，它维护了一个 goroutine 的队列，当 M 空闲时，会从队列中获取 goroutine 来执行
+* G：goroutine
+* M：machine（机器线程）
+* P：processor（调度器）
+
+![](9.gif)
+
 * 每个 P 和一个 M 绑定，M 是真正的执行 P 中 goroutine 的实体
+* P 维护了一个 goroutine 的队列，P 的本地队列为空时，就从全局队列里去取
+* M 想要运行 G，就得先获取 P，然后从 P 的本地队列获取 G
 
 模型优点：
 
