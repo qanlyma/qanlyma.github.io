@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-13/1.png">
 <meta property="article:published_time" content="2023-07-15T11:20:30.000Z">
-<meta property="article:modified_time" content="2023-08-01T07:26:54.772Z">
+<meta property="article:modified_time" content="2023-08-05T09:02:07.876Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-13/1.png">
@@ -259,7 +259,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 天前
+                    本文最后更新于：1 分钟前
                   
                 
               </p>
@@ -274,12 +274,12 @@
 <li>make 用于初始化内置的数据结构，如数组、切片和 Channel 等。</li>
 <li>new 用于分配并创建一个指向对应类型的指针。</li>
 </ul>
-<h4 id="Q：Go-当中同步锁有什么特点，作用是什么"><a href="#Q：Go-当中同步锁有什么特点，作用是什么" class="headerlink" title="Q：Go 当中同步锁有什么特点，作用是什么"></a>Q：Go 当中同步锁有什么特点，作用是什么</h4><p>Go 语言中的同步锁是一种机制，用于控制对共享资源的访问，以确保在同一时间只有一个协程（goroutine）可以访问该资源。同步锁的作用是防止多个协程同时对共享资源进行修改，从而避免数据竞争和不一致的结果。</p>
+<h4 id="Q：Go-当中同步锁有什么特点，作用是什么"><a href="#Q：Go-当中同步锁有什么特点，作用是什么" class="headerlink" title="Q：Go 当中同步锁有什么特点，作用是什么"></a>Q：Go 当中同步锁有什么特点，作用是什么</h4><p>Go 语言中的同步锁是一种机制，用于控制对共享资源的访问，以确保在同一时间只有一个协程（goroutine）可以访问该资源，从而避免数据竞争和不一致的结果。</p>
 <h4 id="Q：Map-是线程安全（并发安全）的吗"><a href="#Q：Map-是线程安全（并发安全）的吗" class="headerlink" title="Q：Map 是线程安全（并发安全）的吗"></a>Q：Map 是线程安全（并发安全）的吗</h4><p>不是，多个 Goroutine 在并发读写同一个 Map 可能会导致数据竞争和不确定的结果。</p>
 <ul>
 <li>读写锁：使用 sync.RWMutex 来保护对 Map 的读写操作。</li>
 <li>分片锁：定义一个长度为 N 的 map 数组和一个长度为 N 的锁数组。使用 hash 函数来计算 key 应该存储在哪个 map 中。然后再对这个 map 进行读写操作。</li>
-<li>sync.Map：Go 语言提供了一些第三方库实现了并发安全的 Map，可以在多个 Goroutine 中并发读写，无需额外的锁保护。</li>
+<li>sync.Map：Go 语言第三方库实现了并发安全的 Map，可以在多个 Goroutine 中并发读写，无需额外的锁保护。</li>
 </ul>
 <h4 id="Q：使用-Channel-时需要注意什么"><a href="#Q：使用-Channel-时需要注意什么" class="headerlink" title="Q：使用 Channel 时需要注意什么"></a>Q：使用 Channel 时需要注意什么</h4><ul>
 <li>当尝试从一个 nil 的通道接收数据时，会导致程序的阻塞。</li>
@@ -289,7 +289,7 @@
 </ul>
 <h4 id="Q：Go-语言当中-Channel-缓冲有什么特点"><a href="#Q：Go-语言当中-Channel-缓冲有什么特点" class="headerlink" title="Q：Go 语言当中 Channel 缓冲有什么特点"></a>Q：Go 语言当中 Channel 缓冲有什么特点</h4><p>无缓冲的 channel 是同步的，而有缓冲的 channel 是非同步的。</p>
 <h4 id="Q：Goroutine-在什么情况下会被挂起"><a href="#Q：Goroutine-在什么情况下会被挂起" class="headerlink" title="Q：Goroutine 在什么情况下会被挂起"></a>Q：Goroutine 在什么情况下会被挂起</h4><p>channel 堵塞、垃圾回收、sleep 休眠、锁等待、抢占、IO 阻塞。</p>
-<h4 id="Q：Goroutine-的通信⽅式"><a href="#Q：Goroutine-的通信⽅式" class="headerlink" title="Q：Goroutine 的通信⽅式"></a>Q：Goroutine 的通信⽅式</h4><p>可以通过共享内存（变量）加锁的⽅式来进⾏通信，但是维护成本较⾼。官⽅推荐通过 channel 进⾏通信：</p>
+<h4 id="Q：Goroutine-的通信方式"><a href="#Q：Goroutine-的通信方式" class="headerlink" title="Q：Goroutine 的通信方式"></a>Q：Goroutine 的通信方式</h4><p>可以通过共享内存（变量）加锁的方式来进⾏通信，但是维护成本较⾼。官⽅推荐通过 channel 进⾏通信：</p>
 <ul>
 <li>作为队列存储数据</li>
 <li>阻塞和唤醒 goroutine</li>
@@ -310,6 +310,14 @@
 </ul>
 </li>
 <li><p>内存管理：数组在内存中是连续存储的，大小固定，不会随着元素的增加而改变。切片通过指针引用底层数组，可以动态增长和缩减，当切片的长度超过底层数组的容量时，会重新分配更大的底层数组。</p>
+</li>
+</ul>
+<h4 id="Q：Golang-引用类型有哪些"><a href="#Q：Golang-引用类型有哪些" class="headerlink" title="Q：Golang 引用类型有哪些"></a>Q：Golang 引用类型有哪些</h4><p>引用类型是指那些存储了底层数据结构的地址的数据类型。这些类型在赋值或传递参数时不会进行数据复制，而是共享底层数据，因此被称为引用类型。</p>
+<p>包含以下几种：切片、映射（map）、通道。</p>
+<h4 id="Q：slice-深拷贝和浅拷贝"><a href="#Q：slice-深拷贝和浅拷贝" class="headerlink" title="Q：slice 深拷贝和浅拷贝"></a>Q：slice 深拷贝和浅拷贝</h4><ul>
+<li><p>浅拷贝只复制了 slice 结构的部分，而没有复制底层数组。当对原始 slice 或拷贝后的 slice 进行修改时，会影响到所有相关的 slice。这是因为它们共享同一个底层数组。</p>
+</li>
+<li><p>深拷贝会创建一个新的 slice 和一个新的底层数组，将原始数据的所有元素复制到新的底层数组中。原始 slice 和拷贝后的 slice 将不再共享底层数组，它们是完全独立的。</p>
 </li>
 </ul>
 <h4 id="Q：拷贝大切片一定比小切片代价大吗"><a href="#Q：拷贝大切片一定比小切片代价大吗" class="headerlink" title="Q：拷贝大切片一定比小切片代价大吗"></a>Q：拷贝大切片一定比小切片代价大吗</h4><p>并不是，所有切片的大小相同：三个字段（一个 uintptr，两个int）。切片中的第一个字是指向切片底层数组的指针，这是切片的存储空间，第二个字段是切片的长度，第三个字段是容量。将一个 slice 变量分配给另一个变量只会复制三个机器字。所以拷贝大切片跟小切片的代价应该是一样的。</p>
@@ -334,7 +342,6 @@
 <h4 id="Q：内存逃逸"><a href="#Q：内存逃逸" class="headerlink" title="Q：内存逃逸"></a>Q：内存逃逸</h4><p>在程序中，每个函数块都会有自己的内存区域用来存自己的局部变量（内存占用少）、返回地址、返回值之类的数据，这一块内存区域有特定的结构和寻址方式，寻址起来十分迅速，开销很少。这一块内存地址称为栈。</p>
 <p>栈是线程级别的，大小在创建的时候已经确定，当变量太大的时候，会”逃逸”到堆上，这种现象称为内存逃逸。</p>
 <p>简单来说，局部变量通过堆分配和回收，就叫内存逃逸。</p>
-<p>危害：</p>
 <ul>
 <li>堆是一块没有特定结构，也没有固定大小的内存区域，可以根据需要进行调整</li>
 <li>全局变量，内存占用较大的局部变量，函数调用结束后不能立刻回收的局部变量都会存在堆里面</li>
@@ -364,16 +371,9 @@
 <li>指向栈对象上的指针不能被存储到堆中</li>
 <li>指向栈对象上的指针不能超过该栈对象的声明周期</li>
 </ul>
-<h2 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h2><h4 id="Q：HTTP-协议"><a href="#Q：HTTP-协议" class="headerlink" title="Q：HTTP 协议"></a>Q：HTTP 协议</h4><p>是用于 web 服务器和本地浏览器之间传输文件的传输协议。</p>
+<h2 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h2><h4 id="Q：HTTP-协议"><a href="#Q：HTTP-协议" class="headerlink" title="Q：HTTP 协议"></a>Q：HTTP 协议</h4><p>HTTP 协议工作于客户端-服务端架构之上。浏览器作为 HTTP 客户端通过 URL，向 HTTP 服务端，即 web 服务器发送所有请求。web 服务器根据接收到的请求，向客户端发送响应信息。</p>
 <p>是一个基于请求与响应模式的、无状态的、应用层的协议。</p>
 <p>是一个基于 TCP&#x2F;IP 通信协议来传递数据（HTML 文件，图片文件，查询结果等）的协议。</p>
-<p>HTTP 协议工作于客户端-服务端架构之上。浏览器作为 HTTP 客户端通过 URL，向 HTTP 服务端，即 web 服务器发送所有请求。web 服务器根据接收到的请求，向客户端发送响应信息。</p>
-<h4 id="Q：HTTP-工作流程"><a href="#Q：HTTP-工作流程" class="headerlink" title="Q：HTTP 工作流程"></a>Q：HTTP 工作流程</h4><ol>
-<li>客户端与服务器建立 TCP 连接。</li>
-<li>客户端向服务器发出请求。</li>
-<li>服务器接收到客户端的请求，根据请求返回响应内容。</li>
-<li>客户端接收服务器的响应内容，解析内容在前端展示，然后客户端与服务器断开连接。</li>
-</ol>
 <h4 id="Q：HTTP-协议特点"><a href="#Q：HTTP-协议特点" class="headerlink" title="Q：HTTP 协议特点"></a>Q：HTTP 协议特点</h4><ol>
 <li>简单快速：客户向服务器请求服务时，只需传送请求方法和路径。</li>
 <li>灵活：HTTP 允许传输任意类型的数据对象。</li>
@@ -403,11 +403,11 @@
 </ol>
 <h4 id="Q：什么是跨站脚本攻击-XSS-和-HttpOnly"><a href="#Q：什么是跨站脚本攻击-XSS-和-HttpOnly" class="headerlink" title="Q：什么是跨站脚本攻击 XSS 和 HttpOnly"></a>Q：什么是跨站脚本攻击 XSS 和 HttpOnly</h4><p>XSS 是跨站脚本攻击（Cross Site Scripting）。恶意攻击者往 Web 页面里插入 Script 代码，当用户浏览时，Script 代码会被执行从而达到攻击用户的目的。如盗取用户 Cookie、破坏页面结构、重定向到其它网站（流量劫持）等。</p>
 <p>HttpOnly 是一个标记，用于设置 HTTP Cookie 的属性。当设置了 HttpOnly 属性后，浏览器将限制该 Cookie 只能通过 HTTP 或 HTTPS 协议进行传输，禁止通过脚本（如 JavaScript）访问该 Cookie。</p>
-<p>HttpOnly 属性的作用是增加 Web 应用程序的安全性，是防止跨站脚本攻击（XSS）的一种方式。</p>
+<p>HttpOnly 属性的作用是增加 web 应用程序的安全性，是防止跨站脚本攻击（XSS）的一种方式。</p>
 <h4 id="Q：GET-和-POST-的区别"><a href="#Q：GET-和-POST-的区别" class="headerlink" title="Q：GET 和 POST 的区别"></a>Q：GET 和 POST 的区别</h4><ul>
 <li>GET 重点在从服务器上获取资源，一般用于获取&#x2F;查询资源信息。是无副作用的，是幂等的，且可缓存。</li>
 <li>POST 重点在向服务器发送数据，一般用于更新资源信息。有副作用，非幂等，不可缓存。</li>
-<li>POST 比 GET 安全性更高。Get 通过 URL 来传输数据，因为 URL 是可见的，可能会泄露私密信息，如密码等。POST 通过 URL 和请求体 requrest body 传输数据，将字段与对应值封存在请求体中发送给服务器。在请求体中的数据，我们是无法直接观测到的。</li>
+<li>POST 比 GET 安全性更高。Get 通过 URL 来传输数据，因为 URL 是可见的，可能会泄露私密信息，如密码等。POST 通过 URL 和请求体（requrest body）传输数据，将字段与对应值封存在请求体中发送给服务器。在请求体中的数据，我们是无法直接观测到的。</li>
 </ul>
 <h4 id="Q：浏览器输入一个-URL-之后，网络各层发生了什么"><a href="#Q：浏览器输入一个-URL-之后，网络各层发生了什么" class="headerlink" title="Q：浏览器输入一个 URL 之后，网络各层发生了什么"></a>Q：浏览器输入一个 URL 之后，网络各层发生了什么</h4><ol>
 <li>浏览器输入 URL，若协议为 HTTP：</li>
@@ -570,8 +570,8 @@
 <h4 id="Q：什么是交换空间"><a href="#Q：什么是交换空间" class="headerlink" title="Q：什么是交换空间"></a>Q：什么是交换空间</h4><p>交换空间通常是在硬盘上预留出来的一块空间，操作系统在需要时将内存中暂时不用的数据写入到交换空间，这样可以释放物理内存用于其他需要更紧急的任务。当需要读取这些数据时，操作系统再将它们从交换空间读取回物理内存中。</p>
 <h4 id="Q：分页和分段"><a href="#Q：分页和分段" class="headerlink" title="Q：分页和分段"></a>Q：分页和分段</h4><p>分页和分段是计算机内存管理中的两种重要技术，它们的主要作用是将进程的逻辑地址空间映射到物理内存地址，实现进程的隔离和保护，并提供了更好的内存管理和利用。</p>
 <ul>
-<li>分页是将内存空间划分为固定大小的页（Page），进程的逻辑地址由两部分组成：页号和页内偏移量。通过页表（Page Table）来记录页号和页框之间的映射关系，将进程的页号转换为物理内存的页框号，再加上页内偏移量得到实际的物理地址。分页的优点是：简单、灵活、易于管理和实现。它可以允许进程的逻辑地址空间非连续，提供了更好的内存利用率。但由于地址映射需要额外的页表查询，会引入一定的开销。</li>
-<li>分段是内存空间划分为不同大小的段（Segment），每个段用于存放特定类型的数据或代码。进程的逻辑地址由两部分组成：段号和段内偏移量。通过段表将段号转换为段的起始地址，再加上段内偏移量得到实际的物理地址。分段的优点是：能够适应动态变化的进程地址空间，方便实现动态内存分配和共享。但由于每个段有不同的大小，可能会导致内存碎片问题，并且段表查询也会引入一定的开销。</li>
+<li>分页是将进程的逻辑地址空间划分成大小固定的页（Page），同时将物理内存划分成与页大小相同的块，称为页框（Page Frame）。每个进程的页表（Page Table）记录了逻辑页到物理页框的映射关系。通过分页，进程的逻辑地址空间可以被分割成大小相等的部分，而物理内存则被划分成相同大小的页框，这样使得进程的内存管理更加灵活，且易于实现虚拟内存和内存保护。</li>
+<li>分段是将进程的逻辑地址空间划分成多个逻辑段（Segment），每个段表示一个独立的逻辑单元，如代码段、数据段、栈段等。每个段的大小可以不同，并且段的长度可以根据进程的需求动态增长或缩小。分段的主要目的是提供更为灵活的内存管理，适用于变长数据结构和程序。</li>
 </ul>
 <h4 id="Q：死锁产生的条件"><a href="#Q：死锁产生的条件" class="headerlink" title="Q：死锁产生的条件"></a>Q：死锁产生的条件</h4><ol>
 <li><p>互斥条件：一个资源在任意时刻只能被一个进程持有。</p>
@@ -681,15 +681,26 @@
 <li>kill -9 PID 是操作系统从内核级别强制杀死一个进程。</li>
 <li>kill -15 PID 可以理解为操作系统发送一个通知告诉应用主动关闭。</li>
 </ul>
-<p>因为 kill -15 信号只是通知对应的进程要进行”安全、干净的退出”，程序接到信号之后，退出前一般会进行一些”准备工作”，如资源释放、临时文件清理等等，如果准备工作做完了，再进行程序的终止。但是，如果在”准备工作”进行过程中，遇到阻塞或者其他问题导致无法成功，那么应用程序可以选择忽略该终止信号。这也就是为什么我们有的时候使用 kill 命令是没办法”杀死”应用的原因，因为默认的 kill 信号是 SIGTERM（15），而 SIGTERM（15）的信号是可以被阻塞和忽略的。和 kill -15 相比， kill -9 就相对强硬一点，系统会发出 SIGKILL 信号，他要求接收到该信号的程序应该立即结束运行，不能被阻塞或者忽略。所以，相比于 kill -15 命令，kill -9 在执行时，应用程序是没有时间进行”准备工作”的，所以这通常会带来一些副作用，数据丢失或者终端无法恢复到正常状态等。</p>
+<p>因为 kill -15 信号只是通知对应的进程要进行”安全、干净的退出”，程序接到信号之后，退出前一般会进行一些”准备工作”，如资源释放、临时文件清理等等，如果准备工作做完了，再进行程序的终止。但是，如果在”准备工作”进行过程中，遇到阻塞或者其他问题导致无法成功，那么应用程序可以选择忽略该终止信号。</p>
 <h4 id="Q：前台进程和后台进程区别"><a href="#Q：前台进程和后台进程区别" class="headerlink" title="Q：前台进程和后台进程区别"></a>Q：前台进程和后台进程区别</h4><ul>
 <li>前台进程：是在终端中运行的命令，那么该终端就为进程的控制终端，一旦这个终端关闭，这个进程也随之消失。</li>
 <li>后台进程：也叫守护进程（Daemon），是运行在后台的一种特殊进程，不受终端控制，它不需要终端的交互；Linux 的大多数服务器就是使用守护进程实现的。</li>
 </ul>
 <h4 id="Q：scp-命令"><a href="#Q：scp-命令" class="headerlink" title="Q：scp 命令"></a>Q：scp 命令</h4><p>在 linux 下 scp 命令主要用来在不同主机之间做数据的安全拷贝的。scp 命令使用安全加密的协议，所以在远程拷贝数据的时候会比较安全，不会被黑客截取。</p>
-<h4 id="Q：shell-脚本"><a href="#Q：shell-脚本" class="headerlink" title="Q：shell 脚本"></a>Q：shell 脚本</h4><p>第一行一定是 <code>#!/bin/bash</code> 它代表的意思是，该文件使用的是 bash 语法。如果不设置该行，那么你的 shell 脚本就不能被执行。</p>
-<p>定义变量的格式为 <code>变量名=变量的值</code>。当在脚本中引用变量时需要加上 <code>$</code> 符号。</p>
+<h4 id="Q：shell-脚本"><a href="#Q：shell-脚本" class="headerlink" title="Q：shell 脚本"></a>Q：shell 脚本</h4><p>第一行一定是 <code>#!/bin/bash</code>，它代表该文件使用的是 bash 语法。如果不设置该行，那么你的 shell 脚本就不能被执行。</p>
 <p>数学计算要用 ‘[]’ 括起来并且外头要带一个 <code>$</code>。</p>
+<ul>
+<li>$v：用于获取变量的值。例如 name&#x3D;”John”，那么 $name 将会返回 “John”</li>
+<li>$0：表示当前脚本的名称</li>
+<li>$1：表示脚本的参数。$1 表示第一个参数，$2 表示第二个参数，以此类推</li>
+<li>$#：表示传递给脚本的参数个数</li>
+<li>$@：表示所有的命令行参数列表</li>
+<li>$?：表示上一个命令的退出状态。通常如果上一个命令执行成功，则其值为 0，否则为非零值</li>
+<li>$$：表示当前脚本的进程 ID</li>
+<li>$!：表示最后一个在后台运行的进程的 ID</li>
+<li>$RANDOM：表示一个随机数</li>
+<li>$() 或者 &#96;&#96;：用于命令替换，可以将命令的输出作为一个值赋给变量。例如：result&#x3D;$(ls) 将 ls 命令的输出赋给 result</li>
+</ul>
 <h4 id="Q：grep、sed、awk-的用法"><a href="#Q：grep、sed、awk-的用法" class="headerlink" title="Q：grep、sed、awk 的用法"></a>Q：grep、sed、awk 的用法</h4><ul>
 <li><p>grep 是一种用于在文本中查找匹配模式的工具。它根据给定的模式搜索文本行，并输出包含匹配项的行。<br>基本语法：<code>grep &#39;pattern&#39; filename</code></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在文件 file.txt 中查找包含 &quot;pattern&quot; 的行并输出到标准输出</span><br>grep <span class="hljs-string">&quot;pattern&quot;</span> file.txt<br><br><span class="hljs-comment"># 在文件 file.txt 中查找包含 &quot;pattern&quot; 的行，忽略大小写，并显示行号</span><br>grep -i -n <span class="hljs-string">&quot;pattern&quot;</span> file.txt<br><br><span class="hljs-comment"># 在文件夹 dir 中递归查找所有文件中匹配正则表达式 &quot;pattern&quot; 的行，并打印匹配行所在的文件名和行号</span><br>grep -r -n pattern <span class="hljs-built_in">dir</span>/<br></code></pre></td></tr></table></figure>
@@ -768,8 +779,7 @@
 <h4 id="Q：Docker-容器如何实现隔离的"><a href="#Q：Docker-容器如何实现隔离的" class="headerlink" title="Q：Docker 容器如何实现隔离的"></a>Q：Docker 容器如何实现隔离的</h4><p>Docker 容器实现隔离是通过一系列 Linux 内核特性和技术实现的。这些特性允许每个 Docker 容器拥有独立的文件系统、进程空间、网络和用户空间，从而使它们相互隔离。</p>
 <p>每个容器运行在它自己的命名空间（Namespaces）中，但是，确实与其它运行中的容器共用相同的系统内核。隔离的产生是由于系统内核清楚地知道命名空间及其中的进程，且这些进程调用系统 API 时，内核保证进程只能访问属于其命名空间中的资源。</p>
 <h4 id="Q：什么是-Docker-compose"><a href="#Q：什么是-Docker-compose" class="headerlink" title="Q：什么是 Docker compose"></a>Q：什么是 Docker compose</h4><p>用于定义和管理多个 Docker 容器的应用程序。它允许你使用简单的 YAML 文件来描述多个容器之间的关系和配置，从而实现快速、方便地部署和管理复杂的多容器应用。</p>
-<h4 id="Q：什么是-k8s"><a href="#Q：什么是-k8s" class="headerlink" title="Q：什么是 k8s"></a>Q：什么是 k8s</h4><p>Kubernetes 是一个用于自动化部署、扩展和管理容器化应用程序的容器编排平台。它的目标是处理大规模、高可用性的分布式系统。</p>
-<p>k8s 管理着每个容器的全生命周期，如根据需要启动或停止容器。通过自动布局、自动重启、自动复制、自动伸缩实现应用的状态检查与自我修复。使用命令、UI 或者基于 CPU 使用情况自动快速扩容和缩容应用程序实例，保证应用业务高峰并发时的高可用性；业务低峰时回收资源，以最小成本运行服务。为多个容器提供服务发现和负载均衡，使得用户无需考虑容器 IP 问题。</p>
+<h4 id="Q：什么是-k8s"><a href="#Q：什么是-k8s" class="headerlink" title="Q：什么是 k8s"></a>Q：什么是 k8s</h4><p>Kubernetes 是一个用于自动化部署、扩展和管理容器化应用程序的容器编排平台。它的目标是处理大规模、高可用性的分布式系统。保证应用业务高峰并发时的高可用性；业务低峰时回收资源，以最小成本运行服务。为多个容器提供服务发现和负载均衡，使得用户无需考虑容器 IP 问题。</p>
 <ul>
 <li><p>Pod 对象是 k8s 中基础对象，由一个或多个（紧密相关）容器组成，并且这些容器共享网络和文件系统。类似于容器，Pod 被设计成拥有短暂的生命周期，不会期望特定的 Pod 长期存在。</p>
 </li>
@@ -779,11 +789,11 @@
 </li>
 </ul>
 <h4 id="Q：k8s-节点中有哪些组件"><a href="#Q：k8s-节点中有哪些组件" class="headerlink" title="Q：k8s 节点中有哪些组件"></a>Q：k8s 节点中有哪些组件</h4><p>k8s 是主从设备模型，Master 节点负责集群的调度、管理和运维，Slave 节点是集群中的运算工作负载节点。</p>
-<p>Master 节点上有 API server、controller-manager、scheduler 以及使用 Etcd 做 k8s 集群存储；<br>Slave 节点上有 kubelet、kube-proxy、容器引擎（比如 docker），每个 Slave 节点都会被 Master 分配一些工作负载。</p>
+<p>Master 节点上有 API server、controller-manager、scheduler 以及使用 etcd 做 k8s 集群存储；Slave 节点上有 kubelet、kube-proxy、容器引擎（比如 docker），每个 Slave 节点都会被 Master 分配一些工作负载。</p>
 <ul>
-<li><p>API server 负责接收 k8s 所有请求，所有对象资源的增删改查和监听操作都交给 API Server 处理后再提交给 Etcd 存储。</p>
+<li><p>API server 负责接收 k8s 所有请求，所有增删改查和监听操作都交给 API Server 处理后再提交给 etcd 存储。</p>
 </li>
-<li><p>Etcd 是一个分布式的键值存储系统。存储了 k8s 的关键配置和用户配置，仅 API Server 才具备读写权限，其他组件必须通过 API Server 的接口才能读写数据。其内部使用 Raft 协议。</p>
+<li><p>etcd 是一个分布式的键值存储系统。存储了 k8s 的关键配置和用户配置，仅 API Server 才具备读写权限，其他组件必须通过 API Server 的接口才能读写数据。其内部使用 Raft 协议。</p>
 </li>
 <li><p>scheduler 是负责资源调度的进程，根据调度算法为新创建的 Pod 选择一个合适的 Node 节点。</p>
 </li>
@@ -794,7 +804,7 @@
 <li><p>kube-proxy 能够让容器跨集群的各个节点相互通信。kube-proxy 处理所有网络问题，例如如何将流量转发到适当的 Pod 上，实现负载均衡。</p>
 </li>
 </ul>
-<p>所有的组件都通过 API server 交互，将集群的状态存储在 Etcd 中。多种组件（通过 API server）写入 Etcd，以对集群进行更改，集群上的节点（通过 API server）监听 Etcd，以查看其应该运行的 Pod。</p>
+<p>所有的组件都通过 API server 交互，将集群的状态存储在 etcd 中。多种组件（通过 API server）写入 etcd，以对集群进行更改，集群上的节点（通过 API server）监听 etcd，以查看其应该运行的 Pod。</p>
 <h4 id="Q：k8s-工作流程"><a href="#Q：k8s-工作流程" class="headerlink" title="Q：k8s 工作流程"></a>Q：k8s 工作流程</h4><ol>
 <li>用户通过客户端发送创建 pod 的请求到 Master 节点上的 API server</li>
 <li>API server 会先把相关的请求信息写入到 etcd 中，再找 controller-manager 根据预设的资源模板创建 pod 清单</li>
@@ -842,6 +852,12 @@
 </ol>
 <p>脏读是某一事务读取了另一个事务未提交的脏数据，而不可重复读则是读取了前一事务提交的数据。</p>
 <p>实现事物隔离性主要有两种方式：读写锁和 MVCC。</p>
+<h4 id="Q：MySQL-如何保证-ACID"><a href="#Q：MySQL-如何保证-ACID" class="headerlink" title="Q：MySQL 如何保证 ACID"></a>Q：MySQL 如何保证 ACID</h4><ul>
+<li>原子性：undo log</li>
+<li>一致性：ACI + 应用层代码</li>
+<li>隔离性：MVCC、锁</li>
+<li>持久性：redo log</li>
+</ul>
 <h4 id="Q：数据库四种隔离等级"><a href="#Q：数据库四种隔离等级" class="headerlink" title="Q：数据库四种隔离等级"></a>Q：数据库四种隔离等级</h4><ol>
 <li>Serializable (串行化)：<ul>
 <li>可避免脏读、不可重复读、幻读的发生。</li>
@@ -890,21 +906,20 @@
 </ul>
 <h4 id="Q：MySQL-和-Redis-两种数据库有什么区别"><a href="#Q：MySQL-和-Redis-两种数据库有什么区别" class="headerlink" title="Q：MySQL 和 Redis 两种数据库有什么区别"></a>Q：MySQL 和 Redis 两种数据库有什么区别</h4><ul>
 <li>MySQL 是关系型数据库，主要用于存放持久化数据，将数据存储在硬盘中，读取速度较慢。但是不受空间容量限制，性价比高。</li>
-<li>Redis 是内存数据库，即将数据存储在缓存中，用于存储使用频繁的数据，缓存的读取速度快，能够大大的提高运行效率，但是保存时间有限。</li>
-<li>在 Redis中，没有像传统数据库中的索引那样的结构。所有的数据都存储在内存中，因此数据的访问速度非常快。当你需要访问某个键对应的值时，只需要直接通过键名来获取，不需要像传统数据库一样通过索引来查找。</li>
+<li>Redis 是内存数据库，将数据存储在缓存中，用于存储使用频繁的数据，缓存的读取速度快，能够大大的提高运行效率，但是保存时间有限。</li>
+<li>在 Redis中，没有像传统数据库中的索引那样的结构。所有的数据都存储在内存中，因此数据的访问速度非常快，不需要像传统数据库一样通过索引来查找。</li>
 </ul>
-<h4 id="Q：为什么要用-Redis"><a href="#Q：为什么要用-Redis" class="headerlink" title="Q：为什么要用 Redis"></a>Q：为什么要用 Redis</h4><p>主要考虑两个角度：性能和并发</p>
-<p>如果说数据要去硬盘上读取，那么过程会比较慢。如果将频繁使用的数据存在数缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。</p>
-<p>在大并发的情况下，所有的请求直接访问数据库，数据库会出现连接异常。这个时候，就需要使用 Redis 做一个缓冲操作。直接操作缓存能够承受的请求是远远大于直接访问数据库的，所以我们可以考虑把数据库中的部分数据转移到缓存中去，让请求到 Redis 这里而不用经过数据库。</p>
-<h4 id="Q：单进程单线程的-Redis-为什么这么快"><a href="#Q：单进程单线程的-Redis-为什么这么快" class="headerlink" title="Q：单进程单线程的 Redis 为什么这么快"></a>Q：单进程单线程的 Redis 为什么这么快</h4><p>单线程指的是网络请求模块使用了一个线程（所以不需考虑并发安全性），即一个线程处理所有网络请求，其他模块仍用了多个线程。</p>
-<ol>
+<h4 id="Q：为什么要用-Redis"><a href="#Q：为什么要用-Redis" class="headerlink" title="Q：为什么要用 Redis"></a>Q：为什么要用 Redis</h4><p>性能：将频繁使用的数据存在缓存中，再访问这些数据的时候就可以直接从缓存中获取，速度相当快。</p>
+<p>并发：在大并发的情况下，所有的请求直接访问数据库，数据库会出现连接异常。可以使用 Redis 做一个缓冲。</p>
+<h4 id="Q：单进程单线程的-Redis-为什么这么快"><a href="#Q：单进程单线程的-Redis-为什么这么快" class="headerlink" title="Q：单进程单线程的 Redis 为什么这么快"></a>Q：单进程单线程的 Redis 为什么这么快</h4><p>单线程指的是网络请求模块使用了一个线程（所以不需考虑并发安全性）处理所有网络请求，其他模块仍用了多个线程。</p>
+<ul>
 <li>绝大部分请求是纯粹的内存操作</li>
 <li>采用单线程，避免了不必要的上下文切换和竞争条件</li>
 <li>采用了非阻塞 I&#x2F;O 多路复用机制</li>
-</ol>
+</ul>
 <h4 id="Q：RDB-和-AOF"><a href="#Q：RDB-和-AOF" class="headerlink" title="Q：RDB 和 AOF"></a>Q：RDB 和 AOF</h4><ul>
 <li>RDB：Redis DataBase，Redis 默认的持久化方式，每隔一定的时间将内存的数据以快照的形式保存到硬盘中。</li>
-<li>AOF：开启 AOF 持久化后每执行一条更改 Redis 中的数据的命令，Redis 就会将该命令写入硬盘中的 AOF 文件。</li>
+<li>AOF：Append Only File，每执行一条更改 Redis 中的数据的命令，Redis 就会将该命令写入硬盘中的 AOF 文件。</li>
 </ul>
 <p><strong>区别</strong>：</p>
 <ul>
@@ -946,16 +961,16 @@
 <li><p>全局的键空间选择性移除</p>
 <ul>
 <li>noeviction：新写入操作会报错。</li>
-<li>allkeys-lru：首先通过 LRU 算法驱逐最久没有使用的键。</li>
 <li>allkeys-random：随机移除某个 key。</li>
+<li>allkeys-lru：首先通过 LRU 算法驱逐最久没有使用的键。</li>
 <li>allkeys-lfu：从所有键中驱逐使用频率最少的键。</li>
 </ul>
 </li>
 <li><p>设置过期时间的键空间选择性移除</p>
 <ul>
-<li>volatile-lru：在设置了过期时间的键空间中，移除最久没有使用的 key。</li>
 <li>volatile-random：在设置了过期时间的键空间中，随机移除某个 key。</li>
 <li>volatile-ttl：在设置了过期时间的键空间中，有更早过期时间的 key 优先移除。</li>
+<li>volatile-lru：在设置了过期时间的键空间中，移除最久没有使用的 key。</li>
 <li>volatile-lfu：从所有配置了过期时间的键中，驱逐使用频率最少的键。</li>
 </ul>
 </li>
@@ -1010,7 +1025,7 @@
 <li>配置测试：通过对被测系统软硬件环境的调整，了解各种不同环境对系统性能影响的程度，从而找到系统各项资源的最优分配原则。</li>
 <li>可靠性测试（持久性测试）：给系统施加一定的业务压力，让其持续运行一段时间，测试在这种条件下能否稳定运行。</li>
 </ul>
-<h4 id="Q：性能测试常用指标"><a href="#Q：性能测试常用指标" class="headerlink" title="Q：性能测试常用指标"></a>Q：性能测试常用指标</h4><p>并发数、响应时间、吞吐量、资源利用率（CPU、内存、带宽）、错误率、响应时间分布、瓶颈分析、平台和网络性能。</p>
+<h4 id="Q：性能测试常用指标"><a href="#Q：性能测试常用指标" class="headerlink" title="Q：性能测试常用指标"></a>Q：性能测试常用指标</h4><p>吞吐量、资源利用率（CPU、内存、带宽）、响应时间、响应时间分布、并发数、错误率、瓶颈分析、平台和网络性能。</p>
 <h4 id="Q：测试用例八大要素"><a href="#Q：测试用例八大要素" class="headerlink" title="Q：测试用例八大要素"></a>Q：测试用例八大要素</h4><p>编号、标题、模块、前置条件、优先级、测试步骤、测试数据、预期结果。</p>
 <h4 id="Q：驱动模块和桩模块"><a href="#Q：驱动模块和桩模块" class="headerlink" title="Q：驱动模块和桩模块"></a>Q：驱动模块和桩模块</h4><p>驱动模块和桩模块的设计模式有助于实现模块间的解耦、模块的独立开发和测试，以及提高系统的可维护性和可测试性。</p>
 <ul>
@@ -1083,8 +1098,8 @@
 </li>
 <li><p>安全性测试</p>
 <ol>
-<li>登录成功后生成的 Cookie，是否是 httponly</li>
-<li>用户名和密码是否通过加密的方式，发送给 Web 服务器</li>
+<li>登录成功后生成的 Cookie，是否是 HttpOnly</li>
+<li>用户名和密码是否通过加密的方式，发送给 web 服务器</li>
 <li>用户名和密码的验证，应该是用服务器端验证， 而不能单单是在客户端用 javascript 验证</li>
 <li>用户名和密码的输入框，应该屏蔽 SQL 注入攻击</li>
 <li>用户名和密码的的输入框，应该禁止输入脚本</li>
