@@ -24,7 +24,7 @@
 <meta property="og:description" content="Golang 字符串相关题目。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-04-12T07:11:48.000Z">
-<meta property="article:modified_time" content="2023-08-02T07:20:18.077Z">
+<meta property="article:modified_time" content="2023-08-06T07:02:31.878Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -257,7 +257,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：3 天前
+                    本文最后更新于：2 小时前
                   
                 
               </p>
@@ -268,7 +268,7 @@
                 <p>Golang 字符串相关题目。</p>
 <span id="more"></span>
 
-<h2 id="1-概念"><a href="#1-概念" class="headerlink" title="1 概念"></a>1 概念</h2><p>字符串是一个结构体，包含一个指向底层 byte 数组的指针和 int 类型的长度属性（字节数）。</p>
+<h2 id="1-概念"><a href="#1-概念" class="headerlink" title="1 概念"></a>1 概念</h2><p>字符串在 Go 语言中是不可变的，这意味着一旦创建了一个字符串，就不能直接修改它的内容。如果需要修改字符串，可以先将其转换为字节数组（[]byte）进行修改，然后再转换回字符串。</p>
 <p>Go 使用的 UTF-8 变长编码，每个字符所占的字节是不一样的：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">utf_8Test</span><span class="hljs-params">()</span></span> &#123;<br>	str := <span class="hljs-string">&quot;英文名为Jamison&quot;</span><br>	fmt.Println(<span class="hljs-built_in">len</span>(str)) <span class="hljs-comment">// 19</span><br>	<span class="hljs-comment">// 四个汉字每个汉字三个字节，其余英文每个一字节</span><br>	<span class="hljs-comment">// 所以含有一个字节以上的字符不能使用传统 for 循环遍历，应该使用 for range</span><br>	<span class="hljs-keyword">for</span> _, s := <span class="hljs-keyword">range</span> str &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;%c&quot;</span>, s) <span class="hljs-comment">// result: 英文名为Jamison</span><br>	&#125;<br><br>	<span class="hljs-comment">// 错误做法</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(str); i++ &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;%c&quot;</span>, str[i]) <span class="hljs-comment">// result: è±æåä¸ºJamison</span><br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
