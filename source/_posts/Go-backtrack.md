@@ -70,7 +70,7 @@ func backtracking(参数) {
 
 ```go
 var path []int
-var res [][]int
+var res  [][]int
 ```
 
 函数里一定有两个参数，既然是集合 n 里面取 k 个数，那么 n 和 k 是两个 int 型的参数。
@@ -133,7 +133,7 @@ func combine(n int, k int) [][]int {
             return
         }
 
-        // 从start开始，不往回走，避免出现重复组合
+        // 从 start 开始，不往回走，避免出现重复组合
         for start <= a {
             if a - start + 1 < b - len(path) { // 剪枝
                 break
@@ -242,6 +242,34 @@ func ifStr(s string) bool {
 ### 2.4 [leetcode 90 题](https://leetcode.cn/problems/subsets-ii/)
 
 给你一个整数数组 nums，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
+
+```go
+func subsetsWithDup(nums []int) [][]int {
+    sort.Ints(nums)
+    var res [][]int
+    var path []int
+    used := make([]bool, len(nums))
+    var backtracking func(start int) 
+    backtracking = func(start int) {
+        tmp := make([]int, len(path))
+        copy(tmp, path)
+        res = append(res, tmp)
+
+        for i := start; i < len(nums); i++ {
+            if i > 0 && nums[i] == nums[i-1] && !used[i-1] {
+                continue
+            }
+            path = append(path, nums[i])
+            used[i] = true
+            backtracking(i+1)
+            path = path[:len(path)-1]
+            used[i] = false
+        }
+    }
+    backtracking(0)
+    return res
+}
+```
 
 ### 2.5 [leetcode 491 题](https://leetcode.cn/problems/non-decreasing-subsequences/submissions/)
 

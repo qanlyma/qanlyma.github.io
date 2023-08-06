@@ -17,19 +17,19 @@ Golang 二叉树相关题目。
 
 1. 满二叉树
 
-如果一棵二叉树只有度为 0 的结点和度为 2 的结点，并且度为 0 的结点在同一层上，则这棵二叉树为满二叉树。
+    如果一棵二叉树只有度为 0 的结点和度为 2 的结点，并且度为 0 的结点在同一层上。
 
 ![](1.png)
 
-2. 完全二叉树
+1. 完全二叉树
 
-除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。
+    除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边。
 
 ![](2.png)
 
-3. 二叉搜索树
+1. 二叉搜索树
 
-二叉搜索树（BST）是一个有序树。
+    二叉搜索树（BST）是一个有序树。
 
 * 若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值
 * 若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值
@@ -214,7 +214,7 @@ func isSymmetric(root *TreeNode) bool {
 
 给定一个二叉树，找出其最大深度。
 
-而根节点的高度就是二叉树的最大深度，所以本题中我们通过后序求的根节点高度来求的二叉树最大深度。
+根节点的高度就是二叉树的最大深度，所以本题中我们通过后序求的根节点高度来求的二叉树最大深度。
 
 ```go
 func maxdepth(root *Treenode) int {
@@ -254,7 +254,7 @@ func sumOfLeftLeaves(root *TreeNode) int {
 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum。判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和 targetSum。如果存在，返回 true；否则，返回 false。
 
 ```go
-func hasPathSum(root *TreeNode, targetSum int) bool {
+func hasPathSum1(root *TreeNode, targetSum int) bool {
     if root == nil {
         return false
     }
@@ -275,16 +275,15 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
     return res
 }
 
-func hasPathSum(root *TreeNode, targetSum int) bool {
+func hasPathSum2(root *TreeNode, targetSum int) bool {
     if root == nil {
         return false
     }
-
-    targetSum -= root.Val // 将 targetSum 在遍历每层的时候都减去本层节点的值
-    if root.Left == nil && root.Right == nil && targetSum == 0 { // 如果剩余的 targetSum 为 0, 则正好就是符合的结果
+    targetSum -= root.Val
+    if root.Left == nil && root.Right == nil && targetSum == 0 {
         return true
     }
-    return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum) // 否则递归找
+    return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum)
 }
 ```
 
@@ -408,3 +407,33 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 5. 删除节点的左右孩子节点都不为空，则将删除节点的左子树头结点（左孩子）放到删除节点的右子树的最左面节点的左孩子上，返回删除节点右孩子为新的根节点。
 
 ![](1.gif)
+
+```go
+func deleteNode(root *TreeNode, key int) *TreeNode {
+    if root == nil {
+        return root
+    }
+    if key < root.Val {
+        root.Left = deleteNode(root.Left, key)
+    } else if key > root.Val {
+        root.Right = deleteNode(root.Right, key)
+    } else {
+        if root.Left == nil && root.Right == nil {
+            return nil
+        } else if root.Left != nil && root.Right == nil {
+            return root.Left
+        } else if root.Right != nil && root.Left == nil {
+            return root.Right
+        } else {
+            temp := root.Left 
+            cur := root.Right
+            for cur.Left != nil {
+                cur = cur.Left
+            }
+            cur.Left = temp
+            return root.Right
+        }
+    }
+    return root
+}
+```

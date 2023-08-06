@@ -36,7 +36,7 @@ Dynamic Programming，简称 DP，如果某一问题有很多重叠子问题，�
 ![](2.png)
 
 那么可以有两个方向推出来 dp[i][j]：
-1. 不放物品（装不下）i：由 dp[i - 1][j] 推出，即背包容量为 j，里面不放物品 i 的最大价值，此时 dp[i][j] 就是 dp[i - 1][j]。
+1. 不放物品 i：由 dp[i - 1][j] 推出，即背包容量为 j，里面不放物品 i 的最大价值，此时 dp[i][j] 就是 dp[i - 1][j]。
 2. 放物品 i：由 dp[i - 1][j - weight[i]] 推出，dp[i - 1][j - weight[i]] 为背包容量为 j - weight[i] 的时候不放物品 i 的最大价值，那么 dp[i - 1][j - weight[i]] + value[i] 就是背包放物品i得到的最大价值。
 
 递推公式：`dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i])`
@@ -89,7 +89,7 @@ func bag_problem1(weight, value []int, bagweight int) int {
 二维 dp 遍历的时候，背包容量是从小到大，而一维 dp 遍历的时候，背包是从大到小。倒序遍历是为了保证物品 i 只被放入一次。
 
 ```go
-func bag_problem(weight, value []int, bagWeight int) int {
+func bag_problem2(weight, value []int, bagWeight int) int {
 	dp := make([]int, bagWeight+1)
 	for i := 0; i < len(weight); i++ {
 		// 这里必须倒序，区别二维，因为二维 dp 保存了 i 的状态
@@ -118,7 +118,7 @@ func bag_problem(weight, value []int, bagWeight int) int {
 斐波那契数。
 
 ```go
-func fib(n int) int {
+func fib1(n int) int {
     if n == 0 {
         return 0
     }

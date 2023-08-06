@@ -37,7 +37,7 @@ Golang 链表相关题目。
 
 ```go
 type ListNode struct {
-    Val int
+    Val  int
     Next *ListNode
 }
 ```
@@ -122,7 +122,7 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 给你两个单链表的头节点 headA 和 headB，请你找出并返回两个单链表相交的起始节点。
 
 ```go
-func getIntersectionNode(headA, headB *ListNode) *ListNode {
+func getIntersectionNode1(headA, headB *ListNode) *ListNode {
     vis := map[*ListNode]bool{}
     for tmp := headA; tmp != nil; tmp = tmp.Next {
         vis[tmp] = true
@@ -134,11 +134,45 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
     }
     return nil
 }
+
+func getIntersectionNode2(headA, headB *ListNode) *ListNode {
+    curA := headA
+    curB := headB
+    lenA, lenB := 0, 0
+    // 求 A，B 的长度
+    for curA != nil {
+        curA = curA.Next
+        lenA++
+    }
+    for curB != nil {
+        curB = curB.Next
+        lenB++
+    }
+    var step int
+    var fast, slow *ListNode
+    // 求长度差，并且让更长的链表先走相差的长度
+    if lenA > lenB {
+        step = lenA - lenB
+        fast, slow = headA, headB
+    } else {
+        step = lenB - lenA
+        fast, slow = headB, headA
+    }
+    for i := 0; i < step; i++ {
+        fast = fast.Next
+    }
+    // 遍历两个链表遇到相同则跳出遍历
+    for fast != slow {
+        fast = fast.Next
+        slow = slow.Next
+    }
+    return fast
+}
 ```
 
 ### 2.4 [leetcode 142 题](https://leetcode.cn/problems/linked-list-cycle-ii/)
 
-判断链表中是否有环。
+判断链表中是否有环，返回链表开始入环的第一个节点。
 
 ```go
 func detectCycle(head *ListNode) *ListNode {

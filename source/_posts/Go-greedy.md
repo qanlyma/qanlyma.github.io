@@ -175,7 +175,7 @@ func eraseOverlapIntervals(intervals [][]int) int {
 
 ### 2.7 [leetcode 763 题](https://leetcode.cn/problems/partition-labels/)
 
-划分字母区间。
+给你一个字符串 s。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。
 
 ```go
 func partitionLabels(s string) []int {

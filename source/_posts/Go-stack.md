@@ -160,6 +160,8 @@ func isValid(s string) bool {
 
 ### 2.2 [leetcode 150 题](https://leetcode.cn/problems/evaluate-reverse-polish-notation/)
 
+逆波兰表达式求值。
+
 题目本身不难，题解巧妙使用了 err 值得学习。
 
 ```go
