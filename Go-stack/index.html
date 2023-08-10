@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qanlyma.github.io/Go-stack/1.png">
 <meta property="article:published_time" content="2023-04-15T03:49:50.000Z">
-<meta property="article:modified_time" content="2023-08-06T07:12:00.262Z">
+<meta property="article:modified_time" content="2023-08-10T07:10:42.023Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Go-stack/1.png">
@@ -259,7 +259,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：1 小时前
+                    本文最后更新于：6 分钟前
                   
                 
               </p>
@@ -288,7 +288,8 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">evalRPN</span><span class="hljs-params">(tokens []<span class="hljs-type">string</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>	stack := []<span class="hljs-type">int</span>&#123;&#125;<br>	<span class="hljs-keyword">for</span> _, token := <span class="hljs-keyword">range</span> tokens &#123;<br>		val, err := strconv.Atoi(token)<br>		<span class="hljs-keyword">if</span> err == <span class="hljs-literal">nil</span> &#123;<br>			stack = <span class="hljs-built_in">append</span>(stack, val)<br>		&#125; <span class="hljs-keyword">else</span> &#123;   <span class="hljs-comment">// 如果 err 不为 nil 说明不是数字</span><br>			num1, num2 := stack[<span class="hljs-built_in">len</span>(stack)<span class="hljs-number">-2</span>], stack[(<span class="hljs-built_in">len</span>(stack))<span class="hljs-number">-1</span>]<br>			stack = stack[:<span class="hljs-built_in">len</span>(stack)<span class="hljs-number">-2</span>]<br>			<span class="hljs-keyword">switch</span> token &#123;<br>			<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;+&quot;</span>:<br>				stack = <span class="hljs-built_in">append</span>(stack, num1+num2)<br>			<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;-&quot;</span>:<br>				stack = <span class="hljs-built_in">append</span>(stack, num1-num2)<br>			<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;*&quot;</span>:<br>				stack = <span class="hljs-built_in">append</span>(stack, num1*num2)<br>			<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;/&quot;</span>:<br>				stack = <span class="hljs-built_in">append</span>(stack, num1/num2)<br>			&#125;<br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">return</span> stack[<span class="hljs-number">0</span>]<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="2-3-leetcode-239-题"><a href="#2-3-leetcode-239-题" class="headerlink" title="2.3 leetcode 239 题"></a>2.3 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sliding-window-maximum/">leetcode 239 题</a></h3><p>滑动窗口最大值。</p>
-
+<p>构建一个递减队列来不断存储更新最大值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">maxSlidingWindow</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> []<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> queue, res []<span class="hljs-type">int</span><br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; k; i++ &#123;<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(queue) &gt; <span class="hljs-number">0</span> &#123;<br>            <span class="hljs-keyword">if</span> nums[i] &gt; queue[<span class="hljs-number">0</span>] &#123;<br>                queue = queue[<span class="hljs-number">0</span>:<span class="hljs-number">0</span>]<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-keyword">for</span> nums[i] &gt; queue[<span class="hljs-built_in">len</span>(queue)<span class="hljs-number">-1</span>] &#123;<br>                    queue = queue[:<span class="hljs-built_in">len</span>(queue)<span class="hljs-number">-1</span>]<br>                &#125;<br>            &#125;<br>        &#125;<br>        queue = <span class="hljs-built_in">append</span>(queue, nums[i])<br>    &#125;<br>    res = <span class="hljs-built_in">append</span>(res, queue[<span class="hljs-number">0</span>])<br><br>    <span class="hljs-keyword">for</span> i := k; i &lt; <span class="hljs-built_in">len</span>(nums); i++ &#123;<br>        <span class="hljs-keyword">if</span> nums[i-k] == queue[<span class="hljs-number">0</span>] &#123;<br>            queue = queue[<span class="hljs-number">1</span>:]<br>        &#125;<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(queue) &gt; <span class="hljs-number">0</span> &#123;<br>            <span class="hljs-keyword">if</span> nums[i] &gt; queue[<span class="hljs-number">0</span>] &#123;<br>                queue = queue[<span class="hljs-number">0</span>:<span class="hljs-number">0</span>]<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-keyword">for</span> nums[i] &gt; queue[<span class="hljs-built_in">len</span>(queue)<span class="hljs-number">-1</span>] &#123;<br>                    queue = queue[:<span class="hljs-built_in">len</span>(queue)<span class="hljs-number">-1</span>]<br>                &#125;<br>            &#125;<br>        &#125;<br>        queue = <span class="hljs-built_in">append</span>(queue, nums[i])<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(queue) &gt; k &#123;<br>            queue = queue[:k]<br>        &#125;<br>        res = <span class="hljs-built_in">append</span>(res, queue[<span class="hljs-number">0</span>])<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -436,7 +437,7 @@
         aria-expanded="true"
       >
         Golang
-        <span class="list-group-count">(13)</span>
+        <span class="list-group-count">(14)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -562,6 +563,15 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">「Go」 动态规划</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Go-io/" title="「Go」 输入输出"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「Go」 输入输出</span>
         </a>
       
     
