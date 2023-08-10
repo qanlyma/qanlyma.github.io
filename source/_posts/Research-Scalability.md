@@ -7,7 +7,7 @@ categories: 理论研究
 banner_img:
 ---
 
-一篇关于区块链 Layer 1 和 Layer 2 的扩容调研报告。
+研一时写的一篇关于区块链 Layer 1 和 Layer 2 的扩容调研报告。
 
 <!-- more -->
 

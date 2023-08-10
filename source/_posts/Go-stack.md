@@ -193,3 +193,46 @@ func evalRPN(tokens []string) int {
 ### 2.3 [leetcode 239 题](https://leetcode.cn/problems/sliding-window-maximum/)
 
 滑动窗口最大值。
+
+构建一个递减队列来不断存储更新最大值。
+
+```go
+func maxSlidingWindow(nums []int, k int) []int {
+    var queue, res []int
+    for i := 0; i < k; i++ {
+        if len(queue) > 0 {
+            if nums[i] > queue[0] {
+                queue = queue[0:0]
+            } else {
+                for nums[i] > queue[len(queue)-1] {
+                    queue = queue[:len(queue)-1]
+                }
+            }
+        }
+        queue = append(queue, nums[i])
+    }
+    res = append(res, queue[0])
+
+    for i := k; i < len(nums); i++ {
+        if nums[i-k] == queue[0] {
+            queue = queue[1:]
+        }
+        if len(queue) > 0 {
+            if nums[i] > queue[0] {
+                queue = queue[0:0]
+            } else {
+                for nums[i] > queue[len(queue)-1] {
+                    queue = queue[:len(queue)-1]
+                }
+            }
+        }
+        queue = append(queue, nums[i])
+        if len(queue) > k {
+            queue = queue[:k]
+        }
+        res = append(res, queue[0])
+    }
+
+    return res
+}
+```

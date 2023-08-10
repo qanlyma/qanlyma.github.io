@@ -347,3 +347,88 @@ N 皇后。
 ### 2.8 [leetcode 37 题](https://leetcode.cn/problems/sudoku-solver/)
 
 解数独。
+
+## 3 递归
+
+在这里整理几道不是二叉树的递归题目。
+
+### 3.1 [剑指 Offer 25](https://leetcode.cn/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/)
+
+合并两个排序的链表。
+
+```go
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+    if l1 == nil {
+        return l2
+    } else if l2 == nil {
+        return l1
+    }
+
+    var l *ListNode
+    if l1.Val <= l2.Val {
+        l = l1
+        l1 = l1.Next
+    } else {
+        l = l2
+        l2 = l2.Next
+    }
+    l.Next = mergeTwoLists(l1, l2)
+    return l
+}
+```
+
+### 3.2 字节面试题
+
+计算字符串表达式，字符串包含数字、括号、加法、乘法，例如："2+3*(4+5)"。
+
+递归 + 栈：
+
+```go
+func calculateExpression(expr string) int {
+	stack := []int{}
+	op := '.'
+
+	for i := 0; i < len(expr); i++ {
+		if expr[i] != '+' && expr[i] != '*' {
+			num := 0
+			if expr[i] >= '0' && expr[i] <= '9' {
+				for i < len(expr) && expr[i] >= '0' && expr[i] <= '9' {
+					num = num*10 + int(expr[i]-'0')
+					i++
+				}
+				i--
+			} else if expr[i] == '(' {
+				cnt := 1
+				j := i + 1
+				for cnt > 0 {
+					if expr[j] == '(' {
+						cnt++
+					} else if expr[j] == ')' {
+						cnt--
+					}
+					j++
+				}
+				num = calculateExpression(expr[i+1 : j-1])
+				i = j - 1
+			}
+
+			if op == '*' {
+				num *= stack[len(stack)-1]
+				stack[len(stack)-1] = num
+			} else {
+				stack = append(stack, num)
+			}
+		}
+
+		if expr[i] == '*' || expr[i] == '+' {
+			op = rune(expr[i])
+		}
+	}
+
+	result := 0
+	for _, val := range stack {
+		result += val
+	}
+	return result
+}
+```

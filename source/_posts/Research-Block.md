@@ -1,5 +1,5 @@
 ---
-title: 「研」 以太坊区块结构和数据存储
+title: 「研」 以太坊区块结构
 category_bar: true
 date: 2023-03-03 10:25:26
 tags:
