@@ -437,3 +437,26 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
     return root
 }
 ```
+
+### 3.10 [剑指 Offer 26](https://leetcode.cn/problems/shu-de-zi-jie-gou-lcof/)
+
+输入两棵二叉树 A 和 B，判断 B 是不是 A 的子结构。
+
+```go
+func isSubStructure(A *TreeNode, B *TreeNode) bool {
+    if B == nil || A == nil {
+        return false
+    }
+    return isSub(A, B) || isSubStructure(A.Left, B) || isSubStructure(A.Right, B)
+}
+
+func isSub(A, B *TreeNode) bool {
+    if B == nil {
+        return true
+    }
+    if A == nil || A.Val != B.Val {
+        return false
+    } 
+    return isSub(A.Left, B.Left) && isSub(A.Right, B.Right)
+}
+```
