@@ -24,10 +24,13 @@
 <meta property="og:description" content="TCP&#x2F;IP（Transmission Control Protocol&#x2F;Internet Protocol，传输控制协议&#x2F;互联网协议）是互联网的基本协议，也是国际互联网络的基础。TCP&#x2F;IP 是一个协议族，包括多个网络协议，定义了计算机操作系统如何连入互联网，以及数据传输的标准。它是为了解决不同系统的计算机之间的传输通信而提出的一个标准，不同系统的计算机采">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qanlyma.github.io/Research-FiveLayers/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Research-FiveLayers/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/Research-FiveLayers/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Research-FiveLayers/5.png">
 <meta property="og:image" content="https://qanlyma.github.io/Research-FiveLayers/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/Research-FiveLayers/3.png">
 <meta property="article:published_time" content="2023-05-13T03:35:36.000Z">
-<meta property="article:modified_time" content="2023-07-15T08:26:04.792Z">
+<meta property="article:modified_time" content="2023-08-16T07:49:26.759Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Research-FiveLayers/1.png">
@@ -261,7 +264,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：1 个月前
+                    本文最后更新于：1 天前
                   
                 
               </p>
@@ -276,31 +279,74 @@
 <p>OSI 是一种理论模型，实现起来过分复杂，而且运行效率低。OSI 先有模型，后有协议，先有标准，后进行实践，而 TCP&#x2F;IP 则相反。TCI&#x2F;IP 已经被广泛使用，成为网络互连实际上的标准。而五层模型一般只出现在计算机网络学习教学过程中，是对七层模型和四层模型的一个折中。</p>
 <p><img src="/Research-FiveLayers/1.png" srcset="/img/loading.gif" lazyload alt="三种模型"></p>
 <ul>
-<li><strong>应用层</strong>：包含所有的高层协议，比如 Telnet（Telecommunications Network，远程登录协议）、FTP、SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）、DNS（Domain Name Service，域名服务）、NNTP（Net News Transfer Protocol，网络新闻传输协议）和 HTTP 等。Telnet 允许一台机器上的用户登录远程机器进行工作，FTP 提供将文件从一台机器上移到另一台机器上的有效方法，SMTP用于电子邮件的收发，DNS 用于把主机名映射到网络地址，NNTP 用于新闻的发布、检索和获取，HTTP 用于在 WWW 上获取主页。</li>
-<li><strong>传输层</strong>：著名的 TCP 和 UDP（User Datagram Protocol，用户数据报协议）就在这一层。TCP 是面向连接的协议，它提供可靠的报文传输和对上层应用的连接服务。为此，除了基本的数据传输外，它还有可靠性保证、流量控制、多路复用、优先权和安全性控制等功能。UDP 是面向无连接的不可靠传输协议，主要用于不需要 TCP 的排序和流量控制等功能的应用程序。</li>
-<li><strong>网络层</strong>：该层是整个 TCP&#x2F;IP 体系结构的关键部分，其功能是使主机可以把数据报（Packet，或称为分组）发往任何网络，并使分组独立地传向目标。这些分组经由不同的网络到达的顺序和发送的顺序可能不同。网络层使用的协议有 IP。</li>
-<li><strong>数据链路层</strong>：该层是整个体系结构的基础部分，负责接收 IP 层的 IP 数据报，通过网络向外发送，或接收从网络上来的物理帧，抽出 IP 数据报，向 IP 层发送。该层是主机与网络的实际连接层。数据链路层下面就是实体线路（比如以太网络、光纤网络等）。数据链路层有以太网、令牌环网等标准，负责网卡设备的驱动、帧同步（从网线上检测到什么信号算作新帧的开始）、冲突检测（如果检测到冲突就自动重发）、数据差错校验等工作。交换机可以在不同的数据链路层的网络之间（比如十兆以太网和百兆以太网之间、以太网和令牌环网之间）转发数据帧，由于不同数据链路层的帧格式不同，交换机要将进来的数据报拆掉报头重新封装之后再转发。</li>
+<li><p><strong>应用层</strong>：包含所有的高层协议，比如 Telnet（Telecommunications Network，远程登录协议）、FTP、SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）、DNS（Domain Name Service，域名服务）、NNTP（Net News Transfer Protocol，网络新闻传输协议）和 HTTP 等。Telnet 允许一台机器上的用户登录远程机器进行工作，FTP 提供将文件从一台机器上移到另一台机器上的有效方法，SMTP 用于电子邮件的收发，DNS 用于把主机名映射到网络地址，NNTP 用于新闻的发布、检索和获取，HTTP 用于在 WWW 上获取主页。</p>
+<p>  DNS 查询过程如下：</p>
+<p>  <img src="/Research-FiveLayers/6.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p><strong>传输层</strong>：著名的 TCP 和 UDP（User Datagram Protocol，用户数据报协议）就在这一层。TCP 是面向连接的协议，它提供可靠的报文传输和对上层应用的连接服务。为此，除了基本的数据传输外，它还有可靠性保证、流量控制、多路复用、优先权和安全性控制等功能。UDP 是面向无连接的不可靠传输协议，主要用于不需要 TCP 的排序和流量控制等功能的应用程序。</p>
+</li>
+<li><p><strong>网络层</strong>：该层是整个 TCP&#x2F;IP 体系结构的关键部分，其功能是使主机可以把数据报（Packet，或称为分组）发往任何网络，并使分组独立地传向目标，分组经由不同的网络到达的顺序和发送的顺序可能不同。网络层使用的协议有 IP。</p>
+<p>  <img src="/Research-FiveLayers/4.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>主机号全为 1 时指定某个网络下的所有主机，用于广播</li>
+<li>主机号全为 0 时指定某个网络</li>
+<li>CIDR 无分类地址 a.b.c.d&#x2F;x，前 x 位属于网络号，x 的范围是 0 ~ 32</li>
+<li>使用子网掩码也可以划分网络号与主机号，同时划分子网</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">类别</th>
+<th align="center">IP 地址范围</th>
+<th align="left">最大主机数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">A</td>
+<td align="center">0.0.0.0   ~ 127.255.255.255</td>
+<td align="left">16777214</td>
+</tr>
+<tr>
+<td align="center">B</td>
+<td align="center">128.0.0.0 ~ 191.255.255.255</td>
+<td align="left">65534</td>
+</tr>
+<tr>
+<td align="center">C</td>
+<td align="center">192.0.0.0 ~ 223.255.255.255</td>
+<td align="left">254</td>
+</tr>
+</tbody></table>
+<p>  为了缓解 IPv4 地址紧缺的问题，提出了 NAT（Network Address Translation，网络地址转换），将 <code>私有 IP + 端口</code> 转换为 <code>公有 IP + 端口</code>：</p>
+<p>  <img src="/Research-FiveLayers/5.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p><strong>数据链路层</strong>：该层是整个体系结构的基础部分，负责接收 IP 层的 IP 数据报，通过网络向外发送，或接收从网络上来的物理帧，抽出 IP 数据报，向 IP 层发送。该层是主机与网络的实际连接层。数据链路层下面就是实体线路（比如以太网络、光纤网络等）。数据链路层有以太网、令牌环网等标准，负责网卡设备的驱动、帧同步（从网线上检测到什么信号算作新帧的开始）、冲突检测（如果检测到冲突就自动重发）、数据差错校验等工作。交换机可以在不同的数据链路层的网络之间（比如十兆以太网和百兆以太网之间、以太网和令牌环网之间）转发数据帧，由于不同数据链路层的帧格式不同，交换机要将进来的数据报拆掉报头重新封装之后再转发。</p>
+</li>
 </ul>
 <p>不同的协议层对数据报有不同的称谓，在传输层叫作段（Segment），在网络层叫作数据报（Datagram），在数据链路层叫作帧（Frame）。数据封装成帧后发送到传输介质上，到达目的主机后，每层协议再剥掉相应的报头，最后将应用层数据交给应用程序处理。</p>
 <p><img src="/Research-FiveLayers/2.png" srcset="/img/loading.gif" lazyload alt="数据封装"></p>
 <h2 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h2><p>以浏览某个网页为例，看一下浏览网页的过程中 TCP&#x2F;IP 各层做了哪些工作。</p>
-<p>发送方：</p>
+<ul>
+<li>发送方：</li>
+</ul>
 <ol>
 <li>打开浏览器，输入网址 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 按回车键来访问网页，其实就是访问 Web 服务器上的网页，在应用层采用的协议是 HTTP，浏览器将网址等信息组成 HTTP 数据，并将数据传送给传输层。</li>
 <li>传输层在数据前面加上 TCP 报头，并标记端口为 80（Web 服务器的默认端口），将这个数据段给了网络层。</li>
-<li>网络层在这个数据段前面加上自己机器的 IP 和目的 IP，这时该段被称为 IP 数据报，然后将这个 IP 数据报给了数据链路层。</li>
+<li>网络层在这个数据段前面加上自己的 IP 和目的 IP，这时该段被称为 IP 数据报，然后将这个 IP 数据报给了数据链路层。</li>
 <li>数据链路层先在 IP 数据报前面加上自己机器的 MAC 地址以及目的 MAC 地址，加上 MAC 地址的数据称为帧，然后通过物理网卡把这个帧以比特流的方式发送到网络上。</li>
 </ol>
 <p>互联网上有路由器，它会读取比特流中的 IP 地址进行路由操作，到达正确的网段后，这个网段的交换机读取比特流中的 MAC 地址，从而找到要接收的对应机器。</p>
-<p>接收方：</p>
+<ul>
+<li>接收方：</li>
+</ul>
 <ol>
 <li>数据链路层用网卡接收到了比特流，读取比特流中的帧，将帧中的 MAC 地址去掉，就成了 IP 数据报，传递给网络层。</li>
 <li>网络层接收下层传来的 IP 数据报，将 IP 从包的前面拿掉，取出带有 TCP 的数据（数据段）交给传输层。</li>
 <li>传输层拿到了这个数据段，看到 TCP 标记的端口是 80，说明应用层协议是 HTTP，之后将 TCP 头去掉并将数据交给应用层，告诉应用层对方请求的是 HTTP 数据。</li>
 <li>应用层得知发送方请求的是 HTTP 数据，因此调用 Web 服务器程序把 <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> 的首页文件发送回去。</li>
 </ol>
-<p>如果两台计算机位于不同的网段中，那么数据从一台计算机到另一台计算机传输的过程中要经过一个或多个路由器，如下图所示。</p>
-<p><img src="/Research-FiveLayers/3.png" srcset="/img/loading.gif" lazyload alt="例子"></p>
+<p>如果两台计算机位于不同的网段中，那么数据从一台计算机到另一台计算机传输的过程中要经过一个或多个路由器：</p>
+<p><img src="/Research-FiveLayers/3.png" srcset="/img/loading.gif" lazyload alt="FTP 例子"></p>
 
                 
               </div>
