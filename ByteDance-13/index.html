@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-13/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-13/3.png">
 <meta property="article:published_time" content="2023-07-15T11:20:30.000Z">
-<meta property="article:modified_time" content="2023-08-17T12:23:18.451Z">
+<meta property="article:modified_time" content="2023-08-17T12:29:58.996Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-13/2.png">
@@ -260,7 +260,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 分钟前
+                    本文最后更新于：3 天前
                   
                 
               </p>
@@ -576,8 +576,10 @@
 <h4 id="Q：什么是交换空间"><a href="#Q：什么是交换空间" class="headerlink" title="Q：什么是交换空间"></a>Q：什么是交换空间</h4><p>交换空间通常是在硬盘上预留出来的一块空间，操作系统在需要时将内存中暂时不用的数据写入到交换空间，这样可以释放物理内存用于其他需要更紧急的任务。当需要读取这些数据时，操作系统再将它们从交换空间读取回物理内存中。</p>
 <h4 id="Q：分页和分段"><a href="#Q：分页和分段" class="headerlink" title="Q：分页和分段"></a>Q：分页和分段</h4><p>分页和分段是计算机内存管理中的两种重要技术，解决了以前操作系统连续分配内存管理方案带来的碎片问题。</p>
 <ul>
-<li>分段是将进程的逻辑地址空间划分成多个逻辑段（Segment），不同段可以放入内存的不同位置。每个段表示一个独立的逻辑单元，如代码段、数据段、栈段等。每个段的大小可以不同，并且段的长度可以根据进程的需求动态增长或缩小，减少外部碎片。</li>
-<li>分页是将进程的逻辑地址空间划分成大小固定的页（Page），同时将物理内存划分成与页大小相同的块，称为页框（Page Frame），每个进程的页表（Page Table）记录了逻辑页到物理页框的映射关系。分页消除了外部碎片，但会出现内部碎片。</li>
+<li><p>分段是将进程的逻辑地址空间划分成多个逻辑段（Segment），不同段可以放入内存的不同位置。每个段表示一个独立的逻辑单元，如代码段、数据段、栈段等。每个段的大小可以不同，并且段的长度可以根据进程的需求动态增长或缩小，减少外部碎片。</p>
+</li>
+<li><p>分页是将进程的逻辑地址空间划分成大小固定的页（Page），同时将内存划分成与页大小相同的块，称为页框，每个进程的页表记录了页到页框的映射关系。分页消除了外部碎片，但会出现内部碎片。</p>
+</li>
 </ul>
 <h4 id="Q：死锁产生的条件"><a href="#Q：死锁产生的条件" class="headerlink" title="Q：死锁产生的条件"></a>Q：死锁产生的条件</h4><ol>
 <li><p>互斥条件：一个资源在任意时刻只能被一个进程持有。</p>
