@@ -1,5 +1,5 @@
 ---
-title: 「Go」 输入输出
+title: 「Go」 15 输入输出
 category_bar: true
 date: 2023-08-07 19:30:22
 tags:

@@ -1,5 +1,5 @@
 ---
-title: 「学」 Git 使用教程
+title: 「学」 Git
 category_bar: true
 date: 2023-03-01 15:09:54
 tags:

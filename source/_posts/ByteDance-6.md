@@ -1,5 +1,5 @@
 ---
-title: 「训」 笔记(6)：架构初探
+title: 「训」 笔记(06)：架构初探
 category_bar: true
 date: 2023-03-19 08:35:45
 tags:

@@ -1,5 +1,5 @@
 ---
-title: 「学」 Markdown 使用教程
+title: 「学」 Markdown
 category_bar: true
 date: 2022-11-08 22:15:52
 tags:

@@ -1,5 +1,5 @@
 ---
-title: 「学」 Linux 使用教程
+title: 「学」 Linux
 category_bar: true
 date: 2022-11-10 22:51:47
 tags:

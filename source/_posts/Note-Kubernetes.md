@@ -1,9 +1,9 @@
 ---
-title: 「研」 Kubernetes
+title: 「学」 Kubernetes
 category_bar: true
 date: 2023-08-24 14:58:10
 tags:
-categories: 理论研究
+categories: 学习笔记
 banner_img:
 ---
 

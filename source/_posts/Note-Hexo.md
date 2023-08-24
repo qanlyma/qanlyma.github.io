@@ -1,5 +1,5 @@
 ---
-title: 「学」 Hexo 基础命令
+title: 「学」 Hexo
 category_bar: true
 date: 2022-11-07 22:21:58
 tags:

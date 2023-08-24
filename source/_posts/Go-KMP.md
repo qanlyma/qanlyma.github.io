@@ -1,5 +1,5 @@
 ---
-title: 「Go」 KMP 算法
+title: 「Go」 06 KMP 算法
 category_bar: true
 date: 2023-04-12 16:11:48
 tags:

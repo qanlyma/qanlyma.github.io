@@ -1,5 +1,5 @@
 ---
-title: 「训」 Q & A
+title: 「训」 笔记(13)：Q & A
 category_bar: true
 date: 2023-07-15 19:20:30
 tags:

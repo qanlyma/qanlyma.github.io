@@ -1,5 +1,5 @@
 ---
-title: 「训」 笔记(1)：Go 语言
+title: 「训」 笔记(01)：Go 语言
 category_bar: true
 date: 2023-02-18 15:38:59
 tags:

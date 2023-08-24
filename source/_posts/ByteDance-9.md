@@ -1,5 +1,5 @@
 ---
-title: 「训」 笔记(9)：分布式定时任务
+title: 「训」 笔记(09)：分布式定时任务
 category_bar: true
 date: 2023-04-05 15:18:42
 tags:

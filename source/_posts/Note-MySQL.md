@@ -1,9 +1,9 @@
 ---
-title: 「研」 MySQL
+title: 「学」 MySQL
 category_bar: true
 date: 2023-08-07 14:44:23
 tags:
-categories: 理论研究
+categories: 学习笔记
 banner_img:
 ---
 

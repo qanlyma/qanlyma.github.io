@@ -1,5 +1,5 @@
 ---
-title: 「训」 笔记(7)：分布式理论
+title: 「训」 笔记(07)：分布式理论
 category_bar: true
 date: 2023-03-25 14:36:16
 tags:

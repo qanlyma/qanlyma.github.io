@@ -1,5 +1,5 @@
 ---
-title: 「Go」 链表
+title: 「Go」 03 链表
 category_bar: true
 date: 2023-03-15 09:48:47
 tags:
