@@ -32,7 +32,7 @@ import (
 func main() {
     var a, b int
     for {
-        n, _ := fmt.Scan(&a, &b)
+        n, _ := fmt.Scan(&a, &b) // 返回数据个数和错误
         if n == 0 {
             break
         } else {

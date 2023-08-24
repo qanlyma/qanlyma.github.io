@@ -1,5 +1,5 @@
 ---
-title: 「研」 MySQL 理解
+title: 「研」 MySQL
 category_bar: true
 date: 2023-08-07 14:44:23
 tags:
@@ -97,9 +97,9 @@ MySQL 的数据是存储在磁盘里的，但是也不能每次都从磁盘里�
 
 ![](11.png)
 
-* 当读取数据时，如果数据存在于 Buffer Pool 中，客户端就会直接读取 Buffer Pool 中的数据，否则再去磁盘中读取。
+* 当读取数据时，如果数据存在于 Buffer Pool 中，客户端就会直接读取其中的数据，否则再去磁盘中读取。
 
-* 当修改数据时，首先是修改 Buffer Pool 中数据所在的页，然后将其页设置为脏页，最后由后台线程将脏页写入到磁盘。
+* 当修改数据时，首先修改 Buffer Pool 中数据所在的页，然后将其设置为脏页，最后由后台线程将脏页写入到磁盘。
 
 InnoDB 会把存储的数据划分为若干个「页」，以页作为磁盘和内存交互的基本单位，一个页的默认大小为 16KB。因此，Buffer Pool 同样需要按「页」来划分。
 
@@ -148,7 +148,7 @@ LRU（Least recently used）算法。该算法的思路是，链表头部的节�
 
 undo log 是一种用于撤销回退的日志，MySQL 会记录更新前的数据到 undo log 日志文件里面。当事务回滚时，可以利用 undo log 来进行回滚，做与原先相反操作。比如当 delete 一条记录时，undo log 中会把记录中的内容都记下来，然后执行回滚操作的时候，就读取 undo log 里的数据进行 insert 操作。
 
-另外，undo log 还有一个作用，通过 ReadView + undo log 实现 MVCC（多版本并发控制）。
+另外，undo log 还有一个作用，通过 Read View + undo log 实现 MVCC（多版本并发控制）。
 
 undo log 为每条记录保存多份历史数据，MySQL 在执行快照读（普通 select 语句）的时候，会根据事务的 Read View 里的信息，顺着 undo log 的版本链找到满足其可见性的记录。
 
@@ -313,10 +313,10 @@ B+Tree 存储千万级的数据只需要 3-4 层高度就可以满足，这意�
 
 5. **防止索引失效**
 
-    * 当我们使用左或者左右模糊匹配的时候，也就是 like %xx 或者 like %xx% 这两种方式都会造成索引失效
-    * 当我们在查询条件中对索引列做了计算、函数、类型转换操作，这些情况下都会造成索引失效
-    * 联合索引要能正确使用需要遵循最左匹配原则，也就是按照最左优先的方式进行索引的匹配，否则就会导致索引失效
-    * 在 WHERE 子句中，如果在 OR 前的条件列是索引列，而在 OR 后的条件列不是索引列，那么索引会失效
+    * 当我们使用左或者左右模糊匹配的时候，也就是 like %xx 或者 like %xx% 这两种方式都会造成索引失效。
+    * 当我们在查询条件中对索引列做了计算、函数、类型转换操作，这些情况下都会造成索引失效。
+    * 联合索引需要遵循最左匹配原则，按照最左优先的方式进行索引的匹配，否则就会导致索引失效。
+    * 在 WHERE 子句中，如果在 OR 前的条件列是索引列，而在 OR 后的条件列不是索引列，那么索引会失效。
 
 ## 4 事务
 
@@ -465,21 +465,21 @@ SQL（Structured Query Language）指结构化查询语言，可以访问和处�
 
 ### 语法
 
-* SELECT 语句用于从数据库中选取数据。结果被存储在一个结果表中，称为结果集。
-* SELECT DISTINCT 语句用于返回唯一不同的值。
+* `SELECT` 语句用于从数据库中选取数据。结果被存储在一个结果表中，称为结果集。
+* `SELECT DISTINCT` 语句用于返回唯一不同的值。
 
 ```SQL
 SELECT column1, column2, ...
 FROM table_name;
 ```
 
-* WHERE 子句用于提取那些满足指定条件的记录。
-* LIKE 操作符用于在 WHERE 子句中搜索列中的指定模式。
-* 通配符可用于替代字符串中的任何其他字符。
-* IN 操作符允许您在 WHERE 子句中规定多个值。
-* BETWEEN/NOT BETWEEN 操作符用于选取介于/不介于两个值之间的数据范围内的值。
-* WHERE 关键字无法与聚合函数一起使用。HAVING 子句可以让我们筛选分组后的各组数据。
-* WHERE column IS NULL 在 column 值为空时使用。
+* `WHERE` 子句用于提取那些满足指定条件的记录。
+* `LIKE` 操作符用于在 `WHERE` 子句中搜索列中的指定模式。
+* 通配符（`%`，`_`）可用于替代字符串中的任何其他字符。
+* `IN` 操作符允许您在 `WHERE` 子句中规定多个值。
+* `BETWEEN`/`NOT BETWEEN` 操作符用于选取介于/不介于两个值之间的数据范围内的值。
+* `WHERE` 关键字无法与聚合函数一起使用。HAVING 子句可以让我们筛选分组后的各组数据。
+* `WHERE column IS NULL` 在 column 值为空时使用。
 
 ```SQL
 SELECT column1, column2, ...
@@ -508,7 +508,7 @@ GROUP BY column_name
 HAVING aggregate_function(column_name) operator value;
 ```
 
-* AND & OR 运算符用于基于一个以上的条件对记录进行过滤。
+* `AND` & `OR` 运算符用于基于一个以上的条件对记录进行过滤。
 
 ```SQL
 SELECT * FROM Websites
@@ -516,9 +516,9 @@ WHERE alexa > 15
 AND (country='CN' OR country='USA');
 ```
 
-* ORDER BY 关键字用于对结果集进行排序。
-* ASC 表示按升序排序；DESC 表示按降序排序。
-* GROUP BY 语句用于结合聚合函数，根据一个或多个列对结果集进行分组。
+* `ORDER BY` 关键字用于对结果集进行排序。
+* `ASC` 表示按升序排序；`DESC` 表示按降序排序。
+* `GROUP BY` 语句用于结合聚合函数，根据一个或多个列对结果集进行分组。
 
 ```SQL
 SELECT column1, column2, ...
@@ -531,9 +531,9 @@ WHERE column_name operator value
 GROUP BY column_name;
 ```
 
-* INSERT INTO 语句用于向表中插入新记录，column 可省略。
-* SELECT INTO 语句从一个表复制数据，然后把数据插入到另一个新表中。
-* MySQL 数据库不支持 SELECT INTO 语句，但支持 INSERT INTO ... SELECT。
+* `INSERT INTO` 语句用于向表中插入新记录，column 可省略。
+* `SELECT INTO` 语句从一个表复制数据，然后把数据插入到另一个新表中。
+* MySQL 数据库不支持 `SELECT INTO` 语句，但支持 `INSERT INTO ... SELECT`。
 
 ```SQL
 INSERT INTO table_name (column1,column2,column3,...)
@@ -543,7 +543,7 @@ INSERT INTO table2
 SELECT * FROM table1;
 ```
 
-* UPDATE 语句用于更新表中已存在的记录。
+* `UPDATE` 语句用于更新表中已存在的记录。
 
 ```SQL
 UPDATE table_name
@@ -551,19 +551,19 @@ SET column1 = value1, column2 = value2, ...
 WHERE condition;
 ```
 
-* DELETE 语句用于删除表中的记录。
-* DROP 语句可以删除索引、表和数据库。
+* `DELETE` 语句用于删除表中的记录。
+* `DROP` 语句可以删除索引、表和数据库。
 
 ```SQL
 DELETE FROM table_name
 WHERE condition;
 ```
 
-* SQL JOIN 子句用于把来自两个或多个表的行结合起来，基于这些表之间的共同字段。
-* INNER JOIN：如果表中有至少一个匹配，则返回行
-* LEFT JOIN：即使右表中没有匹配，也从左表返回所有的行
-* RIGHT JOIN：即使左表中没有匹配，也从右表返回所有的行
-* FULL JOIN：只要其中一个表中存在匹配，则返回行
+* SQL `JOIN` 子句用于把来自两个或多个表的行结合起来，基于这些表之间的共同字段。
+* `INNER JOIN`：如果表中有至少一个匹配，则返回行
+* `LEFT JOIN`：即使右表中没有匹配，也从左表返回所有的行
+* `RIGHT JOIN`：即使左表中没有匹配，也从右表返回所有的行
+* `FULL JOIN`：只要其中一个表中存在匹配，则返回行
 
 ```SQL
 SELECT column1, column2, ...
@@ -574,11 +574,11 @@ ON condition;
 
 ### 函数
 
-* AVG() - 返回平均值
-* COUNT() - 返回行数
-* FIRST() - 返回第一个记录的值
-* LAST() - 返回最后一个记录的值
-* MAX() - 返回最大值
-* MIN() - 返回最小值
-* SUM() - 返回总和
-* LEN() - 返回文本字段中值的长度（MySQL 中使用 LENGTH）
+* `AVG()` - 返回平均值
+* `COUNT()` - 返回行数
+* `FIRST()` - 返回第一个记录的值
+* `LAST()` - 返回最后一个记录的值
+* `MAX()` - 返回最大值
+* `MIN()` - 返回最小值
+* `SUM()` - 返回总和
+* `LEN()` - 返回文本字段中值的长度（MySQL 中使用 `LENGTH`）

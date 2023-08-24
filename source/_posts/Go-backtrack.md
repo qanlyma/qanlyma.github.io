@@ -340,11 +340,54 @@ func permuteUnique(nums []int) [][]int {
 }
 ```
 
-### 2.7 [leetcode 51 题](https://leetcode.cn/problems/n-queens/)
+### 2.7 [leetcode 698 题](https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/)
+
+给定一个整数数组 nums 和一个正整数 k，找出是否有可能把这个数组分成 k 个非空子集，其总和都相等。
+
+```go
+func canPartitionKSubsets(nums []int, k int) bool {
+    var sum int
+    for _, v := range nums {
+        sum += v
+    }
+    if sum % k != 0 {
+        return false
+    }
+    target := sum / k
+    sort.Ints(nums)
+    used := make([]bool, len(nums))
+    var dfs func(start, sum, count int, used []bool) bool
+    dfs = func(start, sum, count int, used []bool) bool {
+        if count == k {
+            return true
+        } else if sum == target {
+            return dfs(len(nums)-1, 0, count+1, used)
+        }
+
+        for i := start; i >= 0; i-- {
+            if used[i] || sum + nums[i] > target {
+                continue
+            } 
+            used[i] = true
+            if dfs(i-1, sum+nums[i], count, used) {
+                return true
+            }
+            used[i] = false
+            if sum == 0 {
+                return false
+            }
+        }
+        return false
+    }
+    return dfs(len(nums)-1, 0, 0, used)
+}
+```
+
+### 2.8 [leetcode 51 题](https://leetcode.cn/problems/n-queens/)
 
 N 皇后。
 
-### 2.8 [leetcode 37 题](https://leetcode.cn/problems/sudoku-solver/)
+### 2.9 [leetcode 37 题](https://leetcode.cn/problems/sudoku-solver/)
 
 解数独。
 

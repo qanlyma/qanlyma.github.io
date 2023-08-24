@@ -665,46 +665,6 @@ Docker 容器实现隔离是通过一系列 Linux 内核特性和技术实现的
 
 用于定义和管理多个 Docker 容器的应用程序。它允许你使用简单的 YAML 文件来描述多个容器之间的关系和配置，从而实现快速、方便地部署和管理复杂的多容器应用。
 
-#### Q：什么是 k8s
-
-Kubernetes 是一个用于自动化部署、扩展和管理容器化应用程序的容器编排平台。它的目标是处理大规模、高可用性的分布式系统。保证应用业务高峰并发时的高可用性；业务低峰时回收资源，以最小成本运行服务。为多个容器提供服务发现和负载均衡，使得用户无需考虑容器 IP 问题。
-
-* Pod 对象是 k8s 中基础对象，由一个或多个（紧密相关）容器组成，并且这些容器共享网络和文件系统。类似于容器，Pod 被设计成拥有短暂的生命周期，不会期望特定的 Pod 长期存在。
-
-* Deployment 对象包含由模板和副本数（要运行的模板数量）定义的 Pod 集合。如果我们有一个 Deployment，其副本数为 10，其中 3 个 Pod 由于机器故障而崩溃，这 3 个 Pod 将会在集群中的其他机器上被调度运行起来。因此，Deployment 是最适合无状态应用程序使用，Pod 能够随时被替换而不破坏其他东西。
-
-* Service 提供一个稳定的端点，它可以用来将流量定向到所需的 Pod 上，即使底层 Pod 由于更新、扩展和故障而发生变化。Service 基于在 Pod 清单文件元数据中定义的标签（键值对）知道应该向哪些 Pod 发送流量。
-
-#### Q：k8s 节点中有哪些组件
-
-k8s 是主从设备模型，Master 节点负责集群的调度、管理和运维，Slave 节点是集群中的运算工作负载节点。
-
-Master 节点上有 API server、controller-manager、scheduler 以及使用 etcd 做 k8s 集群存储；Slave 节点上有 kubelet、kube-proxy、容器引擎（比如 docker），每个 Slave 节点都会被 Master 分配一些工作负载。
-
-* API server 负责接收 k8s 所有请求，所有增删改查和监听操作都交给 API Server 处理后再提交给 etcd 存储。
-
-* etcd 是一个分布式的键值存储系统。存储了 k8s 的关键配置和用户配置，仅 API Server 才具备读写权限，其他组件必须通过 API Server 的接口才能读写数据。其内部使用 Raft 协议。
-
-* scheduler 是负责资源调度的进程，根据调度算法为新创建的 Pod 选择一个合适的 Node 节点。
-
-* controller-manager 是 k8s 集群里所有资源对象的自动化控制中心，通过 API server 监视集群的状态，确保集群的当前状态是否符合期望。
-
-* kubelet 是从节点的监视器，与 Master 节点的通讯器。与 API server 通信查看分配给该节点的应用程序容器，负责启动 Pod 运行分配到节点的应用程序。
-
-* kube-proxy 能够让容器跨集群的各个节点相互通信。kube-proxy 处理所有网络问题，例如如何将流量转发到适当的 Pod 上，实现负载均衡。
-
-所有的组件都通过 API server 交互，将集群的状态存储在 etcd 中。多种组件（通过 API server）写入 etcd，以对集群进行更改，集群上的节点（通过 API server）监听 etcd，以查看其应该运行的 Pod。
-
-#### Q：k8s 工作流程
-
-1. 用户通过客户端发送创建 pod 的请求到 Master 节点上的 API server
-2. API server 会先把相关的请求信息写入到 etcd 中，再找 controller-manager 根据预设的资源模板创建 pod 清单
-3. 然后 controller-manager 会通过 API server 去找 scheduler 为新创建的 pod 选择最适合的 Node 节点
-4. scheduler 会通过调度算法的预选策略和优选策略筛选出最适合的 Node 节点
-5. 然后再通过 API server 找到对应的 Node 节点上的 kubelet 去创建和管理 pod
-6. kubelet 会直接跟容器引擎交互来管理容器的生命周期
-7. 用户通过创建承载在 kube-proxy 上的 service 资源，写入相关的网络规则，实现对 pod 的服务发现和负载均衡
-
 ## 数据库
 
 #### Q：索引是什么
