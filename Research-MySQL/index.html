@@ -18,7 +18,7 @@
   
     <meta name="description" content="MySQL 是最流行的关系型数据库管理系统，在 web 应用方面 MySQL 是最好的 RDBMS（Relational Database Management System，关系数据库管理系统）应用软件之一。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「研」 MySQL 理解">
+<meta property="og:title" content="「研」 MySQL">
 <meta property="og:url" content="https://qanlyma.github.io/Research-MySQL/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="MySQL 是最流行的关系型数据库管理系统，在 web 应用方面 MySQL 是最好的 RDBMS（Relational Database Management System，关系数据库管理系统）应用软件之一。">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Research-MySQL/9.png">
 <meta property="og:image" content="https://qanlyma.github.io/Research-MySQL/10.png">
 <meta property="article:published_time" content="2023-08-07T06:44:23.000Z">
-<meta property="article:modified_time" content="2023-08-20T08:55:59.457Z">
+<meta property="article:modified_time" content="2023-08-24T07:48:26.511Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Research-MySQL/1.png">
@@ -45,7 +45,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「研」 MySQL 理解 - Qanly</title>
+  <title>「研」 MySQL - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -186,7 +186,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「研」 MySQL 理解"></span>
+            <span id="subtitle" data-typed-text="「研」 MySQL"></span>
           
         </div>
 
@@ -265,12 +265,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「研」 MySQL 理解</h1>
+            <h1 style="display: none">「研」 MySQL</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 分钟前
+                    本文最后更新于：2 小时前
                   
                 
               </p>
@@ -334,9 +334,9 @@
 <h3 id="1-7-Buffer-Pool"><a href="#1-7-Buffer-Pool" class="headerlink" title="1.7 Buffer Pool"></a>1.7 Buffer Pool</h3><p>MySQL 的数据是存储在磁盘里的，但是也不能每次都从磁盘里面读取数据，这样性能是极差的。Innodb 存储引擎设计了一个缓冲池（Buffer Pool），来提高数据库的读写性能。</p>
 <p><img src="/Research-MySQL/11.png" srcset="/img/loading.gif" lazyload></p>
 <ul>
-<li><p>当读取数据时，如果数据存在于 Buffer Pool 中，客户端就会直接读取 Buffer Pool 中的数据，否则再去磁盘中读取。</p>
+<li><p>当读取数据时，如果数据存在于 Buffer Pool 中，客户端就会直接读取其中的数据，否则再去磁盘中读取。</p>
 </li>
-<li><p>当修改数据时，首先是修改 Buffer Pool 中数据所在的页，然后将其页设置为脏页，最后由后台线程将脏页写入到磁盘。</p>
+<li><p>当修改数据时，首先修改 Buffer Pool 中数据所在的页，然后将其设置为脏页，最后由后台线程将脏页写入到磁盘。</p>
 </li>
 </ul>
 <p>InnoDB 会把存储的数据划分为若干个「页」，以页作为磁盘和内存交互的基本单位，一个页的默认大小为 16KB。因此，Buffer Pool 同样需要按「页」来划分。</p>
@@ -374,7 +374,7 @@
 </ul>
 <h3 id="2-1-undo-log"><a href="#2-1-undo-log" class="headerlink" title="2.1 undo log"></a>2.1 undo log</h3><p>一个事务在执行过程中，在提交事务之前，如果 MySQL 发生了崩溃，可以通过 undo log 回滚到事务之前的数据。</p>
 <p>undo log 是一种用于撤销回退的日志，MySQL 会记录更新前的数据到 undo log 日志文件里面。当事务回滚时，可以利用 undo log 来进行回滚，做与原先相反操作。比如当 delete 一条记录时，undo log 中会把记录中的内容都记下来，然后执行回滚操作的时候，就读取 undo log 里的数据进行 insert 操作。</p>
-<p>另外，undo log 还有一个作用，通过 ReadView + undo log 实现 MVCC（多版本并发控制）。</p>
+<p>另外，undo log 还有一个作用，通过 Read View + undo log 实现 MVCC（多版本并发控制）。</p>
 <p>undo log 为每条记录保存多份历史数据，MySQL 在执行快照读（普通 select 语句）的时候，会根据事务的 Read View 里的信息，顺着 undo log 的版本链找到满足其可见性的记录。</p>
 <h3 id="2-2-redo-log"><a href="#2-2-redo-log" class="headerlink" title="2.2 redo log"></a>2.2 redo log</h3><p>如果 MySQL 每一次的更新操作都需要写进磁盘，找到对应的记录更新，那么整个过程 IO 成本、查找成本都很高。WAL（Write-Ahead Logging）技术解决了这个问题，它的关键点就是先写日志，再写磁盘。</p>
 <p>当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log 里面，并更新内存。InnoDB 引擎会在适当的时候，将这个操作记录更新到磁盘里面，而这个更新往往是在系统比较空闲的时候。重做日志文件是以循环写的方式工作的，从头开始写，写到末尾就又回到开头，相当于一个环形。</p>
@@ -497,10 +497,10 @@
 </li>
 <li><p><strong>防止索引失效</strong></p>
 <ul>
-<li>当我们使用左或者左右模糊匹配的时候，也就是 like %xx 或者 like %xx% 这两种方式都会造成索引失效</li>
-<li>当我们在查询条件中对索引列做了计算、函数、类型转换操作，这些情况下都会造成索引失效</li>
-<li>联合索引要能正确使用需要遵循最左匹配原则，也就是按照最左优先的方式进行索引的匹配，否则就会导致索引失效</li>
-<li>在 WHERE 子句中，如果在 OR 前的条件列是索引列，而在 OR 后的条件列不是索引列，那么索引会失效</li>
+<li>当我们使用左或者左右模糊匹配的时候，也就是 like %xx 或者 like %xx% 这两种方式都会造成索引失效。</li>
+<li>当我们在查询条件中对索引列做了计算、函数、类型转换操作，这些情况下都会造成索引失效。</li>
+<li>联合索引需要遵循最左匹配原则，按照最左优先的方式进行索引的匹配，否则就会导致索引失效。</li>
+<li>在 WHERE 子句中，如果在 OR 前的条件列是索引列，而在 OR 后的条件列不是索引列，那么索引会失效。</li>
 </ul>
 </li>
 </ol>
@@ -605,70 +605,70 @@
 <li>DROP INDEX - 删除索引</li>
 </ul>
 <h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><ul>
-<li>SELECT 语句用于从数据库中选取数据。结果被存储在一个结果表中，称为结果集。</li>
-<li>SELECT DISTINCT 语句用于返回唯一不同的值。</li>
+<li><code>SELECT</code> 语句用于从数据库中选取数据。结果被存储在一个结果表中，称为结果集。</li>
+<li><code>SELECT DISTINCT</code> 语句用于返回唯一不同的值。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">SELECT</span> column1, column2, ...<br><span class="hljs-keyword">FROM</span> table_name;<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>WHERE 子句用于提取那些满足指定条件的记录。</li>
-<li>LIKE 操作符用于在 WHERE 子句中搜索列中的指定模式。</li>
-<li>通配符可用于替代字符串中的任何其他字符。</li>
-<li>IN 操作符允许您在 WHERE 子句中规定多个值。</li>
-<li>BETWEEN&#x2F;NOT BETWEEN 操作符用于选取介于&#x2F;不介于两个值之间的数据范围内的值。</li>
-<li>WHERE 关键字无法与聚合函数一起使用。HAVING 子句可以让我们筛选分组后的各组数据。</li>
-<li>WHERE column IS NULL 在 column 值为空时使用。</li>
+<li><code>WHERE</code> 子句用于提取那些满足指定条件的记录。</li>
+<li><code>LIKE</code> 操作符用于在 <code>WHERE</code> 子句中搜索列中的指定模式。</li>
+<li>通配符（<code>%</code>，<code>_</code>）可用于替代字符串中的任何其他字符。</li>
+<li><code>IN</code> 操作符允许您在 <code>WHERE</code> 子句中规定多个值。</li>
+<li><code>BETWEEN</code>&#x2F;<code>NOT BETWEEN</code> 操作符用于选取介于&#x2F;不介于两个值之间的数据范围内的值。</li>
+<li><code>WHERE</code> 关键字无法与聚合函数一起使用。HAVING 子句可以让我们筛选分组后的各组数据。</li>
+<li><code>WHERE column IS NULL</code> 在 column 值为空时使用。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">SELECT</span> column1, column2, ...<br><span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">condition</span>;<br><br><span class="hljs-keyword">SELECT</span> column1, column2, ...<br><span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">column</span> <span class="hljs-keyword">LIKE</span> <span class="hljs-keyword">pattern</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> Websites<br><span class="hljs-keyword">WHERE</span> url <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;https%&#x27;</span>;<br><br><span class="hljs-keyword">SELECT</span> column1, column2, ...<br><span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">column</span> <span class="hljs-keyword">IN</span> (value1, value2, ...);<br><br><span class="hljs-keyword">SELECT</span> column1, column2, ...<br><span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">column</span> <span class="hljs-keyword">BETWEEN</span> value1 <span class="hljs-keyword">AND</span> value2;<br><br><span class="hljs-keyword">SELECT</span> column_name, aggregate_function(column_name)<br><span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">WHERE</span> column_name operator <span class="hljs-keyword">value</span><br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> column_name<br><span class="hljs-keyword">HAVING</span> aggregate_function(column_name) operator <span class="hljs-keyword">value</span>;<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>AND &amp; OR 运算符用于基于一个以上的条件对记录进行过滤。</li>
+<li><code>AND</code> &amp; <code>OR</code> 运算符用于基于一个以上的条件对记录进行过滤。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> Websites<br><span class="hljs-keyword">WHERE</span> alexa <span class="hljs-operator">&gt;</span> <span class="hljs-number">15</span><br><span class="hljs-keyword">AND</span> (country<span class="hljs-operator">=</span><span class="hljs-string">&#x27;CN&#x27;</span> <span class="hljs-keyword">OR</span> country<span class="hljs-operator">=</span><span class="hljs-string">&#x27;USA&#x27;</span>);<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>ORDER BY 关键字用于对结果集进行排序。</li>
-<li>ASC 表示按升序排序；DESC 表示按降序排序。</li>
-<li>GROUP BY 语句用于结合聚合函数，根据一个或多个列对结果集进行分组。</li>
+<li><code>ORDER BY</code> 关键字用于对结果集进行排序。</li>
+<li><code>ASC</code> 表示按升序排序；<code>DESC</code> 表示按降序排序。</li>
+<li><code>GROUP BY</code> 语句用于结合聚合函数，根据一个或多个列对结果集进行分组。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">SELECT</span> column1, column2, ...<br><span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> column1, column2, ... <span class="hljs-keyword">ASC</span><span class="hljs-operator">|</span><span class="hljs-keyword">DESC</span>;<br><br><span class="hljs-keyword">SELECT</span> column_name, aggregate_function(column_name)<br><span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">WHERE</span> column_name operator <span class="hljs-keyword">value</span><br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> column_name;<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>INSERT INTO 语句用于向表中插入新记录，column 可省略。</li>
-<li>SELECT INTO 语句从一个表复制数据，然后把数据插入到另一个新表中。</li>
-<li>MySQL 数据库不支持 SELECT INTO 语句，但支持 INSERT INTO … SELECT。</li>
+<li><code>INSERT INTO</code> 语句用于向表中插入新记录，column 可省略。</li>
+<li><code>SELECT INTO</code> 语句从一个表复制数据，然后把数据插入到另一个新表中。</li>
+<li>MySQL 数据库不支持 <code>SELECT INTO</code> 语句，但支持 <code>INSERT INTO ... SELECT</code>。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> table_name (column1,column2,column3,...)<br><span class="hljs-keyword">VALUES</span> (value1,value2,value3,...);<br><br><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> table2<br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> table1;<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>UPDATE 语句用于更新表中已存在的记录。</li>
+<li><code>UPDATE</code> 语句用于更新表中已存在的记录。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">UPDATE</span> table_name<br><span class="hljs-keyword">SET</span> column1 <span class="hljs-operator">=</span> value1, column2 <span class="hljs-operator">=</span> value2, ...<br><span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">condition</span>;<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>DELETE 语句用于删除表中的记录。</li>
-<li>DROP 语句可以删除索引、表和数据库。</li>
+<li><code>DELETE</code> 语句用于删除表中的记录。</li>
+<li><code>DROP</code> 语句可以删除索引、表和数据库。</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> table_name<br><span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">condition</span>;<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>SQL JOIN 子句用于把来自两个或多个表的行结合起来，基于这些表之间的共同字段。</li>
-<li>INNER JOIN：如果表中有至少一个匹配，则返回行</li>
-<li>LEFT JOIN：即使右表中没有匹配，也从左表返回所有的行</li>
-<li>RIGHT JOIN：即使左表中没有匹配，也从右表返回所有的行</li>
-<li>FULL JOIN：只要其中一个表中存在匹配，则返回行</li>
+<li>SQL <code>JOIN</code> 子句用于把来自两个或多个表的行结合起来，基于这些表之间的共同字段。</li>
+<li><code>INNER JOIN</code>：如果表中有至少一个匹配，则返回行</li>
+<li><code>LEFT JOIN</code>：即使右表中没有匹配，也从左表返回所有的行</li>
+<li><code>RIGHT JOIN</code>：即使左表中没有匹配，也从右表返回所有的行</li>
+<li><code>FULL JOIN</code>：只要其中一个表中存在匹配，则返回行</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">SELECT</span> column1, column2, ...<br><span class="hljs-keyword">FROM</span> table1<br><span class="hljs-keyword">JOIN</span> table2<br><span class="hljs-keyword">ON</span> <span class="hljs-keyword">condition</span>;<br></code></pre></td></tr></table></figure>
 
 <h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
-<li>AVG() - 返回平均值</li>
-<li>COUNT() - 返回行数</li>
-<li>FIRST() - 返回第一个记录的值</li>
-<li>LAST() - 返回最后一个记录的值</li>
-<li>MAX() - 返回最大值</li>
-<li>MIN() - 返回最小值</li>
-<li>SUM() - 返回总和</li>
-<li>LEN() - 返回文本字段中值的长度（MySQL 中使用 LENGTH）</li>
+<li><code>AVG()</code> - 返回平均值</li>
+<li><code>COUNT()</code> - 返回行数</li>
+<li><code>FIRST()</code> - 返回第一个记录的值</li>
+<li><code>LAST()</code> - 返回最后一个记录的值</li>
+<li><code>MAX()</code> - 返回最大值</li>
+<li><code>MIN()</code> - 返回最小值</li>
+<li><code>SUM()</code> - 返回总和</li>
+<li><code>LEN()</code> - 返回文本字段中值的长度（MySQL 中使用 <code>LENGTH</code>）</li>
 </ul>
 
                 
@@ -708,7 +708,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「研」 MySQL 理解</div>
+      <div>「研」 MySQL</div>
       <div>https://qanlyma.github.io/Research-MySQL/</div>
     </div>
     <div class="license-meta">
@@ -818,7 +818,7 @@
         aria-expanded="true"
       >
         理论研究
-        <span class="list-group-count">(6)</span>
+        <span class="list-group-count">(7)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -877,10 +877,19 @@
     
       
       
-        <a href="/Research-MySQL/" title="「研」 MySQL 理解"
+        <a href="/Research-MySQL/" title="「研」 MySQL"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「研」 MySQL 理解</span>
+          <span class="category-post">「研」 MySQL</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Research-Kubernetes/" title="「研」 Kubernetes"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 Kubernetes</span>
         </a>
       
     
