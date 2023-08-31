@@ -475,3 +475,73 @@ func calculateExpression(expr string) int {
 	return result
 }
 ```
+
+## 4 图论
+
+直接看题吧，参考[卡哥教程](https://programmercarl.com/%E5%9B%BE%E8%AE%BA%E6%B7%B1%E6%90%9C%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html)
+
+### 4.1 [leetcode 797 题](https://leetcode.cn/problems/all-paths-from-source-to-target/)
+
+所有可能的路径。
+
+使用深度优先搜索遍历图即可，由于题目限制不用考虑环的问题。
+
+```go
+func allPathsSourceTarget(graph [][]int) [][]int {
+    var res [][]int
+    var path []int
+    dst := len(graph) - 1
+    var dfs func(node int)
+    dfs = func(node int) {
+        if node == dst {
+            path = append(path, dst)
+            tmp := make([]int, len(path))
+            copy(tmp, path)
+            res = append(res, tmp)
+            return
+        }
+        path = append(path, node)
+        for i := 0; i < len(graph[node]); i++ {
+            nxt := graph[node][i]
+            dfs(nxt)
+            path = path[:len(path)-1]
+        }
+    }
+    dfs(0)
+    return res
+}
+```
+
+### 4.2 [leetcode 200 题](https://leetcode.cn/problems/number-of-islands/)
+
+岛屿数量。
+
+```go
+// 遍历 grid 遇到 '1' 就开始递归染色，相连的 '1' 都染成 '0'
+// 属于深度优先 dfs
+func numIslands(grid [][]byte) int {
+    m, n := len(grid), len(grid[0])
+    var res int
+    var mark func(i, j int) 
+    mark = func(i, j int) {
+        if i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == '0' {
+            return
+        }
+        grid[i][j] = '0'
+        if i > 0 {mark(i-1, j)}
+        if i < m-1 {mark(i+1, j)}
+        if j > 0 {mark(i, j-1)}
+        if j < n-1 {mark(i, j+1)}
+    }
+
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            if grid[i][j] == '1' {
+                res++
+                mark(i, j)
+            }
+        }
+    }
+    return res
+}
+```

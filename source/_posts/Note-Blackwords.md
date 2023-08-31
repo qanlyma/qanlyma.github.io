@@ -1,5 +1,5 @@
 ---
-title: 「学」 Web 3.0 黑话
+title: 「学」  IT 黑话
 category_bar: true
 date: 2023-03-01 20:24:13
 tags:
@@ -7,7 +7,7 @@ categories: 学习笔记
 banner_img:
 ---
 
-区块链/Token 等专业术语。
+区块链/互联网黑话。
 
 <!--more-->
 
@@ -30,6 +30,8 @@ banner_img:
 * ATH：All Time High，历史最高的价格。
 
 ## B
+
+* Base：岗位所在地/基础薪资。
 
 * Blockchain：区块链。
 
@@ -83,7 +85,7 @@ banner_img:
 
 * FT: fungible token，同质化代币。
 
-* FYI(for your information): 供你参考。
+* FYI: for your information，供你参考。
 
 * flash loan: 闪电贷。在同一笔交易内完成借款和还款，常用于套利。
 
@@ -94,6 +96,8 @@ banner_img:
 ## H
 
 * hacked：被黑客攻击了。
+
+* HC：head count，招聘名额。
 
 ## I
 
@@ -106,6 +110,10 @@ banner_img:
 * IEO：Initial Exchange Offering 首次交易所发行（比如在币安交易所发行）。
 
 * IDO：Initial DEX Offering 首次去中心化交易所发行（比如在 Pancakeswap 上发行）。
+
+## J
+
+* JD：job description，工作描述。
 
 ## L
 
@@ -141,11 +149,15 @@ banner_img:
 
 ## O
 
+* OC：offer call，意向书。
+
+* OD：outsourcing dispatcher，外包。
+
+* off-chain：链下，不上链。
+
 * OG：Original Gangster，元老。
 
 * on-chain：链上。
-
-* off-chain：链下，不上链。
 
 * optimistic rollups：乐观汇总，一种以太坊layer2解决方案。
 

@@ -44,6 +44,53 @@ func search(nums []int, target int) int {
 * 暴力解法时间复杂度：O(n)
 * 二分法时间复杂度：O(logn)
 
+### [leetcode 34 题](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+在排序数组中查找元素的第一个和最后一个位置。
+
+```go
+func searchRange(nums []int, target int) []int {
+    l, r := getLeft(nums, target), getRight(nums, target)
+    if l == -2 || r == -2 {
+        return []int{-1, -1}
+    }
+    if r - l > 1 {
+        return []int{l+1, r-1}
+    }
+    return []int{-1, -1}
+}
+
+func getLeft(nums []int, target int) int {
+    res := -2
+    i, j := 0, len(nums)-1
+    for i <= j {
+        m := i + (j-i)/2
+        if nums[m] < target {
+            i = m + 1
+        } else {
+            j = m - 1
+            res = j
+        }
+    }
+    return res
+}
+
+func getRight(nums []int, target int) int {
+    res := -2
+    i, j := 0, len(nums)-1
+    for i <= j {
+        m := i + (j-i)/2
+        if nums[m] > target {
+            j = m - 1
+        } else {
+            i = m + 1
+            res = i
+        }
+    }
+    return res
+}
+```
+
 ## 2 快慢指针
 
 ### [leetcode 27 题](https://leetcode.cn/problems/remove-element/)
@@ -103,6 +150,53 @@ func sortedSquares(nums []int) []int {
         pos--
     }
     return res
+}
+```
+
+### [leetcode 844 题](https://leetcode.cn/problems/backspace-string-compare/)
+
+比较含退格的字符串。
+
+普通方法是用栈模拟操作，空间复杂度为 O(m+n)。可以使用从后向前的双指针来优化。
+
+```go
+func backspaceCompare(s, t string) bool {
+    skipS, skipT := 0, 0
+    i, j := len(s)-1, len(t)-1
+    for i >= 0 || j >= 0 {
+        for i >= 0 {
+            if s[i] == '#' {
+                skipS++
+                i--
+            } else if skipS > 0 {
+                skipS--
+                i--
+            } else {
+                break
+            }
+        }
+        for j >= 0 {
+            if t[j] == '#' {
+                skipT++
+                j--
+            } else if skipT > 0 {
+                skipT--
+                j--
+            } else {
+                break
+            }
+        }
+        if i >= 0 && j >= 0 {
+            if s[i] != t[j] {
+                return false
+            }
+        } else if i >= 0 || j >= 0 {
+            return false
+        }
+        i--
+        j--
+    }
+    return true
 }
 ```
 

@@ -236,10 +236,15 @@ func CalSquare() {
 
 ### 2.4 Lock 并发安全
 
+Go 语言的锁：
+
+* 互斥锁 `Mutex`
+* 读写锁 `RWMutex`
+
 ```go
 var (
 	x    int64
-	lock sync.Mutex
+	lock sync.Mutex // 互斥锁
 )
 
 func addWithLock() {
