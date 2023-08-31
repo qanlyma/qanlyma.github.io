@@ -16,16 +16,16 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Golang 实现各种排序算法。">
+    <meta name="description" content="Golang 对于常见排序算法的实现。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="「Go」 11 排序算法">
 <meta property="og:url" content="https://qanlyma.github.io/Go-sort/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="Golang 实现各种排序算法。">
+<meta property="og:description" content="Golang 对于常见排序算法的实现。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qanlyma.github.io/Go-sort/1.png">
 <meta property="article:published_time" content="2023-07-17T06:21:34.000Z">
-<meta property="article:modified_time" content="2023-08-24T09:59:04.745Z">
+<meta property="article:modified_time" content="2023-08-31T13:13:09.816Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Go-sort/1.png">
@@ -259,7 +259,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：5 分钟前
+                    本文最后更新于：3 分钟前
                   
                 
               </p>
@@ -267,9 +267,11 @@
             
               <div class="markdown-body">
                 
-                <p>Golang 实现各种排序算法。</p>
+                <p>Golang 对于常见排序算法的实现。</p>
 <span id="more"></span>
 
+<p>若经过排序，多个具有相同的关键字的记录的相对次序保持不变，即在原序列中，r[i]&#x3D;r[j]，且 r[i] 在 r[j] 之前，而在排序后的序列中，r[i] 仍在 r[j] 之前，则称这种排序算法是稳定的；否则称为不稳定的。</p>
+<p>堆排序、快速排序、希尔排序、选择排序是不稳定的排序算法，而冒泡排序、插入排序、归并排序是稳定的排序算法。</p>
 <h2 id="1-冒泡排序"><a href="#1-冒泡排序" class="headerlink" title="1 冒泡排序"></a>1 冒泡排序</h2><p>两两比较相邻记录的关键字，如果反序则交换，直到没有反序的记录为止。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">BubbleSort</span><span class="hljs-params">(arr []<span class="hljs-type">int</span>)</span></span> &#123;<br>    n := <span class="hljs-built_in">len</span>(arr)<br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; n<span class="hljs-number">-1</span>; i++ &#123;<br>        <span class="hljs-keyword">for</span> j := <span class="hljs-number">0</span>; j &lt; n-i<span class="hljs-number">-1</span>; j++ &#123;<br>            <span class="hljs-keyword">if</span> arr[j] &gt; arr[j+<span class="hljs-number">1</span>] &#123;<br>                arr[j], arr[j+<span class="hljs-number">1</span>] = arr[j+<span class="hljs-number">1</span>], arr[j]<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>时间复杂度：最好情况下为 O(n)，最坏和平均情况下为 O(n^2)。</p>
@@ -281,10 +283,10 @@
 <p>时间复杂度：最好情况下为 O(n)，最坏和平均情况下为 O(n^2)。</p>
 <h2 id="4-希尔排序"><a href="#4-希尔排序" class="headerlink" title="4 希尔排序"></a>4 希尔排序</h2><p>将待排序的数组分成多个子序列进行排序，逐步减小子序列的间隔，最终将整个数组变为有序。希尔排序的核心思想是利用插入排序在部分有序数组上的高效性能。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ShellSort</span><span class="hljs-params">(arr []<span class="hljs-type">int</span>)</span></span> &#123;<br>    n := <span class="hljs-built_in">len</span>(arr)<br>    gap := n / <span class="hljs-number">2</span><br>    <span class="hljs-keyword">for</span> gap &gt; <span class="hljs-number">0</span> &#123;<br>        <span class="hljs-keyword">for</span> i := gap; i &lt; n; i++ &#123;<br>            temp := arr[i]<br>            j := i<br>            <span class="hljs-keyword">for</span> j &gt;= gap &amp;&amp; arr[j-gap] &gt; temp &#123;<br>                arr[j] = arr[j-gap]<br>                j -= gap<br>            &#125;<br>            arr[j] = temp<br>        &#125;<br>        gap /= <span class="hljs-number">2</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>时间复杂度：最好情况下为 O(nlog^2n)，最坏情况下为 O(n^2)，平均情况下为 O(nlogn)。</p>
+<p>时间复杂度：最好情况下为 O(nlogn)，最坏情况下为 O(n^2)。</p>
 <h2 id="5-选择排序"><a href="#5-选择排序" class="headerlink" title="5 选择排序"></a>5 选择排序</h2><p>对数据操作 n-1 轮，每轮找出一个最小（大）值。以此类推，直到所有元素均排序完毕。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">SelectionSort</span><span class="hljs-params">(arr []<span class="hljs-type">int</span>)</span></span> &#123;<br>    n := <span class="hljs-built_in">len</span>(arr)<br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; n<span class="hljs-number">-1</span>; i++ &#123;<br>        minIdx := i<br>        <span class="hljs-keyword">for</span> j := i+<span class="hljs-number">1</span>; j &lt; n; j++ &#123;<br>            <span class="hljs-keyword">if</span> arr[j] &lt; arr[minIdx] &#123;<br>                minIdx = j<br>            &#125;<br>        &#125;<br>        arr[i], arr[minIdx] = arr[minIdx], arr[i]<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>时间复杂度：最好情况下为 O(n^2)，最坏和平均情况下为 O(n^2)。</p>
+<p>时间复杂度：最好、最坏和平均情况下为 O(n^2)。</p>
 <h2 id="6-堆排序"><a href="#6-堆排序" class="headerlink" title="6 堆排序"></a>6 堆排序</h2><p>堆排序使用二叉堆数据结构构建最大堆，并逐步将最大值移动到数组的末尾。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">HeapSort</span><span class="hljs-params">(arr []<span class="hljs-type">int</span>)</span></span> &#123;<br>    n := <span class="hljs-built_in">len</span>(arr)<br><br>    <span class="hljs-comment">// 构建最大堆</span><br>    <span class="hljs-keyword">for</span> i := n/<span class="hljs-number">2</span> - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i-- &#123;<br>        heapify(arr, n, i)<br>    &#125;<br><br>    <span class="hljs-comment">// 逐个将最大值移到数组末尾</span><br>    <span class="hljs-keyword">for</span> i := n - <span class="hljs-number">1</span>; i &gt; <span class="hljs-number">0</span>; i-- &#123;<br>        arr[<span class="hljs-number">0</span>], arr[i] = arr[i], arr[<span class="hljs-number">0</span>]<br>        heapify(arr, i, <span class="hljs-number">0</span>)<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">heapify</span><span class="hljs-params">(arr []<span class="hljs-type">int</span>, n, i <span class="hljs-type">int</span>)</span></span> &#123;<br>    largest := i<br>    left := <span class="hljs-number">2</span>*i + <span class="hljs-number">1</span><br>    right := <span class="hljs-number">2</span>*i + <span class="hljs-number">2</span><br><br>    <span class="hljs-keyword">if</span> left &lt; n &amp;&amp; arr[left] &gt; arr[largest] &#123;<br>        largest = left<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> right &lt; n &amp;&amp; arr[right] &gt; arr[largest] &#123;<br>        largest = right<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> largest != i &#123;<br>        arr[i], arr[largest] = arr[largest], arr[i]<br>        heapify(arr, n, largest)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>时间复杂度：最好、最坏和平均情况下均为 O(nlogn)。</p>
