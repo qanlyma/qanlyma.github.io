@@ -528,10 +528,10 @@ func numIslands(grid [][]byte) int {
             return
         }
         grid[i][j] = '0'
-        if i > 0 {mark(i-1, j)}
-        if i < m-1 {mark(i+1, j)}
-        if j > 0 {mark(i, j-1)}
-        if j < n-1 {mark(i, j+1)}
+        mark(i-1, j)
+        mark(i+1, j)
+        mark(i, j-1)
+        mark(i, j+1)
     }
 
     for i := 0; i < m; i++ {

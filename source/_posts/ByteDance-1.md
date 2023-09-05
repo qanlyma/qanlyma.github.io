@@ -57,6 +57,15 @@ var array_name [size1][size2]...[sizen] array_type
 
 切片（slice）是对数组的一个连续片段的引用（左闭右开），所以切片是一个引用类型。Go 语言中切片的内部结构包含地址（指针）、大小和容量。
 
+```go
+// runtime/slice.go
+type slice struct {
+	array unsafe.Pointer 	// 元素指针
+	len   int 				// 长度 
+	cap   int 				// 容量
+}
+```
+
 切片默认指向一段连续内存区域，可以是数组，也可以是切片本身：
 
 ```go
@@ -88,18 +97,58 @@ slice := [][]int{{10}, {100, 200}}
 
 ![](12.png)
 
+注意，底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。
+
+```go
+func main() {
+	slice := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	s1 := slice[2:5]
+	s2 := s1[2:6:7]
+
+	s2 = append(s2, 100)
+	s2 = append(s2, 200)
+
+	s1[2] = 20
+
+	fmt.Println(s1)			// [2 3 20]
+	fmt.Println(s2)			// [4 5 6 7 100 200]
+	fmt.Println(slice)			// [0 1 2 3 20 5 6 7 100 9]
+}
+```
+
+大致流程如下：
+
+![](14.png)
+![](15.png)
+![](16.png)
+
+s2 扩容之后更换了底层数组，所以不再受 s1 影响了。
+
+![](17.png)
+
+**扩容规则（1.18 版本之后）：**
+
+* 当原 slice 容量小于 256 的时候，新 slice 容量为原来的 2 倍
+* 原 slice 容量超过 256，新 slice 容量 newcap = oldcap + (oldcap+3*256)/4
+* 由于内存对齐，新 slice 的容量要大于等于按照前半部分生成的 newcap
+
+当 slice 作为函数参数时，就是一个普通的结构体。若直接传 slice，在调用者看来，实参 slice 并不会被函数中的操作改变；若传的是 slice 的指针，在调用者看来，是会被改变原 slice 的。
+
+* 通过类似 `s[i] = 10` 这种操作可以改变 slice 底层数组元素值
+* 在函数中使用 `s = append(s, 100)` 是无法改变外层 slice 的
+
 #### 1.2.3 map
 
-Go 语言中 map 是一种特殊的数据结构，一种元素对（pair）的**无序**集合，pair 对应一个 key（索引）和一个 value（值），所以这个结构也称为关联数组或字典，这是一种能够快速寻找值的理想结构，给定 key，就可以迅速找到对应的 value。
+Go 语言中 map 是一种特殊的数据结构，一种元素对（pair）的**无序**集合，pair 对应一个 key（索引）和一个 value（值），所以这个结构也称为关联数组或字典，这是一种能够快速寻找值的理想结构。
 
-在 Go 的内部实现中，map 是通过哈希表来实现的。哈希表是一种基于哈希函数的数据结构，它可以将键映射到对应的值上。map 的底层数据结构是一个哈希表的数组，每个元素都是一个桶（bucket）。每个桶中存储了一个键值对，如果多个键映射到同一个桶中，它们会以链表的形式连接起来。
+在 Go 的内部实现中，map 是通过哈希表来实现的。哈希表用一个哈希函数将 key 分配到不同的桶（bucket，也就是数组的不同 index）。这样，开销主要在哈希函数的计算以及数组的常数访问时间。哈希查找表一般会存在“碰撞”的问题，就是说不同的 key 被哈希到了同一个 bucket。一般有两种应对方法：**链表法**和**开放地址法**。链表法将一个 bucket 实现成一个链表，落在同一个 bucket 中的 key 都会插入这个链表。开放地址法则是碰撞发生后，通过一定的规律，在数组的后面挑选“空位”，用来放置新的 key。Go 使用前者解决哈希碰撞问题。
 
 * 当我们插入一个键值对时，首先会根据键的哈希值计算出对应的桶的索引。然后，如果该桶为空，直接将键值对放入其中；如果不为空，则需要遍历链表，查找是否已经存在相同的键。如果存在相同的键，那么会更新对应的值；如果不存在相同的键，会将新的键值对添加到链表的末尾。
 
 * 当我们查询一个键的值时，也是通过计算哈希值找到对应的桶，然后遍历链表查找是否存在相同的键。如果找到了相同的键，就返回对应的值；如果遍历完链表仍然没有找到相同的键，就表示该键不存在。
 
 ```go
-var mapname map[keytype]valuetype
+var mapname map[keytype]valuetype		// 若只有此行，添加元素会 panic
 mapname = make(map[keytype]valuetype)
 ```
 
@@ -184,7 +233,21 @@ make 用于初始化内置的数据结构，如数组、切片和 Channel 等；
 ### 2.1 Goroutine
 
 * **线程**：程序执行的最小单元，是由寄存器集合和堆栈组成，线程是进程中的一个实体，可共享同一进程中所拥有的全部资源。
-* **协程**：Goroutine 是一种比线程更加轻量级的存在。一个进程可以有多个线程，一个线程可以有多个协程。
+* **协程**：goroutine 是一种比线程更加轻量级的存在。一个进程可以有多个线程，一个线程可以有多个协程。
+
+**区别：**
+
+* **内存占用**
+
+	创建一个 goroutine 的栈内存消耗为 2 KB，实际运行过程中，如果栈空间不够用，会自动进行扩容。创建一个 thread 则需要消耗 1 MB 栈内存，而且还需要一个被称为 “a guard page” 的区域用于和其他 thread 的栈空间进行隔离。
+
+* **创建和销毀**
+
+	Thread 创建和销毀都会有巨大的消耗，因为要和操作系统打交道，是内核级的，通常解决的办法就是线程池。而 goroutine 因为是由 Go runtime 负责管理的，创建和销毁的消耗非常小，是用户级。
+
+* **切换**
+
+	当 threads 切换时，需要保存各种寄存器，以便将来恢复；而 goroutines 切换只需保存三个寄存器：Program Counter，Stack Pointer，BP。goroutines 切换成本比 threads 要小得多。
 
 ```go
 func hello(i int) {
@@ -212,6 +275,8 @@ func HelloGoRoutine() {
 * 无缓冲通道：`make(chan int)`
 * 有缓冲通道：`make(chan int, 2)`
 
+应用：停止信号、任务定时、解耦生产方和消费方、控制并发数
+
 ```go
 func CalSquare() {
 	src := make(chan int)
@@ -233,6 +298,16 @@ func CalSquare() {
 	}
 }
 ```
+
+| 操作 | nil channel | closed channel | not nil, not closed channel |
+| - | - | - | - |
+| close | panic | panic | 正常关闭 |
+| 读 <- ch | 阻塞 | 读到对应类型的零值 | 阻塞或正常读取数据 |
+| 写 ch <- | 阻塞 | panic | 阻塞或正常写入数据 |
+
+Channel 可能会引发 goroutine 泄漏：
+
+泄漏的原因是 goroutine 操作 channel 后，处于发送或接收阻塞状态，而 channel 处于满或空的状态，一直得不到改变。同时，垃圾回收器也不会回收此类资源，进而导致 gouroutine 会一直处于等待队列中，不见天日。
 
 ### 2.4 Lock 并发安全
 
@@ -348,7 +423,171 @@ fmt.Println(*str)
 
 new() 函数可以创建一个对应类型的指针，创建过程会分配内存，被创建的指针指向默认值。
 
-## 3 依赖管理
+## 3 标准库
+
+### 3.1 context
+
+context 主要用来在 goroutine 之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v 等。context.Context 类型的值可以协调多个 groutine 中的代码执行“取消”操作，并且可以存储键值对。最重要的是它是并发安全的。
+
+Go 常用来写后台服务，通常只需要几行代码，就可以搭建一个 http server。在 Go 的 server 里，通常每来一个请求都会启动若干个 goroutine 同时工作：有些去数据库拿数据，有些调用下游接口获取相关数据......
+
+![](18.png)
+
+这些 goroutine 需要共享这个请求的基本数据，例如登陆的 token，处理请求的最大超时时间等等。当请求被取消或是处理时间太长，这有可能是使用者关闭了浏览器或是已经超过了请求方规定的超时时间，请求方直接放弃了这次请求结果。这时，所有正在为这个请求工作的 goroutine 需要快速退出，因为它们不再被需要了。在相关联的 goroutine 都退出后，系统就可以回收相关的资源。
+
+Go 语言中的 server 实际上是一个**协程模型**，也就是说一个协程处理一个请求。例如在业务的高峰期，某个下游服务的响应变慢，而当前系统的请求又没有超时控制，或者超时时间设置地过大，那么等待下游服务返回数据的协程就会越来越多。而我们知道，协程是要消耗系统资源的，后果就是协程数激增，内存占用飙涨，甚至导致服务不可用。更严重的会导致雪崩效应，整个服务对外表现为不可用，这肯定是 P0 级别的事故。context 包就是为了解决上面所说问题而开发的：在一组 goroutine 之间传递共享的值、取消信号、deadline 等等。
+
+![](19.png)
+
+```go
+type Context interface {
+	Done() <-chan struct{}
+	Err() error
+	Deadline() (deadline time.Time, ok bool)
+	Value(key interface{}) interface{}
+}
+```
+
+* Done() 返回一个 channel，可以表示 context 被取消的信号：当这个 channel 被关闭时，说明 context 被取消了。注意，这是一个只读的 channel。读一个关闭的 channel 会读出相应类型的零值，并且源码里没有地方会向这个 channel 里面塞入值。换句话说，这是一个 receive-only 的 channel。因此在子协程里读这个 channel，除非被关闭，否则读不出来任何东西。也正是利用了这一点，子协程从 channel 里读出了值（零值）后，就可以做一些收尾工作，尽快退出。
+
+* Err() 返回一个错误，表示 channel 被关闭的原因。例如是被取消，还是超时。
+
+* Deadline() 返回 context 的截止时间，通过此时间，函数就可以决定是否进行接下来的操作，如果时间太短，就可以不往下做了，否则浪费系统资源。当然，也可以用这个 deadline 来设置一个 I/O 操作的超时时间。
+
+* Value() 获取之前设置的 key 对应的 value。
+
+对于 Web 服务端开发，往往希望将一个请求处理的整个过程串起来，这就非常依赖于 Thread Local（对于 Go 可理解为单个协程所独有）的变量，而在 Go 语言中并没有这个概念，因此需要在函数调用的时候传递 context。
+
+现实场景中可能是从一个 HTTP 请求中获取到的 Request-ID：
+
+```go
+const requestIDKey int = 0
+
+func WithRequestID(next http.Handler) http.Handler {
+	return http.HandlerFunc(
+		func(rw http.ResponseWriter, req *http.Request) {
+			// 从 header 中提取 request-id
+			reqID := req.Header.Get("X-Request-ID")
+			// 创建 valueCtx。使用自定义的类型，不容易冲突
+			ctx := context.WithValue(
+				req.Context(), requestIDKey, reqID)
+			
+			// 创建新的请求
+			req = req.WithContext(ctx)
+			
+			// 调用 HTTP 处理函数
+			next.ServeHTTP(rw, req)
+		}
+	)
+}
+
+// 获取 request-id
+func GetRequestID(ctx context.Context) string {
+	ctx.Value(requestIDKey).(string)
+}
+
+func Handle(rw http.ResponseWriter, req *http.Request) {
+	// 拿到 reqId，后面可以记录日志等等
+	reqID := GetRequestID(req.Context())
+	...
+}
+
+func main() {
+	handler := WithRequestID(http.HandlerFunc(Handle))
+	http.ListenAndServe("/", handler)
+}
+```
+
+取消 goroutine：我们先来设想一个场景：打开外卖的订单页，地图上显示外卖小哥的位置，而且是每秒更新 1 次。app 端向后台发起 websocket 连接（现实中可能是轮询）请求后，后台启动一个协程，每隔 1 秒计算 1 次小哥的位置，并发送给端。如果用户退出此页面，则后台需要取消此过程，退出 goroutine，系统回收资源。
+
+```go
+func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
+	go Perform(ctx)
+
+	// ……
+	// app 端返回页面，调用 cancel 函数
+	cancel()
+}
+
+func Perform(ctx context.Context) {
+    for {
+        calculatePos()
+        sendResult()
+
+        select {
+        case <-ctx.Done():
+            // 被取消，直接返回
+            return
+        case <-time.After(time.Second):
+            // block 1 秒钟 
+        }
+    }
+}
+```
+
+WithTimeOut 函数返回的 context 和 cancelFun 是分开的。context 本身并没有取消函数，这样做的原因是取消函数只能由外层函数调用，防止子节点 context 调用取消函数，从而严格控制信息的流向：由父节点 context 流向子节点 context。
+
+### 3.2 reflect
+
+Go 语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
+
+使用反射的常见场景有以下两种：
+
+* 不能明确接口调用哪个函数，需要根据传入的参数在运行时决定。
+* 不能明确传入函数的参数类型，需要在运行时处理任意对象。
+
+反射的缺点：
+
+* 与反射相关的代码，经常是难以阅读的。
+* Go 语言作为一门静态语言，编码过程中编译器能提前发现一些类型错误，但是对于反射代码是无能为力的。
+* 反射对性能影响比较大，比正常代码运行速度慢一到两个数量级。
+
+### 3.3 unsafe
+
+相比于 C 语言中指针的灵活，Go 的指针多了一些限制：
+
+* 限制一：Go 的指针不能进行数学运算。
+* 限制二：不同类型的指针不能相互转换。
+* 限制三：不同类型的指针不能使用 == 或 != 比较。
+* 限制四：不同类型的指针变量不能相互赋值。
+
+unsafe 包提供了 2 点重要的能力：
+
+1. 任何类型的指针和 unsafe.Pointer 可以相互转换。
+2. uintptr 类型和 unsafe.Pointer 可以相互转换。
+
+pointer 不能直接进行数学运算，但可以把它转换成 uintptr，对 uintptr 类型进行数学运算，再转换成 pointer 类型。uintptr 并没有指针的语义，意思就是 uintptr 所指向的对象会被 gc 无情地回收。而 unsafe.Pointer 有指针语义，可以保护它所指向的对象在“有用”的时候不会被垃圾回收。
+
+**如何实现字符串和 byte 切片的零拷贝转换：原理上是利用指针的强转。**
+
+完成这个任务，我们需要了解 slice 和 string 的底层数据结构：
+
+```go
+type StringHeader struct {
+	Data uintptr
+	Len  int
+}
+
+type SliceHeader struct {
+	Data uintptr
+	Len  int
+	Cap  int
+}
+```
+
+上面是反射包下的结构体，路径：src/reflect/value.go。只需要共享底层 Data 和 Len 就可以实现 zero-copy：
+
+```go
+func string2bytes(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(&s))
+}
+func bytes2string(b []byte) string{
+	return *(*string)(unsafe.Pointer(&b))
+}
+```
+
+## 4 依赖管理
 
 * **GOPATH**：设置环境变量，项目代码依赖 src 下的代码。无法实现 package 的多版本控制。
 * **Go Vendor**：项目目录下增加 vendor 文件存放依赖包副本。同一项目无法依赖一个 package 的两个不同版本。
@@ -362,9 +601,9 @@ new() 函数可以创建一个对应类型的指针，创建过程会分配内�
 
 ![Proxy](9.png)
 
-## 4 测试
+## 5 测试
 
-### 4.1 单元测试
+### 5.1 单元测试
 
 * 测试文件以 `_test.go` 结尾
 * 函数 `func TestXxx(t *testing.T)`
@@ -393,7 +632,7 @@ func TestHelloTom(t *testing.T) {
 
 覆盖率：`go test Xxx_test.go Xxx.go --cover`
 
-### 4.2 Mock
+### 5.2 Mock
 
 为一个函数/方法打桩，不再依赖本地文件。
 
@@ -434,7 +673,7 @@ func TestProcessFirstLineWithMock(t *testing.T) {
 }
 ```
 
-### 4.3 Benchmark
+### 5.3 Benchmark
 
 基准测试 `go test -bench .`
 
