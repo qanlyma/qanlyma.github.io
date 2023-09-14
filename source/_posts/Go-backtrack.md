@@ -545,3 +545,128 @@ func numIslands(grid [][]byte) int {
     return res
 }
 ```
+
+### 4.3 [leetcode 207 题](https://leetcode.cn/problems/course-schedule/)
+
+课程表。
+
+一道拓扑排序的题，由两种解法：
+
+* BFS，维护一个入度表以及边的信息，每次将入度为 0 的边进行排序，并根据边的信息消除它们对其他顶点入度的影响。
+* DFS，维护一个 visited 数组用于标记节点状态：0：未访问；1：搜索中；2：已搜索，若 dfs 中再次搜索到 1 的节点，则判断成环。
+
+```go
+// BFS
+func canFinish(numCourses int, prerequisites [][]int) bool {
+    tomap := make(map[int][]int)
+    indeg := make([]int, numCourses)
+    for _, v := range prerequisites {
+        tomap[v[1]] = append(tomap[v[1]], v[0])
+        indeg[v[0]]++
+    }
+    
+    for numCourses > 0 {
+        var queue []int
+        for i := 0; i < len(indeg); i++ {
+            if indeg[i] == 0 {
+                // 将入度为 0 的顶点加入队列排序
+                queue = append(queue, i)
+                indeg[i]--
+            }
+        }
+        l := len(queue)
+        if l == 0 {
+            return false
+        }
+        for i := 0; i < l; i++ {
+            for j := 0; j < len(tomap[queue[i]]); j++ {
+                // 消除入度为 0 的顶点的影响
+                indeg[tomap[queue[i]][j]]--
+            }
+        }
+        numCourses -= l
+    }
+    return true
+}
+
+// DFS
+func canFinish(numCourses int, prerequisites [][]int) bool {
+    res := true
+    visited := make([]int, numCourses)
+    var dfs func(n int) 
+    dfs = func(n int) {
+        if visited[n] == 2 || !res {
+            return 
+        } else if visited[n] == 1 {
+            res = false
+        }
+        visited[n] = 1
+        for _, v := range prerequisites {
+            if v[1] == n {
+                dfs(v[0])
+            }
+        }
+        visited[n] = 2
+    }
+
+    for i := 0; i < numCourses; i++ {
+        if visited[i] == 0 && res {
+            dfs(i)
+        }
+    }
+    return res
+}
+```
+
+## 5 并查集
+
+并查集常用来解决连通性问题。当我们需要判断两个元素是否在同一个集合里的时候，就要想到用并查集。
+
+并查集主要有两个功能：
+
+* 将两个元素添加到一个集合中
+* 判断两个元素在不在同一个集合
+
+### 5.1 [leetcode 200 题](https://leetcode.cn/problems/find-if-path-exists-in-graph/)
+
+寻找图中是否存在路径。
+
+```go
+func validPath(n int, edges [][]int, source int, destination int) bool {
+    father := make([]int, n)
+
+    // 寻根
+    var find func(n int) int 
+    find = func(n int) int {
+        if father[n] == n { return n }
+        father[n] = find(father[n]) // 路径压缩
+        return father[n]
+    }
+
+    // 判断 u 和 v 是否找到同一个根
+    var isSame func(u, v int) bool 
+    isSame = func(u, v int) bool {
+        return find(u) == find(v)
+    }
+
+    // 加入并查集
+    var join func(u, v int) 
+    join = func(u, v int) {
+        u = find(u)
+        v = find(v)
+        // 一定要先通过 find 函数寻根再进行关联，不可以写 if find(u) == find(v) { return }
+        if u == v { return }
+        father[v] = u
+    }
+
+    // 并查集初始化
+    for i, _ := range father {
+        father[i] = i
+    }
+
+    for _, v := range edges {
+        join(v[0], v[1])
+    }
+    return isSame(source, destination)
+}
+```
