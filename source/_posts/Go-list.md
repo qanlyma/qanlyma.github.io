@@ -212,3 +212,78 @@ func reverseList(head *ListNode) *ListNode {
     return pre
 }
 ```
+
+### 2.5 [leetcode 146 题](https://leetcode.cn/problems/lru-cache/)
+
+LRU 缓存。
+
+哈希表 + 双向链表。
+
+```go
+type LRUCache struct {
+    cp, size int
+    rec map[int]*Node
+    head, tail *Node
+}
+
+type Node struct {
+    Key, Val int
+    Pre, Next *Node
+}
+
+func Constructor(capacity int) LRUCache {
+    r := make(map[int]*Node)
+    h, t := &Node{}, &Node{}
+    h.Next = t
+    t.Pre = h
+    newLRU := LRUCache {cp: capacity, size: 0, rec: r, head: h, tail: t}
+    return newLRU
+}
+
+func (this *LRUCache) Get(key int) int {
+    node, exist := this.rec[key]
+    if exist {
+        this.removeNode(node)
+        this.addToHead(node)
+        return node.Val
+    }
+    return -1
+}
+
+func (this *LRUCache) Put(key int, value int)  {
+    node, exist := this.rec[key]
+    if exist {
+        this.rec[key].Val = value
+        this.removeNode(node)
+        this.addToHead(node)
+    } else {
+        node = &Node{Key: key, Val: value}
+        this.rec[key] = node
+        if this.size == this.cp {
+            delete(this.rec, this.tail.Pre.Key)
+            this.removeTail()
+        } else {
+            this.size++
+        }
+        this.addToHead(node)
+    }
+}
+
+func (this *LRUCache) addToHead(node *Node) {
+    nx := this.head.Next
+    this.head.Next = node
+    node.Next = nx
+    nx.Pre = node
+    node.Pre = this.head
+}
+
+func (this *LRUCache) removeNode(node *Node) {
+    pr, nx := node.Pre, node.Next
+    pr.Next = nx
+    nx.Pre = pr
+}
+
+func (this *LRUCache) removeTail() {
+    this.removeNode(this.tail.Pre)
+}
+```

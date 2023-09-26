@@ -492,3 +492,32 @@ func isSub(A, B *TreeNode) bool {
     return isSub(A.Left, B.Left) && isSub(A.Right, B.Right)
 }
 ```
+
+### 3.11 [leetcode 662 题](https://leetcode.cn/problems/maximum-width-of-binary-tree/)
+
+二叉树最大宽度。
+
+使用父节点与子节点在数组中的编号关系来做。
+
+```go
+func widthOfBinaryTree(root *TreeNode) int {
+    var res int
+    levelmin := make(map[int]int)
+    var dfs func(node *TreeNode, level, idx int) 
+    dfs = func(node *TreeNode, level, idx int) {
+        if node == nil {
+            return
+        }
+        dfs(node.Left, level+1, idx*2)
+        m, exist := levelmin[level]
+        if !exist {
+            levelmin[level] = idx
+        } else {
+            res = max(res, idx - m)
+        }
+        dfs(node.Right, level+1, idx*2+1)
+    }
+    dfs(root, 1, 1)
+    return res + 1
+}
+```
