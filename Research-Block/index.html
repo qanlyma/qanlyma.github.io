@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Research-Block/3.png">
 <meta property="og:image" content="https://qanlyma.github.io/Research-Block/4.png">
 <meta property="article:published_time" content="2023-03-03T02:25:26.000Z">
-<meta property="article:modified_time" content="2023-08-07T06:33:56.679Z">
+<meta property="article:modified_time" content="2023-10-07T05:31:59.749Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Research-Block/1.png">
@@ -262,7 +262,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 个月前
+                    本文最后更新于：7 小时前
                   
                 
               </p>
@@ -291,10 +291,10 @@
 </ul>
 <p><img src="/Research-Block/2.png" srcset="/img/loading.gif" lazyload alt="Trie"></p>
 <h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>以太坊中的账户状态是用什么数据结构存储的呢？</p>
-<p>有关这个问题<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Vt411X7JF?p=16">肖臻老师的公开课</a>有非常详细的解释。这里直接说结论：</p>
-<p><strong>Merkle Patricia Trie（MPT）</strong></p>
+<p>有关这个问题<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Vt411X7JF?p=16">肖臻老师的公开课</a>有非常详细的解释。这里直接说结论：<strong>Merkle Patricia Trie（MPT）</strong></p>
 <p><img src="/Research-Block/3.png" srcset="/img/loading.gif" lazyload alt="World State Trie"></p>
-<p>右上角为简化的 key-value 定义。我们可以看到图中有 2 个拓展节点，2 个分支节点，4 个叶子节点。在最下面的两个叶子节点中，prefix 3 的右边有个格子，有个箭头从 7 指向这个格子，表示 3 和 7 两个 nibble 组成一个字节存储。当一个节点被另一个节点在内部指向时（比如上图中的分支节点内部指向了叶子节点），父节点会存储 H(rlp.encode(x))。<br>其中 H(y) &#x3D; keccak256(y) if len(y) &gt;&#x3D; 32 else y，rlp.encode 为 RLP 编码函数。</p>
+<p>右上角为简化的 key-value 定义。我们可以看到图中有 2 个拓展节点，2 个分支节点，4 个叶子节点。在最下面的两个叶子节点中，prefix 3 的右边有个格子，有个箭头从 7 指向这个格子，表示 3 和 7 两个 nibble 组成一个字节存储。当一个节点被另一个节点在内部指向时（比如上图中的分支节点内部指向了叶子节点），父节点会存储 H(rlp.encode(x))。</p>
+<p>其中 H(y) &#x3D; keccak256(y) if len(y) &gt;&#x3D; 32 else y，rlp.encode 为 RLP 编码函数。</p>
 <p>由于 MPT 树是确定性的，所以如果两棵树存储了完全相同的数据，那么这两棵树的节点将完全相同，包括根节点。假设在某一时刻，当其中一个合约修改了某个变量的数据，使得它与另一个合约的数据不同时，会生成一个新的节点，并从新节点开始由下往上直到根节点，整个路径的节点值都会更新，新生成的节点会存储到硬盘，但旧的节点不会从硬盘删除。</p>
 <p><img src="/Research-Block/4.png" srcset="/img/loading.gif" lazyload alt="update data"></p>
 <h2 id="StateDB"><a href="#StateDB" class="headerlink" title="StateDB"></a>StateDB</h2><p>在以太坊中，StateDB 是一个用于管理账户状态数据的内存数据库，它的数据存储在节点的内存中，并且随着区块链的不断增长而不断变化。但是，为了确保数据的可靠性和持久性，StateDB 数据需要被定期持久化到磁盘中。</p>

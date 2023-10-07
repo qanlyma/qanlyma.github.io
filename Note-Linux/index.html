@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Note-Linux/3.jpg">
 <meta property="og:image" content="https://qanlyma.github.io/Note-Linux/4.jpg">
 <meta property="article:published_time" content="2022-11-10T14:51:47.000Z">
-<meta property="article:modified_time" content="2023-08-24T09:38:18.464Z">
+<meta property="article:modified_time" content="2023-10-07T06:58:59.522Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Note-Linux/1.png">
@@ -262,7 +262,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：1 个月前
+                    本文最后更新于：5 小时前
                   
                 
               </p>
@@ -277,17 +277,17 @@
 <p>首先 Linux 系统稳定性极高且不容易染毒（从来没有听说过要装什么杀毒软件或者需要清理内存，而且我们实验室的服务器永远都不会关机），它自带的命令功能十分强大（比如你可以用简单的几行命令就搞定软件的下载安装整个步骤），还拥有开放的源代码和高度的可定制性。其次，Linux 系统的远程管理非常方便。通过 ssh 或者 telnet 的连接，在很小的带宽环境下也能很轻松实现远程操作。就如服务器摆在眼前一样的感觉。这是 windows 系统无法比拟的。</p>
 <h2 id="Linux-发行版本"><a href="#Linux-发行版本" class="headerlink" title="Linux 发行版本"></a>Linux 发行版本</h2><p><img src="/Note-Linux/1.png" srcset="/img/loading.gif" lazyload alt="发行版说简单点就是将 Linux 内核与应用软件做一个打包。"></p>
 <p>关于不同版本的安装网上教程很多，就不在此赘述。</p>
-<h2 id="Linux-启动过程"><a href="#Linux-启动过程" class="headerlink" title="Linux 启动过程"></a>Linux 启动过程</h2><p>Linux系统的启动过程并不是大家想象中的那么复杂，其过程可以分为5个阶段：</p>
+<h2 id="Linux-启动过程"><a href="#Linux-启动过程" class="headerlink" title="Linux 启动过程"></a>Linux 启动过程</h2><p>Linux 系统的启动过程并不是大家想象中的那么复杂，其过程可以分为 5 个阶段：</p>
 <ul>
-<li><p><strong>内核的引导</strong><br>  当计算机打开电源后，首先是BIOS开机自检，按照BIOS中设置的启动设备（通常是硬盘）来启动。操作系统接管硬件以后，首先读入 &#x2F;boot 目录下的内核文件。</p>
+<li><p><strong>内核的引导</strong><br>  当计算机打开电源后，首先是 BIOS 开机自检，按照 BIOS 中设置的启动设备（通常是硬盘）来启动。操作系统接管硬件以后，首先读入 &#x2F;boot 目录下的内核文件。</p>
 </li>
 <li><p><strong>运行 init</strong><br>  init 进程是系统所有进程的起点，你可以把它比拟成系统所有进程的老祖宗，没有这个进程，系统中任何进程都不会启动。init 程序首先是需要读取配置文件 &#x2F;etc&#x2F;inittab。</p>
 </li>
-<li><p><strong>系统初始化</strong><br>  在init的配置文件中有这么一行： <code>si::sysinit:/etc/rc.d/rc.sysinit</code>　它调用执行了 &#x2F;etc&#x2F;rc.d&#x2F;rc.sysinit，而 rc.sysinit 是一个 bash shell 的脚本，它主要是完成一些系统初始化的工作，rc.sysinit 是每一个运行级别都要首先运行的重要脚本。它主要完成的工作有：激活交换分区，检查磁盘，加载硬件模块以及其它一些需要优先执行任务。</p>
+<li><p><strong>系统初始化</strong><br>  在 init 的配置文件中有这么一行： <code>si::sysinit:/etc/rc.d/rc.sysinit</code>　它调用执行了 &#x2F;etc&#x2F;rc.d&#x2F;rc.sysinit，而 rc.sysinit 是一个 bash shell 的脚本，它主要是完成一些系统初始化的工作，rc.sysinit 是每一个运行级别都要首先运行的重要脚本。它主要完成的工作有：激活交换分区，检查磁盘，加载硬件模块以及其它一些需要优先执行任务。</p>
 </li>
 <li><p><strong>建立终端</strong><br>  rc 执行完毕后，返回 init。这时基本系统环境已经设置好了，各种守护进程也已经启动了。 init 接下来会打开终端，以便用户登录系统。</p>
 </li>
-<li><p><strong>用户登录系统</strong><br>  一般来说，用户的登录方式有三种：<br>  （1）命令行登录<br>  （2）ssh登录<br>  （3）图形界面登录</p>
+<li><p><strong>用户登录系统</strong><br>  一般来说，用户的登录方式有三种：<br>  （1）命令行登录<br>  （2）ssh 登录<br>  （3）图形界面登录</p>
 </li>
 </ul>
 <p><img src="/Note-Linux/2.png" srcset="/img/loading.gif" lazyload alt="启动过程"></p>
@@ -382,7 +382,7 @@
 </blockquote>
 <blockquote>
 <blockquote>
-<p>&#x2F;usr：<br>usr 是 unix shared resources(共享资源) 的缩写，这是一个非常重要的目录，用户的很多应用程序和文件都放在这个目录下，类似于 windows 下的 program files 目录。</p>
+<p>&#x2F;usr：<br>usr 是 unix shared resources（共享资源）的缩写，这是一个非常重要的目录，用户的很多应用程序和文件都放在这个目录下，类似于 windows 下的 program files 目录。</p>
 </blockquote>
 </blockquote>
 <blockquote>
@@ -408,7 +408,7 @@
 </blockquote>
 <blockquote>
 <blockquote>
-<p>&#x2F;var：<br>var 是 variable(变量) 的缩写，这个目录中存放着在不断扩充着的东西，我们习惯将那些经常被修改的目录放在这个目录下。包括各种日志文件。</p>
+<p>&#x2F;var：<br>var 是 variable（变量）的缩写，这个目录中存放着在不断扩充着的东西，我们习惯将那些经常被修改的目录放在这个目录下。包括各种日志文件。</p>
 </blockquote>
 </blockquote>
 <blockquote>
@@ -416,7 +416,7 @@
 <p>&#x2F;run：<br>是一个临时文件系统，存储系统启动以来的信息。当系统重启时，这个目录下的文件应该被删掉或清除。如果你的系统上有 &#x2F;var&#x2F;run 目录，应该让它指向 run。</p>
 </blockquote>
 </blockquote>
-<h2 id="Linux-权限管理"><a href="#Linux-权限管理" class="headerlink" title="Linux 权限管理"></a>Linux 权限管理</h2><p>初学 Linux 我遇到过很多次没有权限而产生的报错，之前的解决办法一直是使用 <code>su</code> 命令给自己 root 权限，注意此时命令行的 <code>$</code> 会变成 <code>#</code> 。Linux 系统是一种典型的多用户系统，不同的用户处于不同的地位，拥有不同的权限。为了保护系统的安全性，Linux 系统对不同的用户访问同一文件（包括目录文件）的权限做了不同的规定。</p>
+<h2 id="Linux-权限管理"><a href="#Linux-权限管理" class="headerlink" title="Linux 权限管理"></a>Linux 权限管理</h2><p>初学 Linux 我遇到过很多次没有权限而产生的报错，之前的解决办法一直是使用 <code>su</code> 命令给自己 root 权限，注意此时命令行的 <code>$</code> 会变成 <code>#</code>。Linux 系统是一种典型的多用户系统，不同的用户处于不同的地位，拥有不同的权限。为了保护系统的安全性，Linux 系统对不同的用户访问同一文件（包括目录文件）的权限做了不同的规定。</p>
 <p>在 Linux 中我们通常使用以下两个命令来修改文件或目录的所属用户与权限：</p>
 <ul>
 <li>chown (change owner) ： 修改所属用户与组。</li>
@@ -424,7 +424,7 @@
 </ul>
 <p>在 Linux 中我们可以使用 <code>ll</code> 或者 <code>ls –l</code> 命令来显示一个文件的属性以及文件所属的用户和组</p>
 <p><img src="/Note-Linux/4.jpg" srcset="/img/loading.gif" lazyload alt="文件属性及权限"></p>
-<p>第一位表示文件的属性： <code>d</code> 是目录， <code>-</code> 是文件， <code>l</code> 表示链接文档等等。</p>
+<p>第一位表示文件的属性：<code>d</code> 是目录，<code>-</code> 是文件，<code>l</code> 表示链接文档等等。</p>
 <p>接下来的字符中，以三个为一组，且均为 <code>rwx</code> 的三个参数的组合。</p>
 <ul>
 <li><code>r</code> 代表可读(read)</li>
@@ -449,7 +449,7 @@
 <li>yum（Yellow dog Updater, Modified）：一个在 Fedora 和 RedHat 以及 SUSE 中的 Shell 前端软件包管理器</li>
 <li>apt（Advanced Packaging Tool）：一个在 Debian 和 Ubuntu 中的 Shell 前端软件包管理器</li>
 </ul>
-<p>你可以使用 man [命令] 来查看各个命令的使用文档，如： <code>man cp</code> 。此外文本编辑器 <a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-vim.html">vim</a> 也是很值得学习一下的。</p>
+<p>你可以使用 man [命令] 来查看各个命令的使用文档，如：<code>man cp</code>。此外文本编辑器 <a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-vim.html">vim</a> 也是很值得学习一下的。</p>
 <p>我们通常会在命令后添加参数来执行更多功能，具体参数和使用方法请参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_66975803/article/details/123693997">这篇笔记</a>。</p>
 <h2 id="Linux-更多命令"><a href="#Linux-更多命令" class="headerlink" title="Linux 更多命令"></a>Linux 更多命令</h2><ul>
 <li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45004203/article/details/125885958">进程相关</a>：<code>top</code>, <code>ps</code>, <code>pidof</code>, <code>kill</code>, <code>killall</code>, <code>pkill</code></p>
@@ -469,7 +469,7 @@
 <p>Bash（GUN Bourne-Again Shell）是许多 Linux 发行版本默认的 Shell。</p>
 <h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>我在这篇文章里面列出了我自己认为 Linux 中比较重要的内容，学习它的办法唯有多用，逐渐感受它的强大与可靠，你一定会理解为什么它会受到那么多公司的青睐。 Linux 上手可能会比 Windows 要困难一点，尤其是在没有装图形化界面的服务器上，各位同学不必害怕，熟能生巧，习惯以后真的非常好用。相信不久后你也可以在简历里面加上一句 “熟悉 Linux 开发环境” 了。</p>
 <p>附两个我常用的在本地与服务器传文件的命令：</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cmd">// 文件从远程系统上用户的主目录复制到本地当前目录<br>scp username@ip_address:/home/username/filename .<br><br>// 将本地文件复制到远程系统上用户名的主目录<br>scp filename username@ip_address:/home/username<br><br>// 也可以复制目录<br>scp -r source_dir username@ip_address:/home/username/target_dir<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">文件从远程系统上用户的主目录复制到本地当前目录</span><br>scp username@ip_address:/home/username/filename .<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">将本地文件复制到远程系统上用户名的主目录</span><br>scp filename username@ip_address:/home/username<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">也可以复制目录</span><br>scp -r source_dir username@ip_address:/home/username/target_dir<br></code></pre></td></tr></table></figure>
                 
               </div>
             
