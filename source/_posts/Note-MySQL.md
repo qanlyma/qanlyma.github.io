@@ -493,7 +493,7 @@ flush tables with read lock;
 
 ### 5.4 死锁
 
-死锁的四个必要条件：**互斥**、**占有且等待**、**不可强占用**、**循环等待**。只要系统发生死锁，这些条件必然成立，但是只要破坏任意一个条件就死锁就不会成立。
+死锁的四个必要条件：**互斥**、**占有且等待**、**不可抢占**、**循环等待**。只要系统发生死锁，这些条件必然成立，但是只要破坏任意一个条件就死锁就不会成立。
 
 在数据库层面，有两种策略通过打破循环等待条件来解除死锁状态：
 
@@ -504,6 +504,10 @@ flush tables with read lock;
 ## 6 SQL
 
 SQL（Structured Query Language）指结构化查询语言，可以访问和处理数据库，包括数据插入、查询、更新和删除。
+
+* DDL：Data Definition Languages 语句，即数据库定义语句，用来创建数据库中的表、索引、视图、存储过程、触发器等，如 CREATE，ALTER，DROP，TRUNCATE，COMMENT，RENAME。
+
+* DML：Data Manipulation Language 语句，即数据操作语句，用来查询、添加、更新、删除等，如 SELECT，INSERT，UPDATE，DELETE，MERGE，CALL，LOCK TABLE。
 
 ### 命令
 

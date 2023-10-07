@@ -44,7 +44,7 @@ Git is very good!
 * `git log`：查看版本提交记录
 * `git tag`：为项目标记里程碑
 * `git reset`：回退版本
-* .gitignore：设置哪些内容不需要推送到服务器，这是一个配置文件
+* `.gitignore`：设置哪些内容不需要推送到服务器，这是一个配置文件
 
 具体参数可参考[这篇文章](https://mp.weixin.qq.com/s/Q_O0ey4C9tryPZaZeJocbA)
 

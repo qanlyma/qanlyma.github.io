@@ -149,6 +149,41 @@ Go 语言中 map 是一种特殊的数据结构，一种元素对（pair）的**
 
 在 Go 的内部实现中，map 是通过哈希表来实现的。哈希表用一个哈希函数将 key 分配到不同的桶（bucket，也就是数组的不同 index）。这样，开销主要在哈希函数的计算以及数组的常数访问时间。哈希查找表一般会存在“碰撞”的问题，就是说不同的 key 被哈希到了同一个 bucket。一般有两种应对方法：**链表法**和**开放地址法**。链表法将一个 bucket 实现成一个链表，落在同一个 bucket 中的 key 都会插入这个链表。开放地址法则是碰撞发生后，通过一定的规律，在数组的后面挑选“空位”，用来放置新的 key。Go 使用前者解决哈希碰撞问题。
 
+在源码中，表示 map 的结构体是 hmap，它是 hashmap 的缩写：
+
+```go
+// A header for a Go map.
+type hmap struct {
+	count     int		// 元素个数，调用 len(map) 时，直接返回此值
+	flags     uint8
+	B         uint8		// buckets 的对数 log_2
+	noverflow uint16	// overflow 的 bucket 近似数
+	hash0     uint32	// 计算 key 的哈希的时候会传入哈希函数
+
+    // 指向 buckets 数组，大小为 2^B
+    // 如果元素个数为 0，就为 nil
+	buckets    unsafe.Pointer
+	// 等量扩容的时候，buckets 长度和 oldbuckets 相等
+	// 双倍扩容的时候，buckets 长度会是 oldbuckets 的两倍
+	oldbuckets unsafe.Pointer
+	
+	nevacuate  uintptr	// 指示扩容进度，小于此地址的 buckets 迁移完成
+	extra *mapextra 	// optional fields
+}
+```
+
+B 是 buckets 数组的长度的对数，也就是说 buckets 数组的长度就是 2^B。bucket 里面存储了 key 和 value，buckets 是一个指针，最终它指向的是一个结构体：
+
+```go
+type bmap struct {
+	tophash [bucketCnt]uint8
+}
+```
+
+bmap 就是我们常说的“桶”，桶里面会最多装 8 个 key，这些 key 之所以会落入同一个桶，是因为它们经过哈希计算后，哈希结果是“一类”的。在桶内，又会根据 key 计算出来的 hash 值的高 8 位来决定 key 到底落入桶内的哪个位置（一个桶内最多有8个位置）。
+
+![](20.png)
+
 * 当我们插入一个键值对时，首先会根据键的哈希值计算出对应的桶的索引。然后，如果该桶为空，直接将键值对放入其中；如果不为空，则需要遍历链表，查找是否已经存在相同的键。如果存在相同的键，那么会更新对应的值；如果不存在相同的键，会将新的键值对添加到链表的末尾。
 
 * 当我们查询一个键的值时，也是通过计算哈希值找到对应的桶，然后遍历链表查找是否存在相同的键。如果找到了相同的键，就返回对应的值；如果遍历完链表仍然没有找到相同的键，就表示该键不存在。
@@ -165,6 +200,25 @@ delete(map, 键)
 ```
 
 Go 语言中并没有为 map 提供任何清空所有元素的函数、方法，清空 map 的唯一办法就是重新 make 一个新的 map，不用担心垃圾回收的效率，Go 语言中的并行垃圾回收效率比写一个清空函数要高效的多。
+
+当 map 和 slice 作为函数参数时，在函数参数内部对 map 的操作会影响 map 自身；而对 slice 却不会。
+
+主要原因：一个是指针（*hmap），一个是结构体（slice）。Go 语言中的函数传参都是值传递，在函数内部，参数会被 copy 到本地。`*hmap` 指针 copy 完之后，仍然指向同一个 map，因此函数内部对 map 的操作会影响实参。而 slice 被 copy 后，会成为一个新的 slice，对它进行的操作不会影响到实参。
+
+**扩容过程**：
+
+使用哈希表的目的就是要快速查找到目标 key，然而，随着向 map 中添加的 key 越来越多，key 发生碰撞的概率也越来越大。bucket 中的 8 个 cell 会被逐渐塞满，查找、插入、删除 key 的效率也会越来越低。最理想的情况是一个 bucket 只装一个 key，这样，就能达到 O(1) 的效率，但这样空间消耗太大，用空间换时间的代价太高。
+
+Go 语言采用一个 bucket 里装载 8 个 key，定位到某个 bucket 后，还需要再定位到具体的 key，这实际上又用了时间换空间。这样做要有一个度，不然所有的 key 都落在了同一个 bucket 里，直接退化成了链表，各种操作的效率直接降为 O(n)，是不行的。
+
+因此，需要有一个指标来衡量前面描述的情况，这就是装载因子：`loadFactor := count / (2^B)`。count 就是 map 的元素个数，2^B 表示 bucket 数量。
+
+触发扩容的条件：
+
+* 装载因子超过阈值，源码里定义的阈值是 6.5。
+* overflow 的 bucket 数量过多：当 B 小于 15，也就是 bucket 总数 2^B 小于 2^15 时，如果 overflow 的 bucket 数量超过 2^B；当 B >= 15，也就是 bucket 总数 2^B 大于等于 2^15，如果 overflow 的 bucket 数量超过 2^15。
+
+由于 map 扩容需要将原有的 key/value 重新搬迁到新的内存地址，如果有大量的 key/value 需要搬迁，会非常影响性能。因此 Go map 的扩容采取了一种称为“渐进式”地方式，原有的 key 并不会一次性搬迁完毕，每次最多只会搬迁 2 个 bucket。每次操作一个旧桶的时，将旧数据驱逐到新桶，读取时不进行驱逐，只判断读取新桶还是旧桶。
 
 #### 1.2.4 list
 
@@ -596,10 +650,26 @@ type SliceHeader struct {
 
 ```go
 func string2bytes(s string) []byte {
-	return *(*[]byte)(unsafe.Pointer(&s))
+	stringHeader := (*reflect.StringHeader)(unsafe.Pointer(&s))
+
+	bh := reflect.SliceHeader {
+		Data: stringHeader.Data,
+		Len:  stringHeader.Len,
+		Cap:  stringHeader.Len,
+	}
+
+	return *(*[]byte)(unsafe.Pointer(&bh))
 }
-func bytes2string(b []byte) string{
-	return *(*string)(unsafe.Pointer(&b))
+
+func bytes2string(b []byte) string {
+	sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+
+	sh := reflect.StringHeader {
+		Data: sliceHeader.Data,
+		Len:  sliceHeader.Len,
+	}
+
+	return *(*string)(unsafe.Pointer(&sh))
 }
 ```
 

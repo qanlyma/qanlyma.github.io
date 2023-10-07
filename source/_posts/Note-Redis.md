@@ -17,11 +17,11 @@ Redis 是一种基于内存的数据库，对数据的读写操作都是在内�
 
 * 高性能：假如用户第一次访问 MySQL 中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据缓存在 Redis 中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了，操作 Redis 缓存就是直接操作内存，所以速度相当快。
 
-* 高并发：单台设备的 Redis 的 QPS（Query Per Second，每秒钟处理完请求的次数） 是 MySQL 的 10 倍，Redis 单机的 QPS 能轻松破 10 w，而 MySQL 单机的 QPS 很难破 1 w。所以，直接访问 Redis 能够承受的请求是远远大于直接访问 MySQL 的，所以我们可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。
+* 高并发：单台设备的 Redis 的 QPS（Query Per Second，每秒钟处理完请求的次数）是 MySQL 的 10 倍，Redis 单机的 QPS 能轻松破 10 w，而 MySQL 单机的 QPS 很难破 1 w。所以，直接访问 Redis 能够承受的请求是远远大于直接访问 MySQL 的，所以我们可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。
 
 ### 1.2 Redis 与 Memcached
 
-* Redis 支持的数据类型更丰富（String、Hash、List、Set、ZSet），而 Memcached 只支持最简单的 key-value 数据类型；
+* Redis 支持的数据类型更丰富，而 Memcached 只支持最简单的 key-value 数据类型；
 * Redis 支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用，而 Memcached 没有持久化功能，数据全部存在内存之中，Memcached 重启或者挂掉后，数据就没了；
 * Redis 原生支持集群模式，Memcached 没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据；
 * Redis 支持发布订阅模型、Lua 脚本、事务等功能，而 Memcached 不支持。

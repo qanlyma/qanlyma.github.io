@@ -542,3 +542,37 @@ func minDistance(word1 string, word2 string) int {
     return dp[len(word1)][len(word2)]
 }
 ```
+
+### 2.15 [leetcode 132 题](https://leetcode.cn/problems/palindrome-partitioning-ii/)
+
+分割回文串 II。
+
+深信服笔试题，我当时用的 dfs 忘记通过多少了（反正力扣上是超时的），后来面试的时候又被拿出来手撕，记录一下。
+
+```go
+func minCut(s string) int {
+    dp := make([]int, len(s)+1)
+    dp[0] = -1
+    dp[1] = 0
+    for i := 1; i <= len(s); i++ {
+        dp[i] = i-1
+        j := 0
+        for j < i {
+            if isHW(s[j:i]) {
+                dp[i] = min(dp[i], dp[j]+1)
+            }
+            j++
+        }
+    }
+    return dp[len(s)]
+}
+
+func isHW(s string) bool {
+    for i, j := 0, len(s)-1; i <= j; i, j = i+1, j-1 {
+        if s[i] != s[j] {
+            return false
+        }
+    }
+    return true
+}
+```
