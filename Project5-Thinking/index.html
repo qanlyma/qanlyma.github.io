@@ -39,9 +39,8 @@
 <meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/14.png">
 <meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/15.png">
 <meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/16.png">
-<meta property="og:image" content="https://qanlyma.github.io/Project5-Thinking/17.png">
 <meta property="article:published_time" content="2023-06-07T01:59:14.000Z">
-<meta property="article:modified_time" content="2023-06-10T05:14:12.153Z">
+<meta property="article:modified_time" content="2023-10-08T07:28:13.534Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Project5-Thinking/1.png">
@@ -275,7 +274,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 个月前
+                    本文最后更新于：3 天前
                   
                 
               </p>
@@ -382,14 +381,9 @@
 </ul>
 <p><strong>Overview</strong></p>
 <p><img src="/Project5-Thinking/13.png" srcset="/img/loading.gif" lazyload><br><img src="/Project5-Thinking/14.png" srcset="/img/loading.gif" lazyload><br><img src="/Project5-Thinking/15.png" srcset="/img/loading.gif" lazyload><br><img src="/Project5-Thinking/16.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="4-毕设想法"><a href="#4-毕设想法" class="headerlink" title="4 毕设想法"></a>4 毕设想法</h2><h3 id="4-1-交易合并"><a href="#4-1-交易合并" class="headerlink" title="4.1 交易合并"></a>4.1 交易合并</h3><p>这是针对简单的转账交易的改进。</p>
-<p>假设有 Tx1(A –10–&gt;B)，Tx2(A –10–&gt;C)，在目前 Fabric 系统中如果将这两笔交易打包到一个区块中，即使 A 的余额充足（即大于 20），排在后面的一笔交易也会因为读写冲突被中止。同理 Tx3(B –10–&gt;A)，Tx4(C –10–&gt;A) 也是如此。</p>
-<p>那么我希望可以将由同一个 key 转出的，或者转入到同一个 key 的交易进行合并。</p>
-<h3 id="4-2-拆分子键"><a href="#4-2-拆分子键" class="headerlink" title="4.2 拆分子键"></a>4.2 拆分子键</h3><p>假设有 Tx1(A –10–&gt;B)，Tx2(B –10–&gt;C)，这两笔交易无法合并，那么可以采用子键的形式：</p>
-<p><img src="/Project5-Thinking/17.png" srcset="/img/loading.gif" lazyload alt="Sub-K"></p>
-<p>从主键 B 中拆分两个子键 B1 和 B2：B1 用于接收 A 的转账，B2 用于给 C 转账。导师建议我在最后将 B 的子键合并。</p>
-<h3 id="4-3-交易重排"><a href="#4-3-交易重排" class="headerlink" title="4.3 交易重排"></a>4.3 交易重排</h3><p>构建一个<strong>转账流图</strong>。利用之前的改进进行交易重排序。</p>
-<h3 id="4-4-并行验证"><a href="#4-4-并行验证" class="headerlink" title="4.4 并行验证"></a>4.4 并行验证</h3><p>在重排时生成依赖，对不存在依赖的独立交易链并行验证。</p>
+<h2 id="4-改进思路"><a href="#4-改进思路" class="headerlink" title="4 改进思路"></a>4 改进思路</h2><h3 id="4-1-交易合并"><a href="#4-1-交易合并" class="headerlink" title="4.1 交易合并"></a>4.1 交易合并</h3><p>在模拟执行阶段对交易类型进行判断，如果符合简单转账交易的类型，则添加一个可合并的标志，后续在排序节点中对该类交易进行合并，以减少验证阶段 MVCC 冲突。</p>
+<h3 id="4-2-交易重排"><a href="#4-2-交易重排" class="headerlink" title="4.2 交易重排"></a>4.2 交易重排</h3><p>在 Fabric 2.4.0 排序节点中生成交易依赖图，复现交易重排序的算法，降低交易的读写冲突率。</p>
+<h3 id="4-3-并行验证"><a href="#4-3-并行验证" class="headerlink" title="4.3 并行验证"></a>4.3 并行验证</h3><p>根据排序阶段生成的交易依赖图，对相互独立的交易链进行并行验证，提高系统的吞吐量。</p>
 <h2 id="5-参考文献"><a href="#5-参考文献" class="headerlink" title="5 参考文献"></a>5 参考文献</h2><p>[1] Nathan S , Thakkar P , Vishwanathan B . Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform: IEEE, 10.1109&#x2F;MASCOTS.2018.00034[P]. 2018.</p>
 <p>[2] Gorenflo C ,  Lee S ,  Golab L , et al. FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second[J]. IEEE, 2019.</p>
 <p>[3] Sharma A ,  Schuhknecht F M ,  Agrawal D , et al. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric[C]&#x2F;&#x2F; ACM SIGMOD 2019. ACM, 2019.</p>
@@ -601,10 +595,10 @@
     
       
       
-        <a href="/Project6-Contract/" title="「毕」 6. 合约学习：smallbank"
+        <a href="/Project6-Contract/" title="「毕」 6. 测试合约及脚本"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「毕」 6. 合约学习：smallbank</span>
+          <span class="category-post">「毕」 6. 测试合约及脚本</span>
         </a>
       
     
