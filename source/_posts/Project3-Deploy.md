@@ -45,20 +45,20 @@ $ cryptogen showtemplate > crypto-config.yaml
 文件内容：
 ```crypto-config.yaml
 OrdererOrgs:
-  - Name: Orderer							# orderer组织的名称
-    Domain: example.com						# orderer组织的根域名
-    EnableNodeOUs: true						# 是否使用组织单元
+  - Name: Orderer                             # orderer 组织的名称
+    Domain: example.com                       # orderer 组织的根域名
+    EnableNodeOUs: true                       # 是否使用组织单元
     Specs:
-      - Hostname: orderer					# 可以通过hostname设置多个orderer节点
-    # Hostname + Domain组成该orderer节点的完整域名
+      - Hostname: orderer                     # 可以通过 hostname 设置多个 orderer 节点
+                                              # Hostname + Domain 组成该 orderer 节点的完整域名
 
-PeerOrgs:									# 一个PeerOrgs设置多个peer组织
-  - Name: Org1								# peer组织的名称
-    Domain: org1.example.com			    # peer组织的域名
+PeerOrgs:                                     # 一个 PeerOrgs 设置多个 peer 组织
+  - Name: Org1                                # peer 组织的名称
+    Domain: org1.example.com                  # peer 组织的域名
     EnableNodeOUs: true		
-    Template:								# 节点的数量（peer0, peer1, .....）
+    Template:                                 # 节点的数量（peer0, peer1, .....）
       Count: 1
-    Users:									# 用户的数量
+    Users:                                    # 用户的数量
       Count: 1
 
   - Name: Org2
@@ -178,7 +178,7 @@ Orderer: &OrdererDefaults
 
     OrdererType: etcdraft
 
-    Addresses: 						    # orderer 集群节点
+    Addresses:                            # orderer 集群节点
         - orderer.example.com:7050
 
     EtcdRaft:
@@ -188,16 +188,16 @@ Orderer: &OrdererDefaults
           ClientTLSCert: ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
           ServerTLSCert: ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
 
-    BatchTimeout: 2s					    # 生成区块超时时间	
+    BatchTimeout: 2s                      # 生成区块超时时间	
 
     # Batch Size: Controls the number of messages batched into a block
     BatchSize:
 
-        MaxMessageCount: 10			    # 区块的消息数量
+        MaxMessageCount: 10               # 区块的消息数量
 
-        AbsoluteMaxBytes: 99 MB		    # 区块最大字节数
+        AbsoluteMaxBytes: 99 MB           # 区块最大字节数
 
-        PreferredMaxBytes: 512 KB		    # 建议消息字节数
+        PreferredMaxBytes: 512 KB         # 建议消息字节数
 
     Organizations:
 
@@ -699,12 +699,14 @@ if [[ $# -lt 1 ]] ; then
   exit 0
 else
   MODE=$1
+  AC=$2
 fi
 
 function networkUp() {
   echo "===========================================Starting Test Network==========================================="
 
   echo "Generating files..."
+
   export PATH=$PWD/bin:/bin:/usr/bin
   cryptogen generate --config=crypto-config.yaml
   configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID test-channel
@@ -713,10 +715,12 @@ function networkUp() {
   configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
 
   echo "Starting docker containers..."
+
   docker-compose up -d
   sleep 3
 
   echo "Creating mychannel..."
+
   docker exec cli1 peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
   docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/mychannel.block ./
   docker cp ./mychannel.block cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
@@ -726,18 +730,77 @@ function networkUp() {
   docker exec cli2 peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
   echo "Installing test chaincode..."
+
   docker cp ./simple.tar.gz cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer
   docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
+
   docker exec cli1 peer lifecycle chaincode install simple.tar.gz
   docker exec cli2 peer lifecycle chaincode install simple.tar.gz
-  docker exec cli1 peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:539969bf4773133bf852368737a5ba505443ca4d6b5eae92f5f4463fd8bbd171 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-  docker exec cli2 peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:539969bf4773133bf852368737a5ba505443ca4d6b5eae92f5f4463fd8bbd171 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+  docker exec cli1 peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:6bcbc248b82a10b08863dcdf3f9da8681ec95b7336f345caf75aaeafbe2d5e64 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  docker exec cli2 peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:6bcbc248b82a10b08863dcdf3f9da8681ec95b7336f345caf75aaeafbe2d5e64 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
   docker exec cli1 peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --name simple --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+ 
   echo "Initializing the chaincode..."
+
   docker exec cli1 peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --isInit --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":[]}'
 
-  cd crypto-config
-  ./ccp-generate.sh
+  sleep 3
+  createAccount
+
+  # cd crypto-config
+  # ./ccp-generate.sh
+}
+
+COMMAND="docker exec cli1 peer chaincode invoke \
+    -o orderer.example.com:7050 \
+    -C mychannel \
+    -n simple \
+    --ordererTLSHostnameOverride orderer.example.com \
+    --tls true \
+    --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem \
+    --peerAddresses peer0.org1.example.com:7051 \
+    --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt \
+    --peerAddresses peer0.org2.example.com:8051 \
+    --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+
+function createAccount() {
+  echo "Opening new account ..."
+  $COMMAND -c '{"Args":["open","A","1000"]}'
+  $COMMAND -c '{"Args":["open","B","1000"]}'
+  $COMMAND -c '{"Args":["open","C","1000"]}'
+  $COMMAND -c '{"Args":["open","D","1000"]}'
+}
+
+function sendTransactions() {
+  echo "Sending..."
+  $COMMAND -c '{"Args":["transfer","A","B","100"]}'
+  $COMMAND -c '{"Args":["transfer","A","B","100"]}'
+  $COMMAND -c '{"Args":["transfer","A","C","100"]}'
+  $COMMAND -c '{"Args":["transfer","D","A","100"]}'
+}
+
+function testReorder() {
+  echo "Testing..."
+  $COMMAND -c '{"Args":["transfer","A","C","100"]}'
+  $COMMAND -c '{"Args":["copy","A","B"]}'
+  $COMMAND -c '{"Args":["copy","A","C"]}'
+  $COMMAND -c '{"Args":["copy","A","D"]}'
+}
+
+function queryAccount() {
+  if [[ -z $AC ]]; then
+    docker exec cli1 peer chaincode query -C mychannel -n simple -c '{"Args":["query","A"]}'
+    docker exec cli1 peer chaincode query -C mychannel -n simple -c '{"Args":["query","B"]}'
+    docker exec cli1 peer chaincode query -C mychannel -n simple -c '{"Args":["query","C"]}'
+    docker exec cli1 peer chaincode query -C mychannel -n simple -c '{"Args":["query","D"]}'
+  else 
+    docker exec cli1 peer chaincode query -C mychannel -n simple -c '{"Args":["query", "'"$AC"'"]}'
+  fi
+}
+
+function cli1() {
+  docker exec -it cli1 bash
 }
 
 function networkDown() {
@@ -751,6 +814,7 @@ function networkDown() {
   docker volume prune -f
   docker network rm fabric_test
   docker rmi $(docker images | grep dev)
+  docker image prune -f
 
   echo "Removing files..."
   rm -rf ./channel-artifacts
@@ -763,6 +827,16 @@ if [ "$MODE" == "up" ]; then
   networkUp
 elif [ "$MODE" == "down" ]; then
   networkDown
+elif [ "$MODE" == "open" ]; then
+  createAccount
+elif [ "$MODE" == "send" ] || [ "$MODE" == "s" ]; then
+  sendTransactions
+elif [ "$MODE" == "test" ] || [ "$MODE" == "t" ]; then
+  testReorder
+elif [ "$MODE" == "query" ] || [ "$MODE" == "q" ]; then
+  queryAccount
+elif [ "$MODE" == "client" ] || [ "$MODE" == "c" ]; then
+  cli1
 else
   echo "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
   exit 1

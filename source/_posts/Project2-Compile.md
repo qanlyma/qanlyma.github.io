@@ -13,7 +13,7 @@ banner_img:
 
 ## bootstrap.sh
 
-在使用 Tape 测试 Fabric 网络那一篇文章中，我直接执行了 bootstrap.sh 这个脚本一键部署。使用这个方法根本不需要拉取 Fabric 的源代码，它做了三件事情：
+在上一篇文章中，我直接执行了 bootstrap.sh 这个脚本一键部署。使用这个方法根本不需要拉取 Fabric 的源代码，它为我们做了三件事情：
 
 1. 从 github 上克隆 hyperledger/fabric-samples 并进入该目录，然后检出适当的版本
 2. 在 fabric-samples 目录下安装特定平台的 Hyperledger Fabric 二进制可执行文件和配置文件
