@@ -1,5 +1,5 @@
 ---
-title: 「毕」 3. 手动部署一个自定义网络
+title: 「毕」 3. 部署自定义网络
 category_bar: true
 date: 2023-05-23 17:32:58
 tags:

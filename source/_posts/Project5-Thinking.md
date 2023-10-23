@@ -11,7 +11,7 @@ banner_img:
 
 <!-- more -->
 
-## 1 Fabric
+## 1 Fabric [1]
 
 ### 1.1 交易流程
 
@@ -43,7 +43,7 @@ banner_img:
 
 ## 2 增加吞吐量
 
-### 2.1 Optimizing Fabric [1]
+### 2.1 Optimizing Fabric [2]
 
 此文对 Fabric 1.0 做了大量测试，发现以下**瓶颈**：
 
@@ -57,7 +57,7 @@ banner_img:
 2. 并行 VSCC 验证
 3. 区块 MVCC 验证时的批量读写
 
-### 2.2 FastFabric [2]
+### 2.2 FastFabric [3]
 
 **优化**：
 
@@ -82,7 +82,7 @@ banner_img:
 
 ## 3 提高成功率
 
-### 3.1 Fabric++ [3]
+### 3.1 Fabric++ [4]
 
 **优化**：
 
@@ -107,11 +107,11 @@ banner_img:
 
 ![Result](8.png)
 
-### 3.2 FabricSharp [4]
+### 3.2 FabricSharp [5]
 
 **优化**：
 1. Fabric++ 过度中止了跨块读取的交易
-2. Fabric++ 没有考虑跨快并行交易之间的依赖，重排效果受限
+2. Fabric++ 没有考虑跨块并行交易之间的依赖，重排效果受限
 3. 更好的早期中止和交易重排算法
 
 ![](9.png)
@@ -149,18 +149,20 @@ banner_img:
 
 ### 4.2 交易重排
 
-在 Fabric 2.4.0 排序节点中生成交易依赖图，复现交易重排序的算法，降低交易的读写冲突率。
+在 Fabric 2.4.0 排序节点中生成交易依赖图，复现并改进交易重排序的算法，降低交易的读写冲突率。
 
 ### 4.3 并行验证
 
-根据排序阶段生成的交易依赖图，对相互独立的交易链进行并行验证，提高系统的吞吐量。
+根据排序阶段生成的交易依赖图，在验证阶段对相互独立的交易链进行并行验证，提高系统的吞吐量。
 
 ## 5 参考文献
 
-[1] Nathan S , Thakkar P , Vishwanathan B . Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform: IEEE, 10.1109/MASCOTS.2018.00034[P]. 2018.
+[1] Androulaki E , Barger A , Bortnikov V , et al. Hyperledger fabric: a distributed operating system for permissioned blockchains[C]// European Conference on Computer Systems.ACM, 2018.
 
-[2] Gorenflo C ,  Lee S ,  Golab L , et al. FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second[J]. IEEE, 2019.
+[2] Nathan S , Thakkar P , Vishwanathan B . Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform: IEEE, 10.1109/MASCOTS.2018.00034[P]. 2018.
 
-[3] Sharma A ,  Schuhknecht F M ,  Agrawal D , et al. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric[C]// ACM SIGMOD 2019. ACM, 2019.
+[3] Gorenflo C ,  Lee S ,  Golab L , et al. FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second[J]. IEEE, 2019.
 
-[4] Ruan P ,  Loghin D ,  Ta Q T , et al. A Transactional Perspective on Execute-order-validate Blockchains[J].  2020.
+[4] Sharma A ,  Schuhknecht F M ,  Agrawal D , et al. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric[C]// ACM SIGMOD 2019. ACM, 2019.
+
+[5] Ruan P ,  Loghin D ,  Ta Q T , et al. A Transactional Perspective on Execute-order-validate Blockchains[J].  2020.
