@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Paper-Fabric-Plus/18.png">
 <meta property="og:image" content="https://qanlyma.github.io/Paper-Fabric-Plus/19.png">
 <meta property="article:published_time" content="2023-04-20T08:16:09.000Z">
-<meta property="article:modified_time" content="2023-05-23T06:28:57.099Z">
+<meta property="article:modified_time" content="2023-10-23T01:55:25.730Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Paper-Fabric-Plus/1.png">
@@ -277,7 +277,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：5 个月前
+                    本文最后更新于：10 小时前
                   
                 
               </p>
@@ -285,7 +285,7 @@
             
               <div class="markdown-body">
                 
-                <p>区块链系统面临的许多挑战都是基本的交易管理问题，这在很大程度上与传统数据库系统一样。这些相似之处对于模糊了区块链系统和经典数据库系统之间界限的系统来说尤其明显，比如 Hyperledger Fabric。这就引出了两个问题：（1）Fabric 这样的系统和经典的分布式数据库之间存在哪些概念上的相似性和差异？（2）是否可以通过采用数据库技术提高 Fabric 的性能并进一步模糊这两种类型系统之间的界限？为了解决这些问题，我们首先从数据库研究的角度探讨 Fabric，然后通过将数据库概念转换到 Fabric 来解决这些问题，即事务重新排序和早期事务中止。我们的改进版本 Fabric++ 将成功交易的吞吐量提高了12倍，同时将平均延迟降低到几乎一半。</p>
+                <p>区块链系统面临的许多挑战都是基本的交易管理问题，这在很大程度上与传统数据库系统一样。这些相似之处对于模糊了区块链系统和经典数据库系统之间界限的系统来说尤其明显，比如 Hyperledger Fabric。这就引出了两个问题：（1）Fabric 这样的系统和经典的分布式数据库之间存在哪些概念上的相似性和差异？（2）是否可以通过采用数据库技术提高 Fabric 的性能并进一步模糊这两种类型系统之间的界限？为了解决这些问题，我们首先从数据库研究的角度探讨 Fabric，然后通过将数据库概念转换到 Fabric 来解决这些问题，即事务重新排序和早期事务中止。我们的改进版本 Fabric++ 将成功交易的吞吐量提高了 12 倍，同时将平均延迟降低到几乎一半。</p>
 <span id="more"></span>
 
 <h2 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1 INTRODUCTION"></a>1 INTRODUCTION</h2><p>经典的分布式数据库系统需要一组可信的参与者，但区块链系统能够处理一定数量的恶意节点。这个特性使得区块链系统可以应用于彼此并不完全信任的个体之间。在拜占庭容错方面，区块链系统比分布式数据库系统具有明显的优势，但就交易处理的其他方面而言，经典数据库系统都领先区块链系统几十年。</p>
@@ -375,7 +375,7 @@
 <p>第一种是 Smallbank，它模拟了一个典型的资产转移场景。最初，它为一定数量的用户分别创建一个支票账户和一个储蓄账户，并用随机余额初始化它们。工作负载由六笔交易组成，其中五笔交易以某些方式更新账户余额：TransactSavings 和 DepositChecking 将储蓄账户和支票账户分别增加一定数额。SendPayment 在两个支票账户之间转账。WriteCheck 减少支票账户，而 Amalgamate 将所有资金从储蓄账户转移到支票账户。还有一个只读交易 Query 读取用户的支票以及储蓄账户。在一次运行过程中，我们以随机的方式重复发送这六个交易，其中我们以一定的概率 Pw 从五个修改交易中统一选择一个，以概率 1−Pw 读取交易。对于每个选择的交易，通过遵循 Zipfian 分布来确定要访问的帐户，可以通过设置 s 值来进行配置。</p>
 <p>第二种工作负载仅由一个高度可配置的交易组成，对一组帐户余额执行一定数量的读写访问。最初，我们创建一定数量的帐户（N），每个帐户都用一个随机整数初始化。交易对这些帐户的一个子集执行一定数量的读写（RW）。在这些帐户中，存在一定数量的热帐户（HSS），它们具有更高概率的读写访问。可以分别配置用于读取（HR）和用于写入（HW）的热帐户的概率。在一次运行中，我们以一定的概率在一定的时间内发送固定的交易流。</p>
 <p><img src="/Paper-Fabric-Plus/11.png" srcset="/img/loading.gif" lazyload alt="Experiment and System Configuration"></p>
-<h3 id="6-3-The-Impact-of-the-Blocksize"><a href="#6-3-The-Impact-of-the-Blocksize" class="headerlink" title="6.3 The Impact of the Blocksize"></a>6.3 The Impact of the Blocksize</h3><p>我们通过调查块大小对 Fabric 和 Fabric++ 的影响来开始测试。默认情况下，Fabric 的 sample network 将块大小限制为最多10个交易。在下面的实验中，我们以对数递增将块大小从 16 增加到 2048，并观察成功交易数量。Smallbank 作为工作负载，有 100000 名用户 Pw &#x3D; 95% 的高写工作负载和 s &#x3D; 0 的均匀分布。下图展示了总共 90 秒运行时间里每秒的平均成功交易数。</p>
+<h3 id="6-3-The-Impact-of-the-Blocksize"><a href="#6-3-The-Impact-of-the-Blocksize" class="headerlink" title="6.3 The Impact of the Blocksize"></a>6.3 The Impact of the Blocksize</h3><p>我们通过调查块大小对 Fabric 和 Fabric++ 的影响来开始测试。默认情况下，Fabric 的 sample network 将块大小限制为最多 10 个交易。在下面的实验中，我们以对数递增将块大小从 16 增加到 2048，并观察成功交易数量。Smallbank 作为工作负载，有 100000 名用户 Pw &#x3D; 95% 的高写工作负载和 s &#x3D; 0 的均匀分布。下图展示了总共 90 秒运行时间里每秒的平均成功交易数。</p>
 <p><img src="/Paper-Fabric-Plus/12.png" srcset="/img/loading.gif" lazyload alt="Effect of the Blocksize"></p>
 <h3 id="6-4-Transactional-Throughput"><a href="#6-4-Transactional-Throughput" class="headerlink" title="6.4 Transactional Throughput"></a>6.4 Transactional Throughput</h3><h4 id="6-4-1-Throughput-under-Smallbank"><a href="#6-4-1-Throughput-under-Smallbank" class="headerlink" title="6.4.1 Throughput under Smallbank"></a>6.4.1 Throughput under Smallbank</h4><p><img src="/Paper-Fabric-Plus/13.png" srcset="/img/loading.gif" lazyload alt="Smallbank Workload Configuration"></p>
 <p><img src="/Paper-Fabric-Plus/14.png" srcset="/img/loading.gif" lazyload alt="Result"></p>
