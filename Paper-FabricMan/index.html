@@ -16,31 +16,23 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="RPC —— Remote Procedure Calls。">
+    <meta name="description" content="FabircMan 的论文。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「训」 笔记(11)：RPC 原理">
-<meta property="og:url" content="https://qanlyma.github.io/ByteDance-11/index.html">
+<meta property="og:title" content="「论」 并行执行视角下的 Execute-order-validate 区块链优化">
+<meta property="og:url" content="https://qanlyma.github.io/Paper-FabricMan/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="RPC —— Remote Procedure Calls。">
+<meta property="og:description" content="FabircMan 的论文。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-11/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-11/2.png">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-11/3.png">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-11/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-11/5.png">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-11/6.png">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-11/7.png">
-<meta property="article:published_time" content="2023-04-20T08:14:40.000Z">
-<meta property="article:modified_time" content="2023-07-20T06:04:18.172Z">
+<meta property="article:published_time" content="2023-10-30T05:20:09.000Z">
+<meta property="article:modified_time" content="2023-11-13T08:15:26.075Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-11/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「训」 笔记(11)：RPC 原理 - Qanly</title>
+  <title>「论」 并行执行视角下的 Execute-order-validate 区块链优化 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -181,7 +173,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「训」 笔记(11)：RPC 原理"></span>
+            <span id="subtitle" data-typed-text="「论」 并行执行视角下的 Execute-order-validate 区块链优化"></span>
           
         </div>
 
@@ -197,8 +189,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-20 16:14" pubdate>
-          2023年4月20日 下午
+        <time datetime="2023-10-30 13:20" pubdate>
+          2023年10月30日 下午
         </time>
       </span>
     
@@ -260,12 +252,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「训」 笔记(11)：RPC 原理</h1>
+            <h1 style="display: none">「论」 并行执行视角下的 Execute-order-validate 区块链优化</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：5 个月前
+                    本文最后更新于：22 天前
                   
                 
               </p>
@@ -273,116 +265,10 @@
             
               <div class="markdown-body">
                 
-                <p>RPC —— Remote Procedure Calls。</p>
+                <p>FabircMan 的论文。</p>
 <span id="more"></span>
 
-<h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1 基本概念"></a>1 基本概念</h2><h3 id="1-1-远程函数调用"><a href="#1-1-远程函数调用" class="headerlink" title="1.1 远程函数调用"></a>1.1 远程函数调用</h3><p><strong>RPC 需要解决的问题</strong>：</p>
-<ol>
-<li>函数映射<br> 在本地调用中，函数体是直接通过函数指针来指定的，我们调用哪个方法，编译器就自动帮我们调用它相应的函数指针。但是在远程调用中，函数指针是不行的，因为两个进程的地址空间是完全不一样的。所以函数都有自己的一个 ID，在 RPC 的时候要附上这个 ID，还得有个 ID 和函数的对照关系表，通过 ID 找到对应的函数并执行。</li>
-<li>数据转换成字节流<br> 在本地调用中，我们只需要把参数压到栈里，然后让函数自己去栈里读就行。但是在远程调用时，客户端跟服务端是不同的进程，不能通过内存来传递参数。这时候就需要客户端把参数先转成一个字节流，传给服务端把字节流转成能读取的格式。</li>
-<li>网络传输</li>
-</ol>
-<h3 id="1-2-完整过程"><a href="#1-2-完整过程" class="headerlink" title="1.2 完整过程"></a>1.2 完整过程</h3><p><img src="/ByteDance-11/1.png" srcset="/img/loading.gif" lazyload></p>
-<ul>
-<li><p>IDL (Interface description language) 文件：IDL 是方法与参数的描述文件，它通过一种中立的方式来描述接口，使得在不同平台上运行的对象和用不同语言编写的程序可以相互通信</p>
-</li>
-<li><p>生成代码：通过编译器工具把 IDL 文件转换成语言对应的静态库</p>
-</li>
-<li><p>编解码：从内存中表示到字节序列的转换称为编码，反之为解码，也常叫做序列化和反序列化</p>
-</li>
-<li><p>通信协议：规范了数据在网络中的传输内容和格式。除必须的请求&#x2F;响应数据外，通常还会包含额外的元数据</p>
-</li>
-<li><p>网络传输：通常基于成熟的网络库 TCP&#x2F;UDP 传输</p>
-</li>
-</ul>
-<h3 id="1-3-RPC-的优势"><a href="#1-3-RPC-的优势" class="headerlink" title="1.3 RPC 的优势"></a>1.3 RPC 的优势</h3><ol>
-<li>单一职责，有利于分工协作和运维开发（可以采用不同语言）</li>
-<li>可扩展性强，资源使用率更优（底层基础服务可以复用）</li>
-<li>故障隔离，服务的整体可靠性更高</li>
-</ol>
-<h3 id="1-4-RPC-的问题"><a href="#1-4-RPC-的问题" class="headerlink" title="1.4 RPC 的问题"></a>1.4 RPC 的问题</h3><ol>
-<li>服务宕机，对方应该如何处理？</li>
-<li>在调用过程中发生网络异常，如何保证消息的可达性？</li>
-<li>请求量突增导致服务无法及时处理，有哪些应对措施？</li>
-</ol>
-<p>用 RPC 框架来解决这些问题。</p>
-<h2 id="2-分层设计"><a href="#2-分层设计" class="headerlink" title="2 分层设计"></a>2 分层设计</h2><p><img src="/ByteDance-11/2.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="2-1-编解码层"><a href="#2-1-编解码层" class="headerlink" title="2.1 编解码层"></a>2.1 编解码层</h3><h4 id="2-1-1-生成代码"><a href="#2-1-1-生成代码" class="headerlink" title="2.1.1 生成代码"></a>2.1.1 生成代码</h4><p><img src="/ByteDance-11/3.png" srcset="/img/loading.gif" lazyload></p>
-<h4 id="2-1-2-数据格式"><a href="#2-1-2-数据格式" class="headerlink" title="2.1.2 数据格式"></a>2.1.2 数据格式</h4><ul>
-<li><p>语言特定的格式：许多编程语言都内建了将内存对象编码为字节序列的支持，例如 Java 有 java.io.Serializable。这种编码形式好处是非常方便，可以用很少的额外代码实现内存对象的保存与恢复，这类编码通常与特定的编程语言深度绑定，其他语言很难读取这种数据。</p>
-</li>
-<li><p>文本格式：JSON、XML、CSV 等文本格式，具有人类可读性。但是数字的编码多有歧义之处，比如 XML 和 CSV 不能区分数字和字符串，JSON 虽然区分字符串和数字，但是不区分整数和浮点数，而且不能指定精度。处理大量数据时，这个问题更严重了，没有强制模型约束，实际操作中往往只能采用文档方式来进行约定，这可能会给调试带来一些不便。由于 JSON 在一些语言中的序列化和反序列化需要采用反射机制，所以性能比较差。</p>
-</li>
-<li><p>二进制编码：具备跨语言和高性能等优点，常见有 Thrift 的 BinaryProtocol，Protobuf 等。</p>
-</li>
-</ul>
-<h4 id="2-1-3-二进制编码"><a href="#2-1-3-二进制编码" class="headerlink" title="2.1.3 二进制编码"></a>2.1.3 二进制编码</h4><p><strong>TLV 编码</strong></p>
-<ul>
-<li>Tag：标签，可以理解为类型</li>
-<li>Length：长度</li>
-<li>Value：值，Value 也可以是个 TLV 结构</li>
-</ul>
-<p><img src="/ByteDance-11/4.png" srcset="/img/loading.gif" lazyload></p>
-<p>TLV 编码结构简单清晰，并且扩展性较好，但是由于增加了 Type 和 Length 两个冗余信息，有额外的内存开销，特别是在大部分字段都是基本类型的情况下有不小的空间浪费。</p>
-<h3 id="2-2-协议层"><a href="#2-2-协议层" class="headerlink" title="2.2 协议层"></a>2.2 协议层</h3><h4 id="2-2-1-概念"><a href="#2-2-1-概念" class="headerlink" title="2.2.1 概念"></a>2.2.1 概念</h4><p>特殊结束符：过于简单，对于一个协议单元必须要全部读入才能够进行处理，除此之外必须要防止用户传输的数据不能同结束符相同，否则就会出现紊乱。HTTP 协议头就是以回车（CR）加换行（LF）符号序列结尾。<br>变长协议：一般都是自定义协议，由 header 和 payload 组成，会以定长加不定长的部分组成，其中定长的部分需要描述不定长的内容长度，使用比较广泛。</p>
-<h4 id="2-2-2-构造"><a href="#2-2-2-构造" class="headerlink" title="2.2.2 构造"></a>2.2.2 构造</h4><p><img src="/ByteDance-11/5.png" srcset="/img/loading.gif" lazyload></p>
-<ul>
-<li>LENGTH (32bits)：数据包大小，不包含自身</li>
-<li>HEADER MAGIC (16bits)：标识版本信息，协议解析时候快速校验</li>
-<li>SEQUENCE NUMBER (32bits)：表示数据包的 seqID,可用于多路复用，单连接内递增</li>
-<li>HEADERSIZE (16bits)：头部长度，从第 14 个字节开始计算一直到 PAYLOAD 前</li>
-<li>PROTOCOL ID：编解码方式，有 Binary 和 Compact 两种</li>
-<li>TRANSFORM ID：压缩方式，如 zlib 和 snappy</li>
-<li>INFOID：传递一些定制的 meta 信息</li>
-<li>PAYLOAD：消息体</li>
-</ul>
-<h3 id="2-3-网络通信层"><a href="#2-3-网络通信层" class="headerlink" title="2.3 网络通信层"></a>2.3 网络通信层</h3><h4 id="2-3-1-Sockets-API"><a href="#2-3-1-Sockets-API" class="headerlink" title="2.3.1 Sockets API"></a>2.3.1 Sockets API</h4><p><img src="/ByteDance-11/6.png" srcset="/img/loading.gif" lazyload><br><img src="/ByteDance-11/7.png" srcset="/img/loading.gif" lazyload></p>
-<p>套接字编程中的客户端必须知道两个信息：服务器的 IP 地址，端口号。</p>
-<p>socket 函数创建一个套接字，bind 将一个套接字绑定到一个地址上，listen 监听进来的连接，accept 函数从队列中取出连接请求并接收它。</p>
-<p>connect 客户端向服务器发起连接，accept 接收一个连接请求，如果没有连接则会一直阻塞直到有连接进来。调用 read，write 函数和客户端通讯，读写方式和其他 I&#x2F;O 类似。</p>
-<p>socket 关闭套接字，当另一端 socket 关闭后，这一端读写的情况：尝试去读会得到一个 EOF，并返回 O。</p>
-<h4 id="2-3-2-网络库"><a href="#2-3-2-网络库" class="headerlink" title="2.3.2 网络库"></a>2.3.2 网络库</h4><ul>
-<li><p>提供易用 API</p>
-<ul>
-<li>封装底层 Socket API</li>
-<li>连接管理和事件分发</li>
-</ul>
-</li>
-<li><p>功能</p>
-<ul>
-<li>协议支持：tcp、udp 和 uds 等</li>
-<li>优雅退出、异常处理等</li>
-</ul>
-</li>
-<li><p>性能</p>
-<ul>
-<li>应用层 buffer 减少 copy </li>
-<li>高性能定时器、对象池等</li>
-</ul>
-</li>
-</ul>
-<h2 id="3-关键指标"><a href="#3-关键指标" class="headerlink" title="3 关键指标"></a>3 关键指标</h2><h2 id="3-1-稳定性"><a href="#3-1-稳定性" class="headerlink" title="3.1 稳定性"></a>3.1 稳定性</h2><ul>
-<li><p><strong>保障策略</strong></p>
-<ul>
-<li>熔断：保护调用方，防止被调用的服务出现问题而影响到整个链路。一个服务 A 调用服务 B 时，服务 B 的业务逻辑又调用了服务 C，而这时服务 C 响应超时了，由于服务 B 依赖服务 C，C 超时直接导致 B 的业务逻辑一直等待，而这个时候服务 A 继续频繁地调用服务 B，服务 B 就可能会因为堆积大量的请求而导致服务宕机，由此就导致了服务雪崩的问题。</li>
-<li>限流：保护被调用方，防止大流量把服务压垮超时。当调用端发送请求过来时，服务端在执行业务逻辑之前先执行检查限流逻辑，如果发现访问量过大并且超出了限流条件，就让服务端直接降级处理或者返回给调用方一个限流异常。</li>
-<li>控制：避免浪费资源在不可用节点上。当下游的服务因为某种原因响应过慢，下游服务主动停掉一些不太重要的业务，释放出服务器资源，避免浪费资源。</li>
-</ul>
-</li>
-<li><p><strong>请求成功率</strong></p>
-<ul>
-<li>负载均衡</li>
-<li>重试：防止重试风暴，限制单点重试和限制链路重试。</li>
-</ul>
-</li>
-<li><p><strong>长尾请求</strong><br>  长尾请求一般是指明显高于均值的那部分占比较小的请求。业界关于延迟有一个常用的 P99 标准，P99 单个请求响应耗时从小到大排列，顺序处于 99% 位置的值即为 P99 值，那后面这 1% 就可以认为是长尾请求。在较复杂的系统中，长尾延时总是会存在。造成的原因非常多，常见的有网络抖动，GC，系统调度。</p>
-</li>
-</ul>
-<h2 id="3-2-易用性"><a href="#3-2-易用性" class="headerlink" title="3.2 易用性"></a>3.2 易用性</h2><h2 id="3-3-扩展性"><a href="#3-3-扩展性" class="headerlink" title="3.3 扩展性"></a>3.3 扩展性</h2><h2 id="3-4-观测性"><a href="#3-4-观测性" class="headerlink" title="3.4 观测性"></a>3.4 观测性</h2><h2 id="3-5-高性能"><a href="#3-5-高性能" class="headerlink" title="3.5 高性能"></a>3.5 高性能</h2><ul>
-<li><strong>高吞吐</strong></li>
-<li><strong>低延迟</strong></li>
-</ul>
-
+<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><h2 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1 INTRODUCTION"></a>1 INTRODUCTION</h2><h2 id="2-BACKGROUND-AND-RELATED-WORK"><a href="#2-BACKGROUND-AND-RELATED-WORK" class="headerlink" title="2 BACKGROUND AND RELATED WORK"></a>2 BACKGROUND AND RELATED WORK</h2>
                 
               </div>
             
@@ -400,7 +286,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%AD%97%E8%8A%82%E9%9D%92%E8%AE%AD/" class="category-chain-item">字节青训</a>
+  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" class="category-chain-item">论文阅读</a>
   
   
 
@@ -420,8 +306,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「训」 笔记(11)：RPC 原理</div>
-      <div>https://qanlyma.github.io/ByteDance-11/</div>
+      <div>「论」 并行执行视角下的 Execute-order-validate 区块链优化</div>
+      <div>https://qanlyma.github.io/Paper-FabricMan/</div>
     </div>
     <div class="license-meta">
       
@@ -433,7 +319,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月20日</div>
+          <div>2023年10月30日</div>
         </div>
       
       
@@ -449,18 +335,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Paper-Fabric-Plus/" title="「论」 Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「论」 Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Project1-Test/" title="「毕」 1. 测试 Fabric 2.4.0">
-                        <span class="hidden-mobile">「毕」 1. 测试 Fabric 2.4.0</span>
+                      <a href="/Project7-Experiment/" title="「毕」 7. 实验设计与测试">
+                        <span class="hidden-mobile">「毕」 7. 实验设计与测试</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -525,17 +405,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="字节青训"
-        id="heading-984d1428f71819da297f82a6c866640b" role="tab" data-toggle="collapse" href="#collapse-984d1428f71819da297f82a6c866640b"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="论文阅读"
+        id="heading-7545c85b0df88485ddabffad9bb45965" role="tab" data-toggle="collapse" href="#collapse-7545c85b0df88485ddabffad9bb45965"
         aria-expanded="true"
       >
-        字节青训
-        <span class="list-group-count">(13)</span>
+        论文阅读
+        <span class="list-group-count">(7)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-984d1428f71819da297f82a6c866640b"
-           role="tabpanel" aria-labelledby="heading-984d1428f71819da297f82a6c866640b">
+      <div class="category-collapse collapse show" id="collapse-7545c85b0df88485ddabffad9bb45965"
+           role="tabpanel" aria-labelledby="heading-7545c85b0df88485ddabffad9bb45965">
         
         
           
@@ -544,118 +424,64 @@
     
       
       
-        <a href="/ByteDance-1/" title="「训」 笔记(01)：Go 语言"
+        <a href="/Paper-Fabric-Sharp/" title="「论」 A Transactional Perspective on Execute-order-validate Blockchains"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(01)：Go 语言</span>
+          <span class="category-post">「论」 A Transactional Perspective on Execute-order-validate Blockchains</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-2/" title="「训」 笔记(02)：性能调优"
+        <a href="/Paper-Fabric-Plus/" title="「论」 Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(02)：性能调优</span>
+          <span class="category-post">「论」 Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-3/" title="「训」 笔记(03)：内存管理"
+        <a href="/Paper-Fabric-Fast/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(03)：内存管理</span>
+          <span class="category-post">「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-4/" title="「训」 笔记(04)：框架三件套"
+        <a href="/Paper-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(04)：框架三件套</span>
+          <span class="category-post">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-5/" title="「训」 笔记(05)：规则引擎"
+        <a href="/Paper-Fabric-Optimizing/" title="「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(05)：规则引擎</span>
+          <span class="category-post">「论」 Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-6/" title="「训」 笔记(06)：架构初探"
+        <a href="/Paper-Taming-Conflicts/" title="「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(06)：架构初探</span>
+          <span class="category-post">「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-7/" title="「训」 笔记(07)：分布式理论"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「训」 笔记(07)：分布式理论</span>
-        </a>
-      
-    
-      
-      
-        <a href="/ByteDance-8/" title="「训」 笔记(08)：微服务框架"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「训」 笔记(08)：微服务框架</span>
-        </a>
-      
-    
-      
-      
-        <a href="/ByteDance-9/" title="「训」 笔记(09)：分布式定时任务"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「训」 笔记(09)：分布式定时任务</span>
-        </a>
-      
-    
-      
-      
-        <a href="/ByteDance-10/" title="「训」 笔记(10)：消息队列"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「训」 笔记(10)：消息队列</span>
-        </a>
-      
-    
-      
-      
-        <a href="/ByteDance-11/" title="「训」 笔记(11)：RPC 原理"
+        <a href="/Paper-FabricMan/" title="「论」 并行执行视角下的 Execute-order-validate 区块链优化"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「训」 笔记(11)：RPC 原理</span>
-        </a>
-      
-    
-      
-      
-        <a href="/ByteDance-12/" title="「训」 笔记(12)：存储和数据库"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「训」 笔记(12)：存储和数据库</span>
-        </a>
-      
-    
-      
-      
-        <a href="/ByteDance-13/" title="「训」 笔记(13)：Q &amp; A"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">「训」 笔记(13)：Q &amp; A</span>
+          <span class="category-post">「论」 并行执行视角下的 Execute-order-validate 区块链优化</span>
         </a>
       
     
