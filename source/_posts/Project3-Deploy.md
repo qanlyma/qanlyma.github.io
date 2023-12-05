@@ -38,7 +38,7 @@ $ cd twoPeerNet
 
 ### 组织配置文件 crypto-config.yaml
 
-```Linux
+```Shell
 $ cryptogen showtemplate > crypto-config.yaml
 ```
 
@@ -72,7 +72,7 @@ PeerOrgs:                                     # 一个 PeerOrgs 设置多个 pee
 
 ### 生成密钥
 
-```Linux
+```Shell
 $ cryptogen generate --config=crypto-config.yaml
 ```
 
@@ -267,7 +267,7 @@ Profiles:
 
 channelID 指定的是系统通道名。
 
-```Linux
+```Shell
 $ configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID test-channel
 ```
 
@@ -275,13 +275,13 @@ $ configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/ge
 
 channelID 指定的是应用通道名，不能与上一步同名。
 
-```Linux
+```Shell
 $ configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel
 ```
 
 ### org1 和 org2 的锚节点
 
-```Linux
+```Shell
 $ configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
 
 $ configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
@@ -480,7 +480,7 @@ cli2:
 
 ### 编排容器
 
-```Linux
+```Shell
 $ docker-compose up -d
 ```
 
@@ -490,7 +490,7 @@ $ docker-compose up -d
 
 进入容器 cli1 创建通道：
 
-```Linux
+```Shell
 $ docker exec -it cli1 bash
 
 # peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -502,7 +502,7 @@ $ docker exec -it cli1 bash
 
 当前目录下生成 mychannel.block。在容器外将 mychannel.block 复制给 cli2：
 
-```Linux
+```Shell
 $ docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/mychannel.block ./
 
 $ docker cp ./mychannel.block cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
@@ -512,14 +512,14 @@ $ docker cp ./mychannel.block cli2:/opt/gopath/src/github.com/hyperledger/fabric
 
 开启两个终端，分别进入 cli1 和 cli2：
 
-```Linux
+```Shell
 $ docker exec -it cli1 bash
 $ docker exec -it cli2 bash
 ```
 
 分别加入通道（两个 cli 都需要操作）：
 
-```Linux
+```Shell
 # peer channel join -b mychannel.block
 ```
 
@@ -527,13 +527,13 @@ $ docker exec -it cli2 bash
 
 在 cli1 中：
 
-```Linux
+```Shell
 # peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
 在 cli2 中：
 
-```Linux
+```Shell
 # peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
@@ -543,7 +543,7 @@ $ docker exec -it cli2 bash
 
 利用 caliper 中的简单转账链码进行链码测试：
 
-```Linux
+```Shell
 $ mkdir /twoPeerNet/chaincode/go/simple
 $ cp caliper-benchmarks/src/fabric/scenario/simple/go/* /twoPeerNet/chaincode/go/simple
 ```
@@ -552,13 +552,13 @@ $ cp caliper-benchmarks/src/fabric/scenario/simple/go/* /twoPeerNet/chaincode/go
 
 在 cli1 中设置 goproxy 代理：
 
-```Linux
+```Shell
 # go env -w GOPROXY=https://goproxy.cn,direct
 ```
 
 下载依赖：
 
-```Linux
+```Shell
 # cd /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go/simple
 # go mod vendor
 
@@ -569,13 +569,13 @@ $ cp caliper-benchmarks/src/fabric/scenario/simple/go/* /twoPeerNet/chaincode/go
 
 在 cli1 中打包链码：
 
-```Linux
+```Shell
 # peer lifecycle chaincode package simple.tar.gz --path /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go/simple --label simple_1.0
 ```
 
 在容器外将 cli1 中打包的链码复制到 cli2：
 
-```Linux
+```Shell
 $ docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/simple.tar.gz ./
 
 $ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/peer
@@ -585,7 +585,7 @@ $ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/p
 
 在两个 cli 中分别操作：
 
-```Linux
+```Shell
 # peer lifecycle chaincode install simple.tar.gz
 ```
 
@@ -593,19 +593,19 @@ $ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/p
 
 查看 package ID：
 
-```Linux
+```Shell
 # peer lifecycle chaincode queryinstalled
 ```
 
 在两个 cli 中分别操作：
 
-```Linux
+```Shell
 # peer lifecycle chaincode approveformyorg --channelID mychannel --name simple --version 1.0 --init-required --package-id simple_1.0:539969bf4773133bf852368737a5ba505443ca4d6b5eae92f5f4463fd8bbd171 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
 检测是否成功：
 
-```Linux
+```Shell
 # peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name simple --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com
 ```
 
@@ -613,7 +613,7 @@ $ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/p
 
 只需要在 cli1 执行即可：
 
-```Linux
+```Shell
 # peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --name simple --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 ```
 
@@ -621,13 +621,13 @@ $ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/p
 
 初始化：
 
-```Linux
+```Shell
 # peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --isInit --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":[]}'
 ```
 
 调用其他方法：
 
-```Linux
+```Shell
 # peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n simple --ordererTLSHostnameOverride orderer.example.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:8051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["open","Qanly","1000"]}'
 
 # peer chaincode query -C mychannel -n simple -c '{"Args":["query","Qanly"]}'
@@ -641,7 +641,7 @@ $ docker cp ./simple.tar.gz cli2:/opt/gopath/src/github.com/hyperledger/fabric/p
 
 记得要先修改 `caliper-benchmarks/networks/fabric/test-network.yaml` 中的配置。
 
-```Linux
+```Shell
 $ cd caliper-benchmarks
 
 $ npx caliper launch manager \
@@ -660,16 +660,23 @@ $ npx caliper launch manager \
 
 创建容器后，可以单独开一个窗口查看输出的日志：
 
-```Linux
+```Shell
 $ docker logs -f peer0.org1.example.com
 $ docker logs -f orderer.example.com
+```
+
+导出日志以便于查找：
+
+```Shell
+$ docker logs orderer.example.com 2>>log.txt
+$ docker logs peer0.org1.example.com 2>>log.txt
 ```
 
 ## 7 清理操作
 
 删除上述步骤生成的文件与容器。
 
-```Linux
+```Shell
 $ docker stop $(docker ps -a -q)
 $ docker ps -a | awk '/fabric/ {print $1}' | xargs -r docker stop
 
