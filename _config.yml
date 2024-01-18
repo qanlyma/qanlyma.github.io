@@ -99,13 +99,6 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: fluid
 
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: git
-  repository: git@github.com:qanlyma/qanlyma.github.io.git
-  branch: main
-
 # hexo-hide-posts
 hide_posts:
   # 可以改成其他你喜欢的名字
@@ -116,3 +109,10 @@ hide_posts:
   public_generators: []
   # 为隐藏的文章添加 noindex meta 标签，阻止搜索引擎收录
   noindex: true
+
+# Deployment
+## Docs: https://hexo.io/docs/one-command-deployment
+deploy:
+  type: git
+  repository: git@github.com:qanlyma/qanlyma.github.io.git
+  branch: main
