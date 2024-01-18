@@ -1,10 +1,11 @@
 ---
 title: 「论」 对于 EOV 区块链的优化
 category_bar: true
-date: 2023-10-30 13:20:09
+date: 2023-1-18 13:20:09
 tags:
 categories: 论文阅读
 banner_img:
+hidden: true
 ---
 
 FabircMan 的论文。
