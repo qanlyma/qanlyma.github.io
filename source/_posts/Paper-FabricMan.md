@@ -14,15 +14,17 @@ FabircMan 的论文。
 
 ## Abstract
 
-伴随着区块链技术的成熟与进步，一种新型的 Execute-Order-Validate（EOV）区块链架构被提出，使得交易在执行阶段可以并行。这一架构的代表系统便是 Hyperledger Fabric。但是 Fabric 的并行执行，会在验证阶段产生大量的 MVCC 冲突，导致大量交易被无效化。针对这一问题，我们基于 Fabric v2.4，在排序阶段设计了一个重排序算法来提高交易成功率，并且实现了一个基于缓存的版本验证机制，来提前检测并中止无效交易。同时针对简单的资产转移交易，我们实现了对交易的合并，使其不会触发多次版本检验。最后我们实现了验证阶段的并行验证，以提升系统整体的吞吐量。我们将优化后的系统命名为 FabricMan，并与 Fabric 和 Fabric++ 两个系统进行了实验对比。
+伴随着区块链技术的成熟与进步，一种新型的 Execute-Order-Validate（EOV）区块链架构被提出，使得交易在执行阶段可以并行。这一架构的代表系统便是 Hyperledger Fabric。但是由于其的并行执行机制，在验证阶段可能会产生大量的 MVCC 冲突，导致大量交易被无效化。针对这一问题，我们基于 Fabric v2.4，在排序阶段设计了一个重排序算法来提高交易成功率，并且实现了一个基于缓存的版本验证机制，来提前检测并中止无效交易。同时针对简单的资产转移交易，我们实现了对交易的合并，使其不会触发多次版本检验。最后我们实现了验证阶段的并行验证，以提升系统整体的吞吐量。我们将优化后的系统命名为 FabricMan，并与 Fabric 和 Fabric++ 两个系统进行了实验对比。
 
 ## 1 INTRODUCTION
 
-区块链技术的出现使得在缺少可信第三方条件下的点对点交易变为可能，因此大量的研究人员投身其中，希望这一技术能够对金融，游戏，医疗，物联网等等行业产生重大影响。但是目前实现这一美好愿景的最大阻碍就是区块链系统吞吐量过低的问题。例如最早出现的比特币[1]的 TPS 只有 7 左右，而能够执行智能合约的以太坊[2]的 TPS 也只有 15。这显然远远低于各种中心化系统，因此其无法满足实际应用的要求。
+区块链技术的流行开始于比特币[1]论文的发表，但是其真正受欢迎的原因在于其提供了一种方式，使得在缺少可信第三方条件下的点对点交易变为可能。经过十余年间的发展，区块链技术凭借其去中心化、防篡改、可溯源等特性，被研究和应用在金融，游戏，医疗，物联网等多个领域。
 
-与比特币和以太坊等不需要验证节点身份的无许可链形成对比的是许可链，这种区块链系统需要每个参与的节点是已知的，并经过了身份验证。由于无许可链的不可信特性，系统需要花费大量资源去解决拜占庭容错共识问题[3]，而许可链对参与节点进行约束，大大减轻了共识的负担。并且许可链往往只应用于某些特定的场景，所以这类系统的性能总是更好。例如其代表之一的 Hyperledger Fabric[4] 的 TPS 在特定配置下可以达到 3500。
+从参与者的角度，区块链系统可以分为许可链和非许可链。非许可链或者说公链是任意节点都可以匿名参与的区块链。由于节点身份未知，且相互不信任，这类区块链系统中往往会使用 proof of work 或其他共识机制来解决拜占庭容错共识问题[3]。而另一方面，许可链是由一组身份经过验证的节点组成的区块链系统。这类系统往往只应用于某些特定的场景，其中的节点虽然并不完全信任彼此但拥有共同的目标。许可链对参与节点进行约束，并且可以控制不同节点的读写权限，因此更加适用于企业级的应用。
 
-与传统区块链系统的先排序后执行架构不同，Fabric 使用的是新型的 Execute-Order-Validate（EOV）模型。在执行阶段，客户端会把交易提案发送给多个节点进行背书，收集到足够数量的背书后，客户端会将他们打包成一笔交易发送给排序节点进行出块，然后再由排序节点将区块发送给所有节点来同步账本状态。这种执行方式可以允许多笔交易的并行执行，但随之而来的问题是在最后验证阶段可能会出现的 MVCC 版本冲突。我们将区块内的冲突分为两类，一是区块内读写冲突 (within-block conflicts)，即在同一个区块内先执行交易的写集更改了后面某一笔交易读集的版本号，使得后一笔交易在验证阶段无效。二是跨区快读写冲突 (cross-block conflicts)，即某一笔交易在执行阶段读的值，在到达验证阶段之前，被这期间提交的其他区块修改所导致的最终无效化。Ankur 等人提出的 Fabric++[5] 通过对交易重排序来改善区块内读写冲突的问题，使得最终被无效的交易数量减少。但是经我们测试，该算法在交易冲突率较高时效率很低。本文的贡献主要如下：
+不论是像比特币、以太坊[2]这样的非许可链还是像 Tendermint[17]、Quorum[16] 这样的许可链，大部分主流的区块链系统使用的都是 active replication[18]：首先通过共识协议或者 atomic broadcast 对交易进行排序，并打包成区块传递给节点；然后所有节点按照顺序执行交易，改变自己的账本状态。我们将这种系统叫做  Order-Execute（OE）architecture，它的局限性在于所有节点都必须按顺序执行所有交易。为了让交易的执行有更好的并行性，一种新型的 Execute-Order-Validate（EOV）模型被提了出来。其在执行阶段，客户端会把交易提案发送给多个节点进行背书；收集到足够数量的背书后，客户端会将他们打包成一笔交易发送给排序节点进行排序并出块；最后再由排序节点将区块发送给所有节点来验证并同步账本状态。这种执行方式可以允许多笔交易的并行执行，但随之而来的问题是验证阶段可能会出现的 MVCC 版本冲突。
+
+我们将 EOV 系统中的冲突分为两类，一是区块内读写冲突 (within-block conflicts)，即在同一个区块内先执行交易的写集更改了后面某一笔交易读集的版本号，使得后一笔交易在验证阶段无效。二是跨区块读写冲突 (cross-block conflicts)，即某一笔交易在执行阶段读的值，在到达验证阶段之前，被这期间提交的其他区块修改所导致的最终无效化。Ankur[5] 等人提出了一个名为 Fabric++ 的系统，通过对交易重排序来改善区块内读写冲突的问题，使得最终被无效的交易数量减少。但是经我们测试，该算法在交易冲突率较高时效率很低。为改善上述问题，我们以 Fabric v2.4 作为基础对 EOV 区块链系统做了几点优化，本文的贡献主要如下：
 
 * 我们设计并实现了一个时间复杂度较稳定的重排序算法来减少区块内的读写冲突，并设计实验与 Fabric++ 的算法相比较，发现在交易冲突率较高的情况下我们的算法更优秀。
 * 我们实现了一个基于缓存的版本验证机制，在排序阶段提前检测并中止了无效交易，来减少跨区块的读写冲突。
@@ -35,7 +37,7 @@ FabircMan 的论文。
 
 ### 2.1 EOV Architecture in Hyperledger Fabric
 
-Hyperledger Fabric 是最先进的许可区块链之一，其特点是基于 EOV 架构的模块化设计。Fabric 中的所有节点在任何时候都是已知并经过授权的，主要分为三种类型：(1) client 节点负责提交交易提案（transaction proposals），并收集背书响应；(2) peer 节点负责 executes 和 validates 交易提案，以维护本地的账本，不同的 peer 节点被划分到不同的 organizations，同一组织内的 peer 相互可信；(3) orderer 负责对接收到的交易进行排序，并按照预设的规则出块。区块中的交易顺序是由所有 orderer 节点基于共识协议共同决定的。The workflow of a transaction consists of three phases: execution, ordering, and validation.
+ 基于 EOV 架构模块化设计区块链的代表之一便是 Hyperledger Fabric，简称 Fabric。Fabric 中的所有节点在任何时候都是已知并经过授权的，主要分为三种类型：(1) client 节点负责提交交易提案（transaction proposals），并收集背书响应；(2) peer 节点负责 executes 和 validates 交易提案，以维护本地的账本，不同的 peer 节点被划分到不同的 organizations，同一组织内的 peer 相互可信；(3) orderer 负责对接收到的交易进行排序，并按照预设的规则出块。区块中的交易顺序是由所有 orderer 节点基于共识协议共同决定的。The workflow of a transaction consists of three phases: execution, ordering, and validation.
 
 #### 2.1.1 Execution Phase
 
@@ -75,9 +77,9 @@ Qiucheng Sun[13] 等人分析了 Fabric++ 实现的重排序算法，在信任�
 
 ## 3 PROBLEM ANALYSIS
 
-本章第一节主要介绍 Fabric 中存在的两种 MVCC 冲突，namely within-block conflicts and cross-block conflicts。并分析产生这两种冲突的原因。第二节则分析 Fabric++ 中重排序算法带来的的问题。
+本章第一节主要介绍 EOV 架构中存在的两种 MVCC 冲突，namely within-block conflicts and cross-block conflicts，并分析产生这两种冲突的原因。第二节则分析 EOV 架构中的交易排序问题。
 
-### 3.1 MVCC Conflict in Fabric
+### 3.1 MVCC Conflict
 
 正如在第 2 章所提到的，Fabric 在执行阶段会生成交易的读写集。其中读集包含该交易读取的所有 key 的列表，以及相应的 version number。写集包含最终用于更新账本的键值对。在验证阶段，节点会根据本地数据库的当前状态对交易的读写集做 MVCC 验证。验证方法就是检测读集中的版本号是否与本地当前状态的版本号一致。若版本不一致，交易会被标记为无效，其写集无法被用于更新账本状态。值得注意的是，这些无效交易依旧会和有效交易一起被记录在链上。在高并发执行环境中，我们将产生 MVCC 冲突的原因分为两种：within-block conflicts and cross-block conflicts。
 
@@ -89,7 +91,7 @@ Cross-block conflicts 是发生在不同区块之间的读写冲突。由于 Exe
 
 综合以上分析，我们决定在排序阶段引入一个重排序算法，针对同一个 key，先执行读集包含该 key 的交易，再执行写集包含该 key 的交易。以此减少 Within-block conflicts 中止的交易。同时在 orderer 中加入一个缓存机制，来储存每个 key 最新的版本号，如果遇到低于缓存版本的交易读集，则直接将其提前中止。以此提前解决 Cross-block conflicts 带来的问题。详细实现方案会在第 4 章介绍。
 
-### 3.2 the Problem of Fabric++
+### 3.2 The Problem of Ordering
 
 Fabric++ 使用了重排序来解决 Within-block conflicts。在排序阶段，Fabric++ 会记录 orderer 收到交易的读写集，并用它们生成交易冲突图。若想得到无冲突排序，则需要冲突图中无环。如 2.2 节所述，Fabric++ 使用 Tarjan[8] 的算法将冲突图划分为多个强连通子图，然后使用 Johnson[9] 的算法从中检测所有的环。通过不断删除在环中出现频率最高的交易，这个算法可以得到一个包含尽可能多交易的无环图。最后通过无环图构建一个无冲突排序用以出块。
 
@@ -278,3 +280,9 @@ Block Size: 16, 32, 64, 128, 256, 512, 1024
 [14] 2019. http://hstore.cs.brown.edu/documentation/deployment/benchmarks/smallbank/
 
 [15] FabricETP: A high‑throughput blockchain optimization solution for resolving concurrent conflicting transactions
+
+[16] Quorum. http://www.jpmorgan.com/global/Quorum.
+
+[17] Tendermint. http://tendermint.com.
+
+[18] B. Charron-Bost, F. Pedone, and A. Schiper, editors. Replication: Theory and Practice, volume 5959 of Lecture Notes in Computer Science. Springer, 2010.
