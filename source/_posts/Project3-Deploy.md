@@ -545,7 +545,7 @@ $ docker exec -it cli2 bash
 
 ```Shell
 $ mkdir /twoPeerNet/chaincode/go/simple
-$ cp caliper-benchmarks/src/fabric/scenario/simple/go/* /twoPeerNet/chaincode/go/simple
+$ cp caliper-benchmarks/src/fabric/scenario/simple/go/* twoPeerNet/chaincode/go/simple
 ```
 
 在 docker-compose 中，`/twoPeerNet/chaincode/go` 与容器内的目录实现了容器卷映射，将链码复制到该目录下，容器中也有了相应的链码。

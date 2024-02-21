@@ -18,13 +18,13 @@ FabircMan 的论文。
 
 ## 1 INTRODUCTION
 
-区块链技术的流行开始于比特币[1]论文的发表，但是其真正受欢迎的原因在于其提供了一种方式，使得在缺少可信第三方条件下的点对点交易变为可能。经过十余年间的发展，区块链技术凭借其去中心化、防篡改、可溯源等特性，被研究和应用在金融，游戏，医疗，物联网等多个领域。
+区块链技术的流行开始于比特币[1]论文的发表，其受欢迎的真正原因在于它提供了一种方式，使得在缺少可信第三方条件下的点对点交易变为可能。经过十余年间的发展，区块链技术凭借其去中心化、防篡改、可溯源等特性，被研究和应用在金融[22]、医疗[19, 20]、供应链[21]、物联网[23]等多个领域。
 
 从参与者的角度，区块链系统可以分为许可链和非许可链。非许可链或者说公链是任意节点都可以匿名参与的区块链。由于节点身份未知，且相互不信任，这类区块链系统中往往会使用 proof of work 或其他共识机制来解决拜占庭容错共识问题[3]。而另一方面，许可链是由一组身份经过验证的节点组成的区块链系统。这类系统往往只应用于某些特定的场景，其中的节点虽然并不完全信任彼此但拥有共同的目标。许可链对参与节点进行约束，并且可以控制不同节点的读写权限，因此更加适用于企业级的应用。
 
-不论是像比特币、以太坊[2]这样的非许可链还是像 Tendermint[17]、Quorum[16] 这样的许可链，大部分主流的区块链系统使用的都是 active replication[18]：首先通过共识协议或者 atomic broadcast 对交易进行排序，并打包成区块传递给节点；然后所有节点按照顺序执行交易，改变自己的账本状态。我们将这种系统叫做  Order-Execute（OE）architecture，它的局限性在于所有节点都必须按顺序执行所有交易。为了让交易的执行有更好的并行性，一种新型的 Execute-Order-Validate（EOV）模型被提了出来。其在执行阶段，客户端会把交易提案发送给多个节点进行背书；收集到足够数量的背书后，客户端会将他们打包成一笔交易发送给排序节点进行排序并出块；最后再由排序节点将区块发送给所有节点来验证并同步账本状态。这种执行方式可以允许多笔交易的并行执行，但随之而来的问题是验证阶段可能会出现的 MVCC 版本冲突。
+不论是像比特币、以太坊[2]这样的非许可链还是像 Tendermint[17]、Quorum[16] 这样的许可链，大部分主流的区块链系统使用的都是 active replication[18]：首先通过共识协议或者 atomic broadcast 对交易进行排序，并打包成区块传递给节点；然后所有节点按照顺序执行交易，改变自己的账本状态。我们将这种系统叫做 Order-Execute（OE）architecture，它的局限性在于所有节点都必须按顺序执行所有交易，这会限制系统的吞吐量。为了让交易的执行有更好的并行性，一种新型的 Execute-Order-Validate（EOV）模型被提了出来。在执行阶段，客户端会把交易提案发送给多个节点进行背书；收集到足够数量的背书后，客户端会将他们打包成一笔交易发送给排序节点进行排序并出块；最后再由排序节点将区块发送给所有节点来验证并同步账本状态。这种执行方式可以允许多笔交易的并行执行，但随之而来的问题是验证阶段可能会出现的 MVCC 版本冲突。
 
-我们将 EOV 系统中的冲突分为两类，一是区块内读写冲突 (within-block conflicts)，即在同一个区块内先执行交易的写集更改了后面某一笔交易读集的版本号，使得后一笔交易在验证阶段无效。二是跨区块读写冲突 (cross-block conflicts)，即某一笔交易在执行阶段读的值，在到达验证阶段之前，被这期间提交的其他区块修改所导致的最终无效化。Ankur[5] 等人提出了一个名为 Fabric++ 的系统，通过对交易重排序来改善区块内读写冲突的问题，使得最终被无效的交易数量减少。但是经我们测试，该算法在交易冲突率较高时效率很低。为改善上述问题，我们以 Fabric v2.4 作为基础对 EOV 区块链系统做了几点优化，本文的贡献主要如下：
+我们将 EOV 系统中的冲突分为两类，一是区块内读写冲突 (within-block conflicts)，即在同一个区块内先执行交易的写集更改了后面某一笔交易读集的版本号，使得后一笔交易在验证阶段无效。二是跨区块读写冲突 (cross-block conflicts)，即某一笔交易在执行阶段读的值，在到达验证阶段之前，被这期间提交的其他区块修改所导致的最终无效化。Ankur[5] 等人提出了一个名为 Fabric++ 的系统，通过对交易重排序来改善区块内读写冲突的问题，使得最终被无效的交易数量减少。但是经我们测试，该算法在交易冲突率较高时效率很低。为改善上述问题，我们以 Fabric v2.4 作为基础对 EOV 区块链系统做了几点优化，并将系统命名为 FabricMan。本文的主要贡献如下：
 
 * 我们设计并实现了一个时间复杂度较稳定的重排序算法来减少区块内的读写冲突，并设计实验与 Fabric++ 的算法相比较，发现在交易冲突率较高的情况下我们的算法更优秀。
 * 我们实现了一个基于缓存的版本验证机制，在排序阶段提前检测并中止了无效交易，来减少跨区块的读写冲突。
@@ -37,7 +37,9 @@ FabircMan 的论文。
 
 ### 2.1 EOV Architecture in Hyperledger Fabric
 
- 基于 EOV 架构模块化设计区块链的代表之一便是 Hyperledger Fabric，简称 Fabric。Fabric 中的所有节点在任何时候都是已知并经过授权的，主要分为三种类型：(1) client 节点负责提交交易提案（transaction proposals），并收集背书响应；(2) peer 节点负责 executes 和 validates 交易提案，以维护本地的账本，不同的 peer 节点被划分到不同的 organizations，同一组织内的 peer 相互可信；(3) orderer 负责对接收到的交易进行排序，并按照预设的规则出块。区块中的交易顺序是由所有 orderer 节点基于共识协议共同决定的。The workflow of a transaction consists of three phases: execution, ordering, and validation.
+ 基于 EOV 架构模块化设计区块链的代表之一便是 Hyperledger Fabric[4]，简称 Fabric。Fabric 中的所有节点在任何时候都是已知并经过授权的，主要分为三种类型：(1) client 节点负责提交交易提案（transaction proposals），并收集背书响应；(2) peer 节点负责 executes 和 validates 交易提案，并 commits 其读写集以维护本地的账本。不同的 peer 节点被划分到不同的 organizations，同一组织内的 peer 相互可信；(3) orderer 负责对接收到的交易进行排序，并按照预设的规则出块。区块中的交易顺序是由所有 orderer 节点基于共识协议共同决定的。系统中的交易流程如 Figure 1 所示，The workflow of a transaction consists of three phases: execution, ordering, and validation.
+
+ ![Figure 1](fig1.png)
 
 #### 2.1.1 Execution Phase
 
@@ -65,7 +67,7 @@ Fabric++ 的重排序算法主要分为五个步骤：(1)首先根据所有待�
 
 ### 2.3 Related Work
 
-对于以 Fabric 为代表的 EOV 区块链的优化，研究主要可以分为两类：(1)提升系统整体的吞吐量[10]，[11]。(2)减少并行执行所带来的读写冲突[5]，[12]，[13]。
+目前对于 EOV 区块链的研究主要有性能测试[24, 25, 26, 27, 28]、安全性分析[29, 30, 31, 32]、性能优化几个方向，本文主要关注对性能的优化。优化主要可以分为两类：(1)提升系统整体的吞吐量[10, 11]。(2)减少并行执行所带来的读写冲突[5, 12, 13]。
 
 Parth Thakkar[10] 等人通过配置 Block Size、Endorsement Policy、Channel、Resource Allocation、Ledger Database 等五个参数，对 Fabric v1.0 系统性能进行了较为全面的测试，并发现了其三个主要的性能瓶颈：(1)背书策略的验证。(2)块中交易的顺序策略验证。(3) CouchDB 的状态验证和提交。同时他们对上述问题进行了简单的优化：(1)使用以序列化形式为键的哈希映射来缓存反序列化的身份，以此减少加密操作的资源消耗。(2)并行验证多个交易的背书，以利用闲置的 CPU 并提高整体性能。(3)对于 CouchDB 的批量读写优化。达到了提升系统整体吞吐量的效果。
 
@@ -81,7 +83,11 @@ Qiucheng Sun[13] 等人分析了 Fabric++ 实现的重排序算法，在信任�
 
 ### 3.1 MVCC Conflict
 
-正如在第 2 章所提到的，Fabric 在执行阶段会生成交易的读写集。其中读集包含该交易读取的所有 key 的列表，以及相应的 version number。写集包含最终用于更新账本的键值对。在验证阶段，节点会根据本地数据库的当前状态对交易的读写集做 MVCC 验证。验证方法就是检测读集中的版本号是否与本地当前状态的版本号一致。若版本不一致，交易会被标记为无效，其写集无法被用于更新账本状态。值得注意的是，这些无效交易依旧会和有效交易一起被记录在链上。在高并发执行环境中，我们将产生 MVCC 冲突的原因分为两种：within-block conflicts and cross-block conflicts。
+正如在第 2 章所提到的，Fabric 在执行阶段会生成交易的读写集。其中读集包含该交易读取的所有 key 的列表，以及相应的 version number。写集包含最终用于更新账本的键值对。在验证阶段，节点会根据本地数据库的当前状态对交易的读写集做 MVCC 验证。验证方法就是检测读集中的版本号是否与本地当前状态的版本号一致。若版本不一致，交易会被标记为无效，其写集无法被用于更新账本状态，此时便发生了 MVCC 冲突。值得注意的是，这些无效交易依旧会和有效交易一起被记录在链上。为了检测这一冲突对系统带来的影响，我们在第五章描述的环境配置下，使用 SmallBank[14] 智能合约在 Fanric v2.4 上进行了测试。我们改变合约中账户数量，从 5000 到 30000，并使用已有帐户随机触发 smallbank 合约中的交易，记录其有效以及中止交易的 TPS 如 Figure 0 所示。可见在总账户数量较小时，区块内交易冲突数量明显增加，系统性能下降。
+
+![Figure 0](fig0.png)
+
+在高并发执行环境中，我们将产生 MVCC 冲突的原因分为两种：within-block conflicts and cross-block conflicts。
 
 Within-block conflicts 是发生在同一个区块不同交易之间的读写冲突。在构建区块时，如果将多个对同一个 key 进行读写的交易划分到同一区块中，就可能导致这一冲突。例如在之前的例子 Table 1 中，T1、T2、T3、T4 按顺序被打包到一个区块中。在验证阶段，T1 先对 k1 进行了更新操作，使其版本号变为 v2。接下来轮到验证 T2，它的读集中包含 v1 版本的 k1，在进行 MVCC 验证时发现 v1 ≠ v2，所以 T2 被标记为无效。同理 T3、T4 也会无效。Within-block conflicts 的根本原因是同一区块中两笔不同的交易对某个 key 进行了先写后读的操作，导致后一笔交易在验证读集时发生版本冲突。
 
@@ -185,30 +191,21 @@ func ReorderSort(Transaction[] S) {
 
 ## 5 EXPERIMENTAL EVALUATION
 
+为了验证本文提出改进方案的有效性，我们基于 Hyperledger Fabric v2.4 实现了第四章提出的改进方案，并将系统命名为 FabricMan。由于原本的 Fabric++ 代码是基于 Fabric v1.2 实现的，为了方便对比，我们同样基于 Fabric v2.4 实现了 Fabric++ 的改进。并且在本章对 Fabric、Fabric++ 和 FabricMan 等三个系统在吞吐量、交易成功率、算法运行时间等关键指标上开展实验评估工作。
+
 ### 5.1 Setup and Workload
 
-• Hyperledger Fabric 2.4.0
-• Fabric++
-• FabricMan
+本文实验场景为单通道区块链系统，其中包含 2 个组织，每个组织包含 2 个对等节点，节点通过 Docker 容器部署。共识机制采用 Raft 共识，并使用 LevelDB 作为状态数据库。实验环境共由 1 台 36 核 CPU(Intel Core i9-10980XE 3.0GHz) 服务器组成，256GB RAM，并运行在 Ubuntu 20.04.5 LTS 环境下。
 
-节点：1 channel, 4 peers, 1 orderer
-工具： caliper-benchmarks
-
+实验采用 smallbank 和自定义链码两种工作负载，并在 caliper-benchmarks [33] 测试框架下进行测试。smallbank 合约为每个用户创建一个支票账户和一个储蓄账户，包括六个函数，其中五个以某种方式更新账户余额：TransactSavings 和 DepositChecking 分别增加储蓄账户和支票账户的一定金额。SendPayment 在两个支票账户之间转移资金。WriteCheck 减少支票账户余额，而 Amalgamate 将所有资金从储蓄账户转移到支票账户。此外，还有一个只读事务 Query，它读取用户的支票账户和储蓄账户。在单次运行中，我们随机选取某个或某两个系统中存在的账户，并且以相同的概率随机运行这六种函数中的一个进行交易。通过改变系统中账户数量，来控制区块内可能产生交易冲突的概率。而在自定义链码中主要包含三种交易函数：(1)简单的转账交易，对两个系统中存在的账户进行资产转移，这涉及到对两个账户的读和写；(2)简单读写交易，从系统中读取两个账户的余额并对其中一个进行修改，这涉及到两个账户的读和一个账户的写；(3)复杂读写交易，从系统中读取四个账户的余额并对其中两个进行修改，这涉及到四个账户的读和两个账户的写。设置不同账户数量的读写交易是为了满足实验在不同复杂度的交易类型下进行测试。
 
 ### 5.2 The Impact of Blocksize
 
-测试区块大小对 Fabric 的影响：10,000 个账户随机触发 100,000 笔读写交易
-Block Size: 16, 32, 64, 128, 256, 512, 1024
+区块大小是影响区块链吞吐量和延迟的重要因素之一。为了给接下来的实验确定区块大小，并测试区块大小对区块大小对不同系统的影响，我们首先研究改变区块大小对 Fabric 和 FabricMan 吞吐量的影响。我们使用 10,000 个账户随机触发 100,000 笔读写交易，在低冲突率的情况下测试了区块中包含交易数量从 16 到 1024 时两个系统的吞吐量，结果如 Figure 6 所示。
 
 ![Figure 6](fig6.png)
 
-• 此实验 FabricMan 仅使用重排算法；
-• 重排算法对系统整体性能影响很小；
-• 同一区块内交易数量越多，冲突概率越大，重排作用越明显。
-
-后续实验区块大小：256
-最大出块时间间隔：5 s
-交易发送速率：2048 / s
+为测试重排序时间对系统的影响，此实验中 FabricMan 仅加入了 4.1 节中的重排算法，可以看出算法对系统整体性能影响很小。随着区块内交易数量增加，FabricMan 中成功交易的吞吐量与 Fabric 差距越大。这是因为虽然实验在低冲突发生率的情况下进行，但同一区块内交易数量越多，发生冲突概率越大，重排作用越明显。在区块大小为 256 时系统吞吐量到达峰值，再增加区块中的交易数会导致冲突交易变多，减少成功交易的吞吐量，并且较大的区块在系统中传输时间也会增加。因此在后续实验中，我们使用 256 作为区块中包含交易的最大数量，并将交易发送率设置为 2048/s 以保证系统的待处理交易数量始终处于饱和状态。
 
 ### 5.3 The Comparison of Reordering Algorithm
 
@@ -224,13 +221,11 @@ Block Size: 16, 32, 64, 128, 256, 512, 1024
 
 ### 5.4 The Effect of Parallel Verification
 
-分配不同数量 vCPUs 验证阶段时间：
-使用一个准备好的区块测试，vCPUs: 1, 2, 4, 8, 16
+本节我们测试给 FabricMan 验证节点分配不同的 CPU 核心数量对并行验证时间的影响。系统需要使用大量的 CPU 资源进行节点身份的加密和解密运算，为了消除该部分的影响，我们对系统整体的吞吐量进行评估。我们使用一个打包好的区块，在 CPU 核心数为 1 到 16 的验证节点进行 MVCC 验证时间的模块化测试。测试结果如 Figure 9 所示。
 
 ![Figure 9](fig9.png)
 
-• 增加使用的核心数后， MVCC 验证时间有明显减少；
-• 核心数到达 8 以上时间减少不明显，可能是因为与数据库交互成为瓶颈。
+可以看出增加使用的核心数后，MVCC 验证时间有明显减少。而核心数到达 8 以上时间减少不明显，可能是该阶段与数据库交互或其他穿行操作成为瓶颈。
 
 ### 5.5 The Effect of Transaction Merging
 
@@ -257,7 +252,13 @@ Block Size: 16, 32, 64, 128, 256, 512, 1024
 
 ## 参考文献
 
+[1] S. Nakamoto. 2008. Bitcoin: a peer-to-peer electronic cash system. https://bitcoin.org/bitcoin.pdf.
+
+[2] Vitalik Buterin et al. Ethereum: A next-generation smart contract and decentralized application platform. URL https://github. com/ethereum/wiki/wiki/% 5BEnglish%5D-White-Paper, 7, 2014.
+
 [3] M. Vukolic, “The quest for scalable blockchain fabric: Proof-of-work vs. bft replication.” in International Workshop on Open Problems inNetwork Security. Springer, 2015, pp. 112–125.
+
+[4] Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains
 
 [5] Ankur Sharma, Felix Martin Schuhknecht, Divya Agrawal, and Jens Dittrich. 2019. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric. In Proceedings of the 2019 International Conference on Management of Data. ACM, 105–122.
 
@@ -286,3 +287,33 @@ Block Size: 16, 32, 64, 128, 256, 512, 1024
 [17] Tendermint. http://tendermint.com.
 
 [18] B. Charron-Bost, F. Pedone, and A. Schiper, editors. Replication: Theory and Practice, volume 5959 of Lecture Notes in Computer Science. Springer, 2010.
+
+[19] A. Azaria, A. Ekblaw, T. Vieira, and A. Lippman. 2016. Medrec: Using blockchain for medical data access and permission management. In 2nd InternationalConference on Open and Big Data, 25–30.
+
+[20] FAN K, WANG S, REN Y, et al. Medblock: efficient and secure medical data sharing via blockchain [J]. Journal of medical systems,2018,42 (8):1-11.
+
+[21] S. A. Abeyratne and R. P. Monfared. 2016. Blockchain ready manufacturing supply chain using distributed ledger. International Journal of Research inEngineering and Technology, 5, 9, 1–10.
+
+[22] Kaihua Qin, Liyi Zhou, and Arthur Gervais. Quantifying blockchain extractable value: How dark is the forest? arXiv preprint arXiv:2101.05511, 2021.
+
+[23] H.-N. Dai, Z. Zheng, and Y. Zhang, “Blockchain for Internet of Things: A survey,” IEEE Internet Things J., vol. 6, no. 5, pp. 8076–8094, Oct. 2019.
+
+[24] Dinh, Tien Tuan Anh, et al. “Blockbench: A framework for analyzing private blockchains.” Proceedings of the 2017 ACM International Conference on Management of Data. 2017.
+
+[25] Baliga, Arati, et al. “Performance characterization of hyperledger fabric.” 2018 Crypto Valley conference on blockchain technology (CVCBT). IEEE, 2018.
+
+[26] Shalaby, Salma, et al. “Performance evaluation of hyperledger fabric.” 2020 IEEE International Conference on Informatics, IoT, and Enabling Technologies (ICIoT). IEEE, 2020.
+
+[27] Sukhwani, Harish, et al. “Performance modeling of hyperledger fabric (permissioned blockchain network).” 2018 IEEE 17th International Symposium on Network Computing and Applications (NCA). IEEE, 2018.
+
+[28] Jiang, Lili, et al. “Performance analysis of Hyperledger Fabric platform: A hierarchical model approach.” Peer-to-Peer Networking and Applications 13.3 (2020): 1014-1025.
+
+[29] Andola, Nitish, et al. “Vulnerabilities on hyperledger fabric.” Pervasive and Mobile Computing 59 (2019): 101050.
+
+[30] Yamashita, Kazuhiro, et al. “Potential risks of hyperledger fabric smart contracts.” 2019 IEEE International Workshop on Blockchain Oriented Software Engineering (IWBOSE). IEEE, 2019.
+
+[31] Brandenburger, Marcus, et al. “Blockchain and trusted computing: Problems, pitfalls, and a solution for hyperledger fabric.” arXiv preprint arXiv:1805.08541 (2018).
+
+[32] Dabholkar, Ahaan, and Vishal Saraswat. “Ripping the fabric: Attacks and mitigations on hyperledger fabric.” International Conference on Applications and Techniques in Information Security. Springer, Singapore, 2019.
+
+[33] 2019. https://github.com/hyperledger/caliper
