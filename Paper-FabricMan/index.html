@@ -18,7 +18,7 @@
   
     <meta name="description" content="FabircMan 的论文。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「论」 对于 EOV 区块链的优化">
+<meta property="og:title" content="「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化">
 <meta property="og:url" content="https://qanlyma.github.io/Paper-FabricMan/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="FabircMan 的论文。">
@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Paper-FabricMan/fig11.png">
 <meta property="og:image" content="https://qanlyma.github.io/Paper-FabricMan/fig12.png">
 <meta property="article:published_time" content="2023-01-18T05:20:09.000Z">
-<meta property="article:modified_time" content="2024-02-23T09:43:34.487Z">
+<meta property="article:modified_time" content="2024-02-27T06:13:00.305Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Paper-FabricMan/fig1.png">
@@ -49,7 +49,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「论」 对于 EOV 区块链的优化 - Qanly</title><meta name="robots" content="noindex">
+  <title>「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化 - Qanly</title><meta name="robots" content="noindex">
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -190,7 +190,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「论」 对于 EOV 区块链的优化"></span>
+            <span id="subtitle" data-typed-text="「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化"></span>
           
         </div>
 
@@ -269,12 +269,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「论」 对于 EOV 区块链的优化</h1>
+            <h1 style="display: none">「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：33 分钟前
+                    本文最后更新于：几秒前
                   
                 
               </p>
@@ -320,7 +320,7 @@
 <p>Cross-block conflicts 是发生在不同区块之间的读写冲突。由于 Execute-Order-Validate 的结构特性，交易在 simulated execution 和 verifcation submission 之间有一定的时延。从而导致后一个区块中发生脏读，最终引起 MVCC 冲突。如 Figure 3 所示，T1 和 T2 是处在不同区块中的两笔交易。在执行交易时，T1 读取 k1 的当前版本号 v0 并加入其读集。从验证阶段可以看出 T1 的写集对 k1 进行了修改，但由于这一步是模拟执行，执行结果并不会更改数据库状态，所以紧随其后的 T2 执行阶段读取到的依旧是 v0 版本的 k1。之后包含 T1 的区块先进入验证阶段，并更新了节点当前状态中 k1 的版本号到 v1。当验证包含 T2 的区块时，节点就会检测出 T2 的读集中存在 k1 的版本冲突，从而导致交易无效。这一旧读问题会一直等到最后的验证提交阶段才能被发现。</p>
 <p><img src="/Paper-FabricMan/fig3.png" srcset="/img/loading.gif" lazyload alt="Figure 3"></p>
 <p>综合以上分析，我们决定在排序阶段引入一个重排序算法，针对同一个 key，先执行读集包含该 key 的交易，再执行写集包含该 key 的交易。以此减少 Within-block conflicts 中止的交易。同时在 orderer 中加入一个缓存机制，来储存每个 key 最新的版本号，如果遇到低于缓存版本的交易读集，则直接将其提前中止。以此提前解决 Cross-block conflicts 带来的问题。详细实现方案会在第 4 章介绍。</p>
-<h3 id="3-2-The-Problem-of-Ordering"><a href="#3-2-The-Problem-of-Ordering" class="headerlink" title="3.2 The Problem of Ordering"></a>3.2 The Problem of Ordering</h3><p>Fabric++ 使用了重排序来解决 Within-block conflicts。在排序阶段，Fabric++ 会记录 orderer 收到交易的读写集，并用它们生成交易冲突图。若想得到无冲突排序，则需要冲突图中无环。如 2.2 节所述，Fabric++ 使用 Tarjan[8] 的算法将冲突图划分为多个强连通子图，然后使用 Johnson[9] 的算法从中检测所有的环。通过不断删除在环中出现频率最高的交易，这个算法可以得到一个包含尽可能多交易的无环图。最后通过无环图构建一个无冲突排序用以出块。</p>
+<h3 id="3-2-The-Problem-of-Reordering"><a href="#3-2-The-Problem-of-Reordering" class="headerlink" title="3.2 The Problem of Reordering"></a>3.2 The Problem of Reordering</h3><p>Fabric++ 使用了重排序来解决 Within-block conflicts。在排序阶段，Fabric++ 会记录 orderer 收到交易的读写集，并用它们生成交易冲突图。若想得到无冲突排序，则需要冲突图中无环。如 2.2 节所述，Fabric++ 使用 Tarjan[8] 的算法将冲突图划分为多个强连通子图，然后使用 Johnson[9] 的算法从中检测所有的环。通过不断删除在环中出现频率最高的交易，这个算法可以得到一个包含尽可能多交易的无环图。最后通过无环图构建一个无冲突排序用以出块。</p>
 <p>但是，在上述步骤中 Johnson 算法的时间复杂度是 O((n+e)(c+1))，其中 n 是节点数量，e 是边的数量，c 是图中环的数量。冲突图中节点和边的数量受图大小的限制，可以控制在较小的值。但是环的数量却没有限制，可能非常大。在第五章实验中我们发现，在相同配置条件下使用 Fabric++ 重排序算法，不同区块重排序的时间差异较大。当排序阶段交易冲突率增加时，重排序所需时间增加显著，甚至会无法完成正常出块。以 SmallBank[14] 智能合约为例，攻击者可以在少量账户之间高频率发送交易，从而使得重排序时间过长最终导致系统崩溃。文章[15] 也指出了类似的问题：Fabric++ 在解决环时，每删除一个交易都需要重新计算循环中单个事务的出现次数，这使得整个算法的时间复杂度来到 O(n^3)。</p>
 <p>为了让算法执行时间更加稳定，我们在第 4 章基于拓扑排序提出了一种新的重排序算法，使得在交易冲突率较高的环境下系统依旧可以较快的完成重排序。</p>
 <h2 id="4-DESIGN-OF-FABRICMAN"><a href="#4-DESIGN-OF-FABRICMAN" class="headerlink" title="4 DESIGN OF FABRICMAN"></a>4 DESIGN OF FABRICMAN</h2><p>我们已经分析过 Fabric 和 Fabric++ 存在的问题及原因，接下来介绍我们是如何解决这些问题的。我们将设计的系统命名为 FabricMan。</p>
@@ -429,7 +429,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「论」 对于 EOV 区块链的优化</div>
+      <div>「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化</div>
       <div>https://qanlyma.github.io/Paper-FabricMan/</div>
     </div>
     <div class="license-meta">
@@ -595,10 +595,10 @@
     
       
       
-        <a href="/Paper-FabricMan/" title="「论」 对于 EOV 区块链的优化"
+        <a href="/Paper-FabricMan/" title="「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「论」 对于 EOV 区块链的优化</span>
+          <span class="category-post">「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化</span>
         </a>
       
     
