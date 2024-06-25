@@ -1,7 +1,7 @@
 ---
-title: 「Go」 数组
+title: 「Go」 02 数组
 category_bar: true
-date: 2023-07-11 20:50:10
+date: 2023-03-11 20:50:10
 tags:
 categories: Golang
 banner_img:
@@ -28,7 +28,7 @@ Golang 数组相关题目。
 func search(nums []int, target int) int {
     i, j := 0, len(nums)-1
     for i <= j {
-        m := (i+j) / 2
+        m := i + (j-i)/2
         if nums[m] < target {
             i = m + 1
         } else if nums[m] > target {
@@ -44,17 +44,62 @@ func search(nums []int, target int) int {
 * 暴力解法时间复杂度：O(n)
 * 二分法时间复杂度：O(logn)
 
+### [leetcode 34 题](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+在排序数组中查找元素的第一个和最后一个位置。
+
+```go
+func searchRange(nums []int, target int) []int {
+    l, r := getLeft(nums, target), getRight(nums, target)
+    if l == -2 || r == -2 {
+        return []int{-1, -1}
+    }
+    if r - l > 1 {
+        return []int{l+1, r-1}
+    }
+    return []int{-1, -1}
+}
+
+func getLeft(nums []int, target int) int {
+    res := -2
+    i, j := 0, len(nums)-1
+    for i <= j {
+        m := i + (j-i)/2
+        if nums[m] < target {
+            i = m + 1
+        } else {
+            j = m - 1
+            res = j
+        }
+    }
+    return res
+}
+
+func getRight(nums []int, target int) int {
+    res := -2
+    i, j := 0, len(nums)-1
+    for i <= j {
+        m := i + (j-i)/2
+        if nums[m] > target {
+            j = m - 1
+        } else {
+            i = m + 1
+            res = i
+        }
+    }
+    return res
+}
+```
+
 ## 2 快慢指针
 
 ### [leetcode 27 题](https://leetcode.cn/problems/remove-element/)
 
 给你一个数组 nums 和一个值 val，你需要**原地**移除所有数值等于 val 的元素，并返回移除后数组的新长度。
 
-使用 O(1) 额外空间并原地修改输入数组。数组的元素在内存地址中是连续的，不能单独删除数组中的某个元素，只能覆盖。
+数组的元素在内存地址中是连续的，不能单独删除数组中的某个元素，只能覆盖。这个题目暴力解法就是两层 for 循环，一个 for 循环遍历数组元素，第二个 for 循环更新数组。
 
-这个题目暴力解法就是两层 for 循环，一个 for 循环遍历数组元素，第二个 for 循环更新数组。
-
-使用快慢指针在一个 for 循环下完成两个 for 循环的工作，时间复杂度 O(n) ：
+使用快慢指针可以在一个 for 循环下完成两个 for 循环的工作：
 
 * 快指针：寻找新数组的元素 ，新数组就是不含有目标元素的数组
 * 慢指针：指向更新新数组下标的位置
@@ -90,9 +135,76 @@ func removeElement(nums []int, val int) int {
 
 3. 如果 `A[i] * A[i] >= A[j] * A[j]` 那么 `result[k] = A[i] * A[i]`，`i++`。
 
+```go
+func sortedSquares(nums []int) []int {
+    res := make([]int, len(nums))
+    pos := len(nums) - 1
+    for i, j := 0, len(nums)-1; i <= j; {
+        if nums[i] * nums[i] > nums[j] * nums[j] {
+            res[pos] = nums[i] * nums[i]
+            i++
+        } else {
+            res[pos] = nums[j] * nums[j]
+            j--
+        }
+        pos--
+    }
+    return res
+}
+```
+
+### [leetcode 844 题](https://leetcode.cn/problems/backspace-string-compare/)
+
+比较含退格的字符串。
+
+普通方法是用栈模拟操作，空间复杂度为 O(m+n)。可以使用从后向前的双指针来优化。
+
+```go
+func backspaceCompare(s, t string) bool {
+    skipS, skipT := 0, 0
+    i, j := len(s)-1, len(t)-1
+    for i >= 0 || j >= 0 {
+        for i >= 0 {
+            if s[i] == '#' {
+                skipS++
+                i--
+            } else if skipS > 0 {
+                skipS--
+                i--
+            } else {
+                break
+            }
+        }
+        for j >= 0 {
+            if t[j] == '#' {
+                skipT++
+                j--
+            } else if skipT > 0 {
+                skipT--
+                j--
+            } else {
+                break
+            }
+        }
+        if i >= 0 && j >= 0 {
+            if s[i] != t[j] {
+                return false
+            }
+        } else if i >= 0 || j >= 0 {
+            return false
+        }
+        i--
+        j--
+    }
+    return true
+}
+```
+
 ## 4 滑动窗口
 
 ### [leetcode 209 题](https://leetcode.cn/problems/minimum-size-subarray-sum/)
+
+给定一个含有 n 个正整数的数组和一个正整数 s，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。
 
 实现滑动窗口，主要确定如下三点：
 
@@ -100,5 +212,93 @@ func removeElement(nums []int, val int) int {
 * 如何移动窗口的起始位置？（本题使用 for 循环一次移动多位）
 * 如何移动窗口的结束位置？（本题一次移动一位）
 
+```go
+func minSubArrayLen(target int, nums []int) int {
+    res := len(nums) + 1
+    l, r, sum := 0, 0, 0
+    for r < len(nums) {
+        sum += nums[r]
+        for sum >= target {
+            if res > (r - l + 1) {
+                res = r - l + 1
+            }
+            sum -= nums[l]
+            l++
+        } 
+        r++
+    }
+    if res == len(nums) + 1 {
+        return 0
+    }
+    return res
+}
+```
+
 * 暴力解法时间复杂度：O(n^2)
 * 滑动窗口时间复杂度：O(n)
+
+## 5 模拟过程
+
+### [leetcode 59 题](https://leetcode.cn/problems/spiral-matrix-ii/)
+
+给你一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix。
+
+```go
+func generateMatrix(n int) [][]int {
+    top, bottom := 0, n-1
+    left, right := 0, n-1
+    num := 1
+    tar := n * n
+    matrix := make([][]int, n)
+    for i := 0; i < n; i++ {
+        matrix[i] = make([]int, n)
+    }
+    for num <= tar {
+        for i := left; i <= right; i++ {
+            matrix[top][i] = num
+            num++
+        }
+        top++
+        for i := top; i <= bottom; i++ {
+            matrix[i][right] = num
+            num++
+        }
+        right--
+        for i := right; i >= left; i-- {
+            matrix[bottom][i] = num
+            num++
+        }
+        bottom--
+        for i := bottom; i >= top; i-- {
+            matrix[i][left] = num
+            num++
+        }
+        left++
+    }
+    return matrix
+}
+```
+
+## 6 查找算法
+
+### [剑指 Offer 03](https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
+
+找出数组中重复的数字。
+
+由于此题的特殊限制，可以使用数组下标作为 map。
+
+```go
+func findRepeatNumber(nums []int) int {
+    for i := 0; i < len(nums); {
+        if nums[i] == i {
+            i++
+            continue
+        }
+        if nums[nums[i]] == nums[i] {
+            return nums[i]
+        } 
+        nums[i], nums[nums[i]] = nums[nums[i]], nums[i]
+    }
+    return -1
+}
+```

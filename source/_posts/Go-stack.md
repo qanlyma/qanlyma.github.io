@@ -1,7 +1,7 @@
 ---
-title: 「Go」 栈与队列
+title: 「Go」 08 栈与队列
 category_bar: true
-date: 2023-07-13 14:49:50
+date: 2023-04-15 11:49:50
 tags:
 categories: Golang
 banner_img:
@@ -13,7 +13,7 @@ Golang 栈与队列相关题目。
 
 ## 1 概念
 
-队列是先进先出，栈是先进后出。
+队列是先进先出（队头删除，队尾插入），栈是先进后出。
 
 ![](1.png)
 
@@ -160,6 +160,8 @@ func isValid(s string) bool {
 
 ### 2.2 [leetcode 150 题](https://leetcode.cn/problems/evaluate-reverse-polish-notation/)
 
+逆波兰表达式求值。
+
 题目本身不难，题解巧妙使用了 err 值得学习。
 
 ```go
@@ -188,7 +190,113 @@ func evalRPN(tokens []string) int {
 }
 ```
 
-### 2.2 [leetcode 239 题](https://leetcode.cn/problems/sliding-window-maximum/)
+### 2.3 [leetcode 239 题](https://leetcode.cn/problems/sliding-window-maximum/)
 
 滑动窗口最大值。
 
+构建一个递减队列来不断存储更新最大值。
+
+```go
+func maxSlidingWindow(nums []int, k int) []int {
+    var queue, res []int
+    for i := 0; i < k; i++ {
+        if len(queue) > 0 {
+            if nums[i] > queue[0] {
+                queue = queue[0:0]
+            } else {
+                for nums[i] > queue[len(queue)-1] {
+                    queue = queue[:len(queue)-1]
+                }
+            }
+        }
+        queue = append(queue, nums[i])
+    }
+    res = append(res, queue[0])
+
+    for i := k; i < len(nums); i++ {
+        if nums[i-k] == queue[0] {
+            queue = queue[1:]
+        }
+        if len(queue) > 0 {
+            if nums[i] > queue[0] {
+                queue = queue[0:0]
+            } else {
+                for nums[i] > queue[len(queue)-1] {
+                    queue = queue[:len(queue)-1]
+                }
+            }
+        }
+        queue = append(queue, nums[i])
+        if len(queue) > k {
+            queue = queue[:k]
+        }
+        res = append(res, queue[0])
+    }
+
+    return res
+}
+```
+
+### 2.4 [leetcode 739 题](https://leetcode.cn/problems/daily-temperatures/)
+
+给定一个整数数组 temperatures，表示每天的温度，返回一个数组 answer ，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 0 来代替。
+
+该题使用暴力解法时间复杂度为 O(n^2)，可以使用**单调栈**，空间换时间，实现 O(n) 的时间复杂度。
+
+本题要使用递增循序（从栈头到栈底的顺序），因为只有递增的时候，栈里要加入一个元素 i 的时候，才知道栈顶元素在数组中右面第一个比栈顶元素大的元素是 i。
+
+**如果求一个元素右边第一个更大元素，单调栈就是递增的，如果求一个元素右边第一个更小元素，单调栈就是递减的**。
+
+```go
+func dailyTemperatures(temperatures []int) []int {
+    var stack []int
+    res := make([]int, len(temperatures))
+    for i := 0; i < len(temperatures); i++ {
+        if len(stack) == 0 {
+            stack = append(stack, i)
+        } else if temperatures[i] > temperatures[stack[len(stack)-1]] {
+            for len(stack) > 0 && temperatures[i] > temperatures[stack[len(stack)-1]] {
+                res[stack[len(stack)-1]] = i - stack[len(stack)-1]
+                stack = stack[:len(stack)-1]
+            }
+        } 
+        stack = append(stack, i)
+    }
+    return res
+}
+```
+
+### 2.5 [leetcode 42 题](https://leetcode.cn/problems/trapping-rain-water/)
+
+接雨水，单调栈参考[解析](https://programmercarl.com/0042.%E6%8E%A5%E9%9B%A8%E6%B0%B4.html)。
+
+```go
+func trap(height []int) int {
+    var res int
+    stack := []int{0}
+    for i := 1; i < len(height); i++ { 
+        if height[stack[len(stack)-1]] < height[i] {
+            for len(stack) > 0 && height[stack[len(stack)-1]] < height[i] {
+                top := stack[len(stack)-1]
+                stack = stack[:len(stack)-1]
+                if len(stack) > 0 {
+                    tmp := (min(height[stack[len(stack)-1]], height[i]) - height[top]) * (i - stack[len(stack)-1] - 1)
+                    res += tmp
+                }
+            }
+        } else if height[stack[len(stack)-1]] == height[i] {
+            stack[len(stack)-1] = i
+            continue
+        }
+        stack = append(stack, i)
+    }
+    return res
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
+```

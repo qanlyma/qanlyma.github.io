@@ -1,7 +1,7 @@
 ---
 title: 「训」 笔记(10)：消息队列
 category_bar: true
-date: 2023-06-30 15:40:45
+date: 2023-04-14 15:40:45
 tags:
 categories: 字节青训
 banner_img:
@@ -22,7 +22,7 @@ banner_img:
 ![](2.png) 
 
 * Topic：逻辑队列，可以理解成每一个不同的业务场景就是一个不同的 Topic，对于这个业务来说，所有的数据都存储在这个 Topic 中
-* Partition：分片，通常 Topic 会有多个分片，不同分片直接消息是可以并发来处理的，这样提高单个 Topic 的吞吐量
+* Partition：分片，通常 Topic 会有多个分片，不同分片之间消息是可以并发来处理的，这样提高单个 Topic 的吞吐量
 * Cluster：物理集群，每个集群中可以建立多个不同的 Topic
 * Producer：生产者，负责将业务消息发送到 Topic 中
 * Consumer：消费者，负责消费 Topic 中的消息
@@ -52,7 +52,7 @@ banner_img:
 * Broker：顺序写，消息索引，零拷贝
     ![零拷贝](10.png)
 
-* Consumer: Rebalance
+* Consumer：Rebalance
 
 ### 存在问题
 
@@ -64,7 +64,7 @@ banner_img:
 
 2. 负载不均衡
 
-    某个 Broker 负载较高时，需要将 某分片迁移到负载小的机器上，但是数据复制的过程又会加大该 Broker 的负载。所以其负载均衡非常复杂。
+    某个 Broker 负载较高时，需要将某分片迁移到负载小的机器上，但是数据复制的过程又会加大该 Broker 的负载。所以其负载均衡非常复杂。
 
 3. 没有自己的缓存，完全依赖 Page Cache
 

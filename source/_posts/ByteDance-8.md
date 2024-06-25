@@ -1,7 +1,7 @@
 ---
-title: 「训」 笔记(8)：微服务框架
+title: 「训」 笔记(08)：微服务框架
 category_bar: true
-date: 2023-04-11 15:48:43
+date: 2023-03-28 15:48:43
 tags:
 categories: 字节青训
 banner_img:

@@ -11,7 +11,7 @@ banner_img:
 
 <!-- more -->
 
-## 1 Fabric
+## 1 Fabric [1]
 
 ### 1.1 交易流程
 
@@ -43,7 +43,7 @@ banner_img:
 
 ## 2 增加吞吐量
 
-### 2.1 Optimizing Fabric [1]
+### 2.1 Optimizing Fabric [2]
 
 此文对 Fabric 1.0 做了大量测试，发现以下**瓶颈**：
 
@@ -57,7 +57,7 @@ banner_img:
 2. 并行 VSCC 验证
 3. 区块 MVCC 验证时的批量读写
 
-### 2.2 FastFabric [2]
+### 2.2 FastFabric [3]
 
 **优化**：
 
@@ -82,7 +82,7 @@ banner_img:
 
 ## 3 提高成功率
 
-### 3.1 Fabric++ [3]
+### 3.1 Fabric++ [4]
 
 **优化**：
 
@@ -107,11 +107,11 @@ banner_img:
 
 ![Result](8.png)
 
-### 3.2 FabricSharp [4]
+### 3.2 FabricSharp [5]
 
 **优化**：
 1. Fabric++ 过度中止了跨块读取的交易
-2. Fabric++ 没有考虑跨快并行交易之间的依赖，重排效果受限
+2. Fabric++ 没有考虑跨块并行交易之间的依赖，重排效果受限
 3. 更好的早期中止和交易重排算法
 
 ![](9.png)
@@ -141,38 +141,28 @@ banner_img:
 ![](15.png)
 ![](16.png)
 
-## 4 毕设想法
+## 4 改进思路
 
 ### 4.1 交易合并
 
-这是针对简单的转账交易的改进。
+在模拟执行阶段对交易类型进行判断，如果符合简单转账交易的类型，则添加一个可合并的标志，后续在排序节点中对该类交易进行合并，以减少验证阶段 MVCC 冲突。
 
-假设有 Tx1(A --10-->B)，Tx2(A --10-->C)，在目前 Fabric 系统中如果将这两笔交易打包到一个区块中，即使 A 的余额充足（即大于 20），排在后面的一笔交易也会因为读写冲突被中止。同理 Tx3(B --10-->A)，Tx4(C --10-->A) 也是如此。
+### 4.2 交易重排
 
-那么我希望可以将由同一个 key 转出的，或者转入到同一个 key 的交易进行合并。
+在 Fabric 2.4.0 排序节点中生成交易依赖图，复现并改进交易重排序的算法，降低交易的读写冲突率。
 
-### 4.2 拆分子键
+### 4.3 并行验证
 
-假设有 Tx1(A --10-->B)，Tx2(B --10-->C)，这两笔交易无法合并，那么可以采用子键的形式：
-
-![Sub-K](17.png)
-
-从主键 B 中拆分两个子键 B1 和 B2：B1 用于接收 A 的转账，B2 用于给 C 转账。导师建议我在最后将 B 的子键合并。
-
-### 4.3 交易重排
-
-构建一个**转账流图**。利用之前的改进进行交易重排序。
-
-### 4.4 并行验证
-
-在重排时生成依赖，对不存在依赖的独立交易链并行验证。
+根据排序阶段生成的交易依赖图，在验证阶段对相互独立的交易链进行并行验证，提高系统的吞吐量。
 
 ## 5 参考文献
 
-[1] Nathan S , Thakkar P , Vishwanathan B . Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform: IEEE, 10.1109/MASCOTS.2018.00034[P]. 2018.
+[1] Androulaki E , Barger A , Bortnikov V , et al. Hyperledger fabric: a distributed operating system for permissioned blockchains[C]// European Conference on Computer Systems.ACM, 2018.
 
-[2] Gorenflo C ,  Lee S ,  Golab L , et al. FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second[J]. IEEE, 2019.
+[2] Nathan S , Thakkar P , Vishwanathan B . Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform: IEEE, 10.1109/MASCOTS.2018.00034[P]. 2018.
 
-[3] Sharma A ,  Schuhknecht F M ,  Agrawal D , et al. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric[C]// ACM SIGMOD 2019. ACM, 2019.
+[3] Gorenflo C ,  Lee S ,  Golab L , et al. FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second[J]. IEEE, 2019.
 
-[4] Ruan P ,  Loghin D ,  Ta Q T , et al. A Transactional Perspective on Execute-order-validate Blockchains[J].  2020.
+[4] Sharma A ,  Schuhknecht F M ,  Agrawal D , et al. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric[C]// ACM SIGMOD 2019. ACM, 2019.
+
+[5] Ruan P ,  Loghin D ,  Ta Q T , et al. A Transactional Perspective on Execute-order-validate Blockchains[J].  2020.

@@ -1,5 +1,5 @@
 ---
-title: 「毕」 4. Fabric 2.4.0 源码解析
+title: 「毕」 4. Fabric 源码解析
 category_bar: true
 date: 2023-05-25 15:26:30
 tags:
@@ -7,7 +7,7 @@ categories: 毕设项目
 banner_img:
 ---
 
-学习一下 Fabric 2.4 的源代码，本文只关注较为**核心**的部分。
+学习一下 Fabric 2.4.0 的源代码，本文只关注较为**核心**的部分。
 
 <!-- more -->
 

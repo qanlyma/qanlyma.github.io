@@ -1,7 +1,7 @@
 ---
 title: 「训」 笔记(11)：RPC 原理
 category_bar: true
-date: 2023-07-01 16:14:40
+date: 2023-04-20 16:14:40
 tags:
 categories: 字节青训
 banner_img:
@@ -73,7 +73,7 @@ RPC —— Remote Procedure Calls。
 **TLV 编码**
 
 * Tag：标签，可以理解为类型
-* Lenght：长度
+* Length：长度
 * Value：值，Value 也可以是个 TLV 结构
 
 ![](4.png)
