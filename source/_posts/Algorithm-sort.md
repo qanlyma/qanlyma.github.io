@@ -1,9 +1,9 @@
 ---
-title: 「Go」 11 排序算法
+title: 「算」 11. 排序算法
 category_bar: true
 date: 2023-07-17 14:21:34
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

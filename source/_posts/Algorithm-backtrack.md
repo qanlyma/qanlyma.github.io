@@ -1,9 +1,9 @@
 ---
-title: 「Go」 12 回溯算法
+title: 「算」 12. 回溯算法
 category_bar: true
 date: 2023-07-19 12:41:03
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

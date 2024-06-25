@@ -1,9 +1,9 @@
 ---
-title: 「Go」 09 二叉树
+title: 「算」 09. 二叉树
 category_bar: true
 date: 2023-07-15 16:28:45
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

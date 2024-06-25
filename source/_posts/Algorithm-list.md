@@ -1,9 +1,9 @@
 ---
-title: 「Go」 03 链表
+title: 「算」 03. 链表
 category_bar: true
 date: 2023-03-15 09:48:47
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

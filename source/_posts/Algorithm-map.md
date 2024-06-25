@@ -1,9 +1,9 @@
 ---
-title: 「Go」 04 哈希表
+title: 「算」 04. 哈希表
 category_bar: true
 date: 2023-04-10 14:23:10
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 
