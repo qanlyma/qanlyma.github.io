@@ -1,9 +1,9 @@
 ---
-title: 「Go」 08 栈与队列
+title: 「算」 08. 栈与队列
 category_bar: true
 date: 2023-04-15 11:49:50
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

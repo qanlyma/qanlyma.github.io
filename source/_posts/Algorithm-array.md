@@ -1,9 +1,9 @@
 ---
-title: 「Go」 02 数组
+title: 「算」 02. 数组
 category_bar: true
 date: 2023-03-11 20:50:10
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

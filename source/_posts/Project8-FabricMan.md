@@ -1,13 +1,13 @@
 ---
-title: 「论」 对于 Execute-Order-Validate 区块链高并发冲突问题的优化
+title: 「毕」 8. 毕业论文（精简版）
 category_bar: true
 date: 2024-03-21 13:20:09
 tags:
-categories: 论文阅读
+categories: 毕设项目
 banner_img:
 ---
 
-The optimization of high-concurrency conflict issues in Execute-Order-Validate blockchain.
+《对于 Execute-Order-Validate 区块链高并发冲突问题的优化》
 
 <!-- more -->
 

@@ -1,9 +1,9 @@
 ---
-title: 「Go」 05 字符串
+title: 「算」 05. 字符串
 category_bar: true
 date: 2023-04-12 15:11:48
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

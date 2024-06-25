@@ -1,5 +1,5 @@
 ---
-title: 「毕」 7. 实验设计与测试
+title: 「毕」 7. 实验设计参考
 category_bar: true
 date: 2023-10-16 13:14:49
 tags:

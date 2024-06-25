@@ -1,9 +1,9 @@
 ---
-title: 「Go」 01 类型转换
+title: 「算」 01. 类型转换
 category_bar: true
 date: 2022-11-13 22:29:45
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 

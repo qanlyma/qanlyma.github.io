@@ -1,9 +1,9 @@
 ---
-title: 「Go」 10 堆结构
+title: 「算」 10. 堆结构
 category_bar: true
 date: 2023-07-16 15:49:50
 tags:
-categories: Golang
+categories: 算法数构
 banner_img:
 ---
 
