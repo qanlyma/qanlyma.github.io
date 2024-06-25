@@ -7,7 +7,7 @@ categories: 毕设项目
 banner_img:
 ---
 
-《对于 Execute-Order-Validate 区块链高并发冲突问题的优化》
+题目：《对于 Execute-Order-Validate 区块链高并发冲突问题的优化》
 
 <!-- more -->
 
