@@ -12,6 +12,7 @@
     "version": "6.3.0"
   },
   "dependencies": {
+    "css": "^3.0.0",
     "hexo": "^6.3.0",
     "hexo-asset-image": "github:CodeFalling/hexo-asset-image",
     "hexo-deployer-git": "^4.0.0",
@@ -21,7 +22,7 @@
     "hexo-generator-tag": "^2.0.0",
     "hexo-hide-posts": "^0.4.0",
     "hexo-renderer-ejs": "^2.0.0",
-    "hexo-renderer-marked": "^6.0.0",
+    "hexo-renderer-marked": "^6.1.0",
     "hexo-renderer-stylus": "^3.0.0",
     "hexo-server": "^3.0.0",
     "hexo-theme-landscape": "^1.0.0",
