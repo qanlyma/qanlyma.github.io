@@ -1,0 +1,929 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="学习一下 Fabric 2.4.0 的源代码，本文只关注较为核心的部分。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「毕」 4. Fabric 源码解析">
+<meta property="og:url" content="https://qanlyma.github.io/Project4-Code/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="学习一下 Fabric 2.4.0 的源代码，本文只关注较为核心的部分。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/Project4-Code/1.png">
+<meta property="article:published_time" content="2023-05-25T07:26:30.000Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.774Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/Project4-Code/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「毕」 4. Fabric 源码解析 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「毕」 4. Fabric 源码解析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-25 15:26" pubdate>
+          2023年5月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「毕」 4. Fabric 源码解析</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：10 个月前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>学习一下 Fabric 2.4.0 的源代码，本文只关注较为<strong>核心</strong>的部分。</p>
+<span id="more"></span>
+
+<h2 id="交互流程"><a href="#交互流程" class="headerlink" title="交互流程"></a>交互流程</h2><p><img src="/Project4-Code/1.png" srcset="/img/loading.gif" lazyload alt="流程"></p>
+<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><ul>
+<li><p>build：编译相关</p>
+</li>
+<li><p>ci：持续集成（CI）相关配置和脚本 </p>
+</li>
+<li><p>cmd：命令行操作相关入口代码</p>
+</li>
+<li><p><strong>common</strong>：一些公共库（错误处理、日志处理、账本存储、策略以及各种工具等等）</p>
+</li>
+<li><p><strong>core</strong>：核心库，组件的核心逻辑，针对每一个组件都有一个子目录（chaincode：与智能合约相关，comm：与网络通信相关，endorser：与背书节点相关）</p>
+</li>
+<li><p><strong>discovery</strong>：服务发现模块相关代码</p>
+</li>
+<li><p>docs：文档相关</p>
+</li>
+<li><p><strong>gossip</strong>：组织内部节点数据同步的通信协议，最终一致性算法，用于组织内部数据同步</p>
+</li>
+<li><p><strong>images</strong>：Docker 镜像打包，Docker 镜像都是通过这个目录下的配置文件生成的</p>
+</li>
+<li><p>integration：待迁移代码</p>
+</li>
+<li><p><strong>internal</strong>：内部代码，被 cmd 包等调用</p>
+</li>
+<li><p><strong>msp</strong>：成员服务管理，Fabric 网络中会为每一个成员提供相应的证书，msp 模块就是读取这些证书并做一些相应的处理</p>
+</li>
+<li><p><strong>orderer</strong>：排序节点的入口，用于消息的订阅与分发处理</p>
+</li>
+<li><p><strong>pkg</strong>：重写或实现了一些 golang 原生接口</p>
+</li>
+<li><p><strong>protoutil</strong>：Proposal 提案相关的工具包</p>
+</li>
+<li><p>release_notes：发布笔记</p>
+</li>
+<li><p><strong>sampleconfig</strong>：配置示例</p>
+</li>
+<li><p><strong>scripts</strong>：脚本，包含启动脚本、检查脚本等</p>
+</li>
+<li><p>swagger：swagger 文档生成配置</p>
+</li>
+<li><p><strong>tools</strong>：工具包，目前还是空的（release-2.4 分支）</p>
+</li>
+<li><p>vagrant：包含了用 Vagrant 建立一个简单的开发环境所必需的脚本</p>
+</li>
+<li><p>vender：存放 Go 中使用的第三方包</p>
+</li>
+</ul>
+<h2 id="1-背书"><a href="#1-背书" class="headerlink" title="1 背书"></a>1 背书</h2><h3 id="1-1-ProcessProposal-函数"><a href="#1-1-ProcessProposal-函数" class="headerlink" title="1.1 ProcessProposal 函数"></a>1.1 ProcessProposal 函数</h3><p><code>core/endorser/endorser.go</code></p>
+<p>Client 与 Peer 交互的入口，用于处理提案并生成提案响应。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(e *Endorser)</span></span> ProcessProposal(ctx context.Context, signedProp *pb.SignedProposal) (*pb.ProposalResponse, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 对提案进行拆包</span><br>	up, err := UnpackProposal(signedProp)<br><br>	<span class="hljs-comment">// 进行预处理，检查提案的头部、唯一性和访问控制列表（ACL）</span><br>	err = e.preProcess(up, channel)<br><br>	<span class="hljs-comment">// 处理提案并生成提案响应</span><br>	pResp, err := e.ProcessProposalSuccessfullyOrError(up)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(e *Endorser)</span></span> ProcessProposalSuccessfullyOrError(up *UnpackedProposal) (*pb.ProposalResponse, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 模拟执行</span><br>	res, simulationResult, ccevent, ccInterest, err := e.simulateProposal(txParams, up.ChaincodeName, up.Input)<br><br>	<span class="hljs-comment">// 获取链码的背书策略插件</span><br>	escc := cdLedger.EndorsementPlugin<br><br>	<span class="hljs-comment">// 使用背书策略插件进行背书</span><br>	endorsement, mPrpBytes, err := e.Support.EndorseWithPlugin(escc, up.ChannelID(), prpBytes, up.SignedProposal)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-1-1-simulateProposal-函数"><a href="#1-1-1-simulateProposal-函数" class="headerlink" title="1.1.1 simulateProposal 函数"></a>1.1.1 simulateProposal 函数</h4><p>执行提案，调用链码。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(e *Endorser)</span></span> simulateProposal(txParams *ccprovider.TransactionParams, chaincodeName <span class="hljs-type">string</span>, chaincodeInput *pb.ChaincodeInput) (*pb.Response, []<span class="hljs-type">byte</span>, *pb.ChaincodeEvent, *pb.ChaincodeInterest, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 执行提案，并获得结果</span><br>	res, ccevent, err := e.callChaincode(txParams, chaincodeInput, chaincodeName)<br><br>	<span class="hljs-comment">// 调用接口获取事务模拟的结果（读写集）</span><br>	simResult, err := txParams.TXSimulator.GetTxSimulationResults()<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(e *Endorser)</span></span> callChaincode(txParams *ccprovider.TransactionParams, input *pb.ChaincodeInput, chaincodeName <span class="hljs-type">string</span>) (*pb.Response, *pb.ChaincodeEvent, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 调用链码执行的接口</span><br>	res, ccevent, err := e.Support.Execute(txParams, chaincodeName, input)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-1-2-EndorseWithPlugin-函数"><a href="#1-1-2-EndorseWithPlugin-函数" class="headerlink" title="1.1.2 EndorseWithPlugin 函数"></a>1.1.2 EndorseWithPlugin 函数</h4><p><code>core/endorser/plugin_endorser.go</code></p>
+<p>给执行结果背书。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// EndorseWithPlugin endorses the response with a plugin</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(pe *PluginEndorser)</span></span> EndorseWithPlugin(pluginName, channelID <span class="hljs-type">string</span>, prpBytes []<span class="hljs-type">byte</span>, signedProposal *pb.SignedProposal) (*pb.Endorsement, []<span class="hljs-type">byte</span>, <span class="hljs-type">error</span>) &#123;<br>	plugin, err := pe.getOrCreatePlugin(PluginName(pluginName), channelID)<br><br>	<span class="hljs-keyword">return</span> plugin.Endorse(prpBytes, signedProposal)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-排序"><a href="#2-排序" class="headerlink" title="2 排序"></a>2 排序</h2><p>Orderer 在 Fabric 网络中的作用主要是原子广播（Atomic Broadcast）和全排序（Total Order）：</p>
+<ul>
+<li>通过 <code>broadcast</code> 接口，接受 client 发送的交易，然后将这些 Tx 进行排序；排序的的原则为 FIFS，但是区块内交易的顺序不一定与实际顺序一样，而是由到达 Orderer 的时间来决定的。</li>
+<li>排序后的交易根据一定的规则打包成区块，通过 <code>deliver</code> 接口将区块发送给 Peer 或 client；保证所有 Orderer 节点分发出来的 block 是一致的。</li>
+</ul>
+<p>配置：</p>
+<ul>
+<li>常量配置：<code>internal/peer/common/ordererenv.go</code></li>
+<li>变量配置：通过 configtx.yaml 保存在区块中，可以通过 Config 交易进行修改</li>
+</ul>
+<h3 id="2-1-Broadcast-函数"><a href="#2-1-Broadcast-函数" class="headerlink" title="2.1 Broadcast 函数"></a>2.1 Broadcast 函数</h3><p><code>orderer/common/server/server.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Broadcast receives a stream of messages from a client for ordering</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(s *server)</span></span> Broadcast(srv ab.AtomicBroadcast_BroadcastServer) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">return</span> s.bh.Handle(&amp;broadcastMsgTracer&#123;<br>		AtomicBroadcast_BroadcastServer: srv,<br>		msgTracer: msgTracer&#123;<br>			debug:    s.debug,<br>			function: <span class="hljs-string">&quot;Broadcast&quot;</span>,<br>		&#125;,<br>	&#125;)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-Handle-函数"><a href="#2-2-Handle-函数" class="headerlink" title="2.2 Handle 函数"></a>2.2 Handle 函数</h3><p><code>orderer/common/broadcast/broadcast.go</code></p>
+<p>Handle 函数负责原子广播服务端的处理，Handle 从 Broadcast 流里面读取请求，然后调用 ProcessMessage 函数进行处理，最后还会将处理结果返回给数据流。</p>
+<p>客户端调用 Broadcast 发起服务请求时，会调用 s.bh.Handle 方法处理请求，调用 Handle 方法，通过服务器端 srv 调用 srv.Recv()，监听并接收 Send 接口发送的交易消息请求。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Handle reads requests from a Broadcast stream, processes them, and returns the responses to the stream</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(bh *Handler)</span></span> Handle(srv ab.AtomicBroadcast_BroadcastServer) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">for</span> &#123;<br>		<span class="hljs-comment">// 从流中接收一个消息，如果接收到的消息是 io.EOF，表示流已结束</span><br>		msg, err := srv.Recv()<br>		<br>		<span class="hljs-comment">// 处理收到的消息</span><br>		resp := bh.ProcessMessage(msg, addr)<br><br>		<span class="hljs-comment">// 将响应发送回流中</span><br>		err = srv.Send(resp)<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-ProcessMessage-函数"><a href="#2-3-ProcessMessage-函数" class="headerlink" title="2.3 ProcessMessage 函数"></a>2.3 ProcessMessage 函数</h3><p>排序节点接收的交易类型分为 Normal 交易和 Config 交易：</p>
+<ul>
+<li>Normal 交易的内容包含 ProposalResponse 以及其他内容</li>
+<li>Config 交易主要是 channel 的创建或配置修改</li>
+</ul>
+<p>因为需要让后面的 Normal 交易尽快在最新配置的 channel 上运行，Config 交易都是单独成块的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(bh *Handler)</span></span> ProcessMessage(msg *cb.Envelope, addr <span class="hljs-type">string</span>) (resp *ab.BroadcastResponse) &#123;<br><br>	<span class="hljs-comment">// 解析出消息的通道头部 chdr，配置交易消息标志位 isConfig、链支持对象 processor</span><br>	chdr, isConfig, processor, err := bh.SupportRegistrar.BroadcastChannelSupport(msg)<br><br>	<span class="hljs-keyword">if</span> !isConfig &#123;<br><br>		<span class="hljs-comment">// 处理普通交易消息</span><br>		configSeq, err := processor.ProcessNormalMsg(msg)<br><br>		<span class="hljs-comment">// 检查当前通道共识组件链是否已经准备好接收新消息</span><br>		err = processor.WaitReady()<br><br>		<span class="hljs-comment">// 重新配置普通交易消息，交给共识请求排序出块</span><br>		err = processor.Order(msg, configSeq)<br><br>	&#125; <span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-comment">// 处理配置交易消息</span><br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-1-ProcessNormalMsg-函数"><a href="#2-3-1-ProcessNormalMsg-函数" class="headerlink" title="2.3.1 ProcessNormalMsg 函数"></a>2.3.1 ProcessNormalMsg 函数</h4><p><code>orderer/common/msgprocessor/standardchannel.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(s *StandardChannel)</span></span> ProcessNormalMsg(env *cb.Envelope) (configSeq <span class="hljs-type">uint64</span>, err <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 获取通道配置序号</span><br>	configSeq = s.support.Sequence()<br><br>	<span class="hljs-comment">// 利用自带的通道信息过滤器过滤该消息，检查是否满足应用通道上的消息处理请求</span><br>	err = s.filters.Apply(env)<br>	<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-2-Order-函数"><a href="#2-3-2-Order-函数" class="headerlink" title="2.3.2 Order 函数"></a>2.3.2 Order 函数</h4><p><code>orderer/consensus/etcdraft/chain.go</code></p>
+<p>提交 Normal 交易。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Order submits normal type transactions for ordering.</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *Chain)</span></span> Order(env *common.Envelope, configSeq <span class="hljs-type">uint64</span>) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">return</span> c.Submit(&amp;orderer.SubmitRequest&#123;LastValidationSeq: configSeq, Payload: env, Channel: c.channelID&#125;, <span class="hljs-number">0</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-3-Submit-函数"><a href="#2-3-3-Submit-函数" class="headerlink" title="2.3.3 Submit 函数"></a>2.3.3 Submit 函数</h4><p>Submit 首先将请求消息封装为 submit 结构，通过通道 c.submitC 传递给后端处理，同时获取当前时刻 raft 集群的 leader 信息。</p>
+<p>若当前节点是 leader 则将待提交的请求发送到本地 goroutine 处理；如果不是 leader，需要将请求发送给 leader 节点进行处理。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *Chain)</span></span> Submit(req *orderer.SubmitRequest, sender <span class="hljs-type">uint64</span>) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">select</span> &#123;<br>	<span class="hljs-comment">// 将 req 和 leadC 封装为一个 submit 结构体，并将其发送到 c.submitC 通道中。</span><br>	<span class="hljs-keyword">case</span> c.submitC &lt;- &amp;submit&#123;req, leadC&#125;:<br><br>		<span class="hljs-comment">// 从 leadC 通道中接收 leader 节点的标识</span><br>		lead := &lt;-leadC<br><br>		<span class="hljs-comment">// 若当前集群中还没有选出一个 leader，共识功能暂时不可用</span><br>		<span class="hljs-keyword">if</span> lead == raft.None &#123;...&#125;<br><br>		<span class="hljs-comment">// 若当前节点不是 leader，将消息转发给 leader</span><br>		<span class="hljs-keyword">if</span> lead != c.raftID &#123;<br>			<span class="hljs-keyword">if</span> err := c.forwardToLeader(lead, req); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br>		&#125;<br>		<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-run-函数"><a href="#2-4-run-函数" class="headerlink" title="2.4 run 函数"></a>2.4 run 函数</h3><p><code>orderer/consensus/etcdraft/chain.go</code></p>
+<p>Order 节点启动的时候会执行 <code>go c.run()</code>，该方法是一个无限循环，负责处理提交请求、处理应用层消息和定时任务等操作。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *Chain)</span></span> run() &#123;<br><br>	<span class="hljs-comment">// 进入主循环，在循环中通过 select 语句监听多个通道的事件</span><br>	<span class="hljs-keyword">for</span> &#123;<br>		<span class="hljs-keyword">select</span> &#123;<br>		<br>		<span class="hljs-comment">// submitC 通道：接收提交请求，根据当前节点的角色进行处理：</span><br>		<span class="hljs-comment">// 如果节点是 leader，将请求进行排序和处理；如果节点不是 leader，将请求转发给 leader 节点处理。</span><br>		<span class="hljs-keyword">case</span> s := &lt;-submitC:<br><br>			s.leader &lt;- soft.Lead<br>			<span class="hljs-comment">// 如果当前节点的领导者不是自身节点，则继续下一次循环。</span><br>			<span class="hljs-keyword">if</span> soft.Lead != c.raftID &#123;<br>				<span class="hljs-keyword">continue</span><br>			&#125;<br><br>			<span class="hljs-comment">// 如果当前节点是领导者，对提交请求进行排序和处理</span><br>			batches, pending, err := c.ordered(s.req)<br><br>			<span class="hljs-comment">// 提交排序后的请求并出块</span><br>			c.propose(propC, bc, batches...)<br><br>		&#125;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-4-1-ordered-函数"><a href="#2-4-1-ordered-函数" class="headerlink" title="2.4.1 ordered 函数"></a>2.4.1 ordered 函数</h4><p>如果是 leader 节点，那么将会执行 ordered 函数：</p>
+<ul>
+<li>如果是 Config 消息，调用 BlockCutter.Cut() 直接切割区块</li>
+<li>如果是 Normal 消息，调用 BlockCutter.Ordered() 进入缓存排序，根据当前交易量决定增加交易或切割</li>
+</ul>
+<p>ordered 处理之后，会得到由 BlockCutter 返回的数据包 bathches 和缓存是否还有数据的信息。如果缓存还有余留数据未出块，则启动计时器，否则重置计时器 timer.C。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Orders the envelope in the `msg` content. SubmitRequest.</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *Chain)</span></span> ordered(msg *orderer.SubmitRequest) (batches [][]*common.Envelope, pending <span class="hljs-type">bool</span>, err <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-keyword">if</span> isconfig &#123;<br>		<span class="hljs-comment">// ConfigMsg</span><br>	&#125;<br>	<br>	<span class="hljs-comment">// it is a normal message</span><br>	<span class="hljs-comment">// 对交易进行排序 orderer/common/blockcutter/blockcutter.go</span><br>	batches, pending = c.support.BlockCutter().Ordered(msg.Payload)<br>	<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-4-2-propose-函数"><a href="#2-4-2-propose-函数" class="headerlink" title="2.4.2 propose 函数"></a>2.4.2 propose 函数</h4><p>propose 会根据上一步的 batches 数据包调用 createNextBlock 打包出 block，并将 block 传递给 c.ch 通道。</p>
+<p>becomeLeader 时会启动一个线程处理该消息，只有 leader 具有 propose 的权限。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *Chain)</span></span> propose(ch <span class="hljs-keyword">chan</span>&lt;- *common.Block, bc *blockCreator, batches ...[]*common.Envelope) &#123;<br><br>	<span class="hljs-keyword">for</span> _, batch := <span class="hljs-keyword">range</span> batches &#123;<br><br>		<span class="hljs-comment">// 创建下一个区块</span><br>		b := bc.createNextBlock(batch)<br><br>		<span class="hljs-keyword">select</span> &#123;<br>		<span class="hljs-comment">// 将创建的区块发送到通道中</span><br>		<span class="hljs-keyword">case</span> ch &lt;- b:<br>		&#125;<br><br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>通过调用 c.Node.Propose 将数据传递给底层 raft 状态机。</p>
+<p><strong>从这一段的逻辑可以看出，所有客户端发送给 Orderer 的请求，都会被发送给 raft 的 leader 节点，由 leader 节点排序并生成区块，生成好的区块发送给底层 raft 状态机进行应用同步。</strong></p>
+<h2 id="3-验证"><a href="#3-验证" class="headerlink" title="3 验证"></a>3 验证</h2><h3 id="3-1-StoreBlock-函数"><a href="#3-1-StoreBlock-函数" class="headerlink" title="3.1 StoreBlock 函数"></a>3.1 StoreBlock 函数</h3><p><code>gossip/privdata/coordinator.go</code></p>
+<p>coordinator 是 Fabric 中的一个关键组件，负责协调和处理与区块链交互相关的操作，它是 ledger 的主要控制器：</p>
+<ol>
+<li><p><strong>接收和验证区块</strong>：当一个新的区块到达节点时，coordinator 负责验证区块的有效性，包括验证区块的签名、交易的正确性以及相关的权限和策略。</p>
+</li>
+<li><p><strong>处理私有数据</strong>：在存储区块时，coordinator 会处理区块中的私有数据，包括从分类账中检索私有数据、处理缺失的私有数据以及将私有数据与区块关联起来。</p>
+</li>
+<li><p><strong>提交区块</strong>：一旦区块和私有数据都成功存储，coordinator 将提交区块到分类账中，使其成为区块链的一部分。</p>
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// StoreBlock stores block with private data into the ledger</span><br><span class="hljs-comment">// 该函数在 gossip/state/state.go 调用</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *coordinator)</span></span> StoreBlock(block *common.Block, privateDataSets util.PvtDataCollections) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-comment">// 校验区块信息和交易签名 VSCC</span><br>	err := c.Validator.Validate(block)<br><br>	<span class="hljs-comment">// 提交区块，在此过程中执行 MVCC 验证</span><br>	err = c.CommitLegacy(blockAndPvtData, &amp;ledger.CommitOptions&#123;&#125;)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-Validate-函数"><a href="#3-2-Validate-函数" class="headerlink" title="3.2 Validate 函数"></a>3.2 Validate 函数</h3><p><code>core/committer/txvalidator/v20/validator.go</code></p>
+<p>Validate 执行区块的 VSCC 验证。每个交易的验证并行进行。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(v *TxValidator)</span></span> Validate(block *common.Block) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>		<span class="hljs-keyword">for</span> tIdx, d := <span class="hljs-keyword">range</span> block.Data.Data &#123;<br><br>			<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(index <span class="hljs-type">int</span>, data []<span class="hljs-type">byte</span>)</span></span> &#123;<br><br>				<span class="hljs-comment">// 将每个交易封装成结构体并调用 validateTx，将验证结果发送到 results 通道中</span><br>				v.validateTx(&amp;blockValidationRequest&#123;<br>					d:     data,<br>					block: block,<br>					tIdx:  index,<br>				&#125;, results)<br>			&#125;(tIdx, d)<br>		&#125;<br>	&#125;()<br><br>	<span class="hljs-comment">// 主线程从 results 通道中接收验证结果，并根据结果进行处理</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(block.Data.Data); i++ &#123;<br>		res := &lt;-results<br><br>		<span class="hljs-keyword">if</span> res.err != <span class="hljs-literal">nil</span> &#123;<br>			<span class="hljs-comment">// 如果某个交易验证失败，则会记录第一个失败交易的错误</span><br>		&#125; <span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-comment">// 如果结果中没有错误，则将验证结果设置到 txsfltr 中，并将交易 ID 存储到 txidArray 中</span><br>		&#125;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-CommitLegacy-函数"><a href="#3-3-CommitLegacy-函数" class="headerlink" title="3.3 CommitLegacy 函数"></a>3.3 CommitLegacy 函数</h3><p><code>core/ledger/kvledger/kv_ledger.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(l *kvLedger)</span></span> CommitLegacy(pvtdataAndBlock *ledger.BlockAndPvtData, commitOpts *ledger.CommitOptions) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">if</span> err := l.commit(pvtdataAndBlock, commitOpts); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// commit commits the block and the corresponding pvt data in an atomic operation.</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(l *kvLedger)</span></span> commit(pvtdataAndBlock *ledger.BlockAndPvtData, commitOpts *ledger.CommitOptions) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-comment">// 读写集的 MVCC 检查</span><br>	txstatsInfo, updateBatchBytes, err := l.txmgr.ValidateAndPrepare(pvtdataAndBlock, <span class="hljs-literal">true</span>)<br><br>	<span class="hljs-comment">// 添加区块到文件系统</span><br>	<span class="hljs-keyword">if</span> err = l.commitToPvtAndBlockStore(pvtdataAndBlock); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br><br>	<span class="hljs-comment">// 提交有效数据到状态数据库</span><br>	<span class="hljs-keyword">if</span> err = l.txmgr.Commit(); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-1-ValidateAndPrepare-函数"><a href="#3-3-1-ValidateAndPrepare-函数" class="headerlink" title="3.3.1 ValidateAndPrepare 函数"></a>3.3.1 ValidateAndPrepare 函数</h4><p><code>core/ledger/kvledger/txmgmt/txmgr/lockbased_txmgr.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(txmgr *LockBasedTxMgr)</span></span> ValidateAndPrepare(blockAndPvtdata *ledger.BlockAndPvtData, doMVCCValidation <span class="hljs-type">bool</span>) (<br>	[]*validation.TxStatInfo, []<span class="hljs-type">byte</span>, <span class="hljs-type">error</span>,) &#123;<br><br>	batch, txstatsInfo, err := txmgr.commitBatchPreparer.ValidateAndPrepareBatch(blockAndPvtdata, doMVCCValidation)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>core/ledger/kvledger/txmgmt/validation/batch_preparer.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// ValidateAndPrepareBatch performs validation of transactions in the block and prepares the batch of final writes</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(p *CommitBatchPreparer)</span></span> ValidateAndPrepareBatch(blockAndPvtdata *ledger.BlockAndPvtData,<br>	doMVCCValidation <span class="hljs-type">bool</span>) (*privacyenabledstate.UpdateBatch, []*TxStatInfo, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 预处理，过滤无效交易</span><br>	<span class="hljs-keyword">if</span> internalBlock, txsStatInfo, err = preprocessProtoBlock(...) &#123;...&#125;<br><br>	<span class="hljs-comment">// 读写集检验</span><br>	<span class="hljs-keyword">if</span> pubAndHashUpdates, err = p.validator.validateAndPrepareBatch(internalBlock, doMVCCValidation); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>core/ledger/kvledger/txmgmt/validation/validator.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// validateAndPrepareBatch performs validation and prepares the batch for final writes</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(v *validator)</span></span> validateAndPrepareBatch(blk *block, doMVCCValidation <span class="hljs-type">bool</span>) (*publicAndHashUpdates, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 遍历每一笔交易，进行 MVCC 验证，若交易有效，将交易中的写集放入 updates。</span><br>	<span class="hljs-keyword">for</span> _, tx := <span class="hljs-keyword">range</span> blk.txs &#123;<br><br>		<span class="hljs-keyword">if</span> validationCode, err = v.validateEndorserTX(tx.rwset, doMVCCValidation, updates); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br><br>		<span class="hljs-keyword">if</span> validationCode == peer.TxValidationCode_VALID &#123;<br>			<span class="hljs-keyword">if</span> err := updates.applyWriteSet(tx.rwset, committingTxHeight, v.db, tx.containsPostOrderWrites); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br>		&#125;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-2-validateEndorserTX-函数"><a href="#3-3-2-validateEndorserTX-函数" class="headerlink" title="3.3.2 validateEndorserTX 函数"></a>3.3.2 validateEndorserTX 函数</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// validateEndorserTX validates endorser transaction</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(v *validator)</span></span> validateEndorserTX(...) (peer.TxValidationCode, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// MVCC 验证，不通过则使交易失效</span><br>	<span class="hljs-keyword">if</span> doMVCCValidation &#123;<br>		validationCode, err = v.validateTx(txRWSet, updates)<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(v *validator)</span></span> validateTx(txRWSet *rwsetutil.TxRwSet, updates *publicAndHashUpdates) (peer.TxValidationCode, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-keyword">for</span> _, nsRWSet := <span class="hljs-keyword">range</span> txRWSet.NsRwSets &#123;<br>		ns := nsRWSet.NameSpace<br>		<span class="hljs-comment">// Validate public reads</span><br>		<span class="hljs-keyword">if</span> valid, err := v.validateReadSet(ns, nsRWSet.KvRwSet.Reads, updates.publicUpdates); !valid || err != <span class="hljs-literal">nil</span> &#123;...&#125;<br>		<span class="hljs-comment">// Validate range queries for phantom items</span><br>		<span class="hljs-keyword">if</span> valid, err := v.validateRangeQueries(ns, nsRWSet.KvRwSet.RangeQueriesInfo, updates.publicUpdates); !valid || err != <span class="hljs-literal">nil</span> &#123;...&#125;<br>		<span class="hljs-comment">// Validate hashes for private reads</span><br>		<span class="hljs-keyword">if</span> valid, err := v.validateNsHashedReadSets(ns, nsRWSet.CollHashedRwSets, updates.hashUpdates); !valid || err != <span class="hljs-literal">nil</span> &#123;...&#125;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(v *validator)</span></span> validateReadSet(ns <span class="hljs-type">string</span>, kvReads []*kvrwset.KVRead, updates *privacyenabledstate.PubUpdateBatch) (<span class="hljs-type">bool</span>, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-keyword">for</span> _, kvRead := <span class="hljs-keyword">range</span> kvReads &#123;<br>		<span class="hljs-keyword">if</span> valid, err := v.validateKVRead(ns, kvRead, updates); !valid || err != <span class="hljs-literal">nil</span> &#123;...&#125;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(v *validator)</span></span> validateKVRead(ns <span class="hljs-type">string</span>, kvRead *kvrwset.KVRead, updates *privacyenabledstate.PubUpdateBatch) (<span class="hljs-type">bool</span>, <span class="hljs-type">error</span>) &#123;<br><br>	<span class="hljs-comment">// 比较版本是否匹配</span><br>	<span class="hljs-keyword">if</span> !version.AreSame(committedVersion, readVersion) &#123;...&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-提交"><a href="#4-提交" class="headerlink" title="4 提交"></a>4 提交</h2><h3 id="4-1-commitToPvtAndBlockStore-函数"><a href="#4-1-commitToPvtAndBlockStore-函数" class="headerlink" title="4.1 commitToPvtAndBlockStore 函数"></a>4.1 commitToPvtAndBlockStore 函数</h3><p><code>core/ledger/kvledger/kv_ledger.go</code></p>
+<p>将区块写入文件系统。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(l *kvLedger)</span></span> commitToPvtAndBlockStore(blockAndPvtdata *ledger.BlockAndPvtData) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">if</span> err := l.blockStore.AddBlock(blockAndPvtdata.Block); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>common/ledger/blkstorage/blockstore.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(store *BlockStore)</span></span> AddBlock(block *common.Block) <span class="hljs-type">error</span> &#123;<br><br>	result := store.fileMgr.addBlock(block)<br><br>	<span class="hljs-comment">// 更新区块高度和提交时间</span><br>	store.updateBlockStats(block.Header.Number, elapsedBlockCommit)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(mgr *blockfileMgr)</span></span> addBlock(block *common.Block) <span class="hljs-type">error</span> &#123;<br><br>	blockBytes, info, err := serializeBlock(block)<br><br>	<span class="hljs-comment">// append blockBytesEncodedLen to the file</span><br>	err = mgr.currentFileWriter.<span class="hljs-built_in">append</span>(blockBytesEncodedLen, <span class="hljs-literal">false</span>)<br>	<span class="hljs-keyword">if</span> err == <span class="hljs-literal">nil</span> &#123;<br>		<span class="hljs-comment">// append the actual block bytes to the file</span><br>		err = mgr.currentFileWriter.<span class="hljs-built_in">append</span>(blockBytes, <span class="hljs-literal">true</span>)<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-Commit-函数"><a href="#4-2-Commit-函数" class="headerlink" title="4.2 Commit 函数"></a>4.2 Commit 函数</h3><p><code>core/ledger/kvledger/txmgmt/txmgr/lockbased_txmgr.go</code></p>
+<p>提交有效更改到状态数据库。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(txmgr *LockBasedTxMgr)</span></span> Commit() <span class="hljs-type">error</span> &#123;<br><br>	txmgr.commitRWLock.Lock()<br>	<span class="hljs-keyword">if</span> err := txmgr.db.ApplyPrivacyAwareUpdates(txmgr.current.batch, commitHeight); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br>	txmgr.commitRWLock.Unlock()<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>core/ledger/kvledger/txmgmt/privacyenabledstate/db.go</code></p>
+<p>用于将更新批次应用到底层的数据库。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(s *DB)</span></span> ApplyPrivacyAwareUpdates(updates *UpdateBatch, height *version.Height) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-comment">// 这两个函数用于将私有数据更新和哈希更新添加到公共数据更新批次中</span><br>	addPvtUpdates(combinedUpdates, updates.PvtUpdates)<br>	addHashedUpdates(combinedUpdates, updates.HashUpdates, !s.BytesKeySupported())<br>	<span class="hljs-keyword">if</span> err := s.metadataHint.setMetadataUsedFlag(updates); err != <span class="hljs-literal">nil</span> &#123;...&#125;<br><br>	<span class="hljs-keyword">return</span> s.VersionedDB.ApplyUpdates(combinedUpdates.UpdateBatch, height)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-ApplyUpdates-函数"><a href="#4-3-ApplyUpdates-函数" class="headerlink" title="4.3 ApplyUpdates 函数"></a>4.3 ApplyUpdates 函数</h3><p><code>core/ledger/kvledger/txmgmt/statedb/stateleveldb/stateleveldb.go</code></p>
+<p>在 leveldb 中的实现。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(vdb *versionedDB)</span></span> ApplyUpdates(batch *statedb.UpdateBatch, height *version.Height) <span class="hljs-type">error</span> &#123;<br><br>	<span class="hljs-keyword">for</span> _, ns := <span class="hljs-keyword">range</span> namespaces &#123;<br>		updates := batch.GetUpdates(ns)<br>		<span class="hljs-keyword">for</span> k, vv := <span class="hljs-keyword">range</span> updates &#123;<br>			dataKey := encodeDataKey(ns, k)<br><br>			<span class="hljs-keyword">if</span> vv.Value == <span class="hljs-literal">nil</span> &#123;<br>				<span class="hljs-comment">// 如果值为 nil，表示需要删除该键，函数将在数据库更新批次中添加一个删除操作</span><br>				dbBatch.Delete(dataKey)<br>			&#125; <span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-comment">// 如果值不为 nil，将值编码为字节序列，并将键值对添加到数据库更新批次中</span><br>				encodedVal, err := encodeValue(vv)<br>				dbBatch.Put(dataKey, encodedVal)<br>			&#125;<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-comment">// 将数据库更新批次写入到版本化数据库中，true 表示要求同步写入。</span><br>	<span class="hljs-keyword">return</span> vdb.db.WriteBatch(dbBatch, <span class="hljs-literal">true</span>)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%AF%95%E8%AE%BE%E9%A1%B9%E7%9B%AE/" class="category-chain-item">毕设项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「毕」 4. Fabric 源码解析</div>
+      <div>https://qanlyma.github.io/Project4-Code/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月25日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Project5-Thinking/" title="「毕」 5. Fabric 的改进">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「毕」 5. Fabric 的改进</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Project3-Deploy/" title="「毕」 3. 部署自定义网络">
+                        <span class="hidden-mobile">「毕」 3. 部署自定义网络</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="毕设项目"
+        id="heading-f081d380c266d8d857350bddc6f1b47c" role="tab" data-toggle="collapse" href="#collapse-f081d380c266d8d857350bddc6f1b47c"
+        aria-expanded="true"
+      >
+        毕设项目
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-f081d380c266d8d857350bddc6f1b47c"
+           role="tabpanel" aria-labelledby="heading-f081d380c266d8d857350bddc6f1b47c">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Project1-Test/" title="「毕」 1. 测试 Fabric 2.4.0"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 1. 测试 Fabric 2.4.0</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project2-Compile/" title="「毕」 2. 编译 Fabric 源码"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 2. 编译 Fabric 源码</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project3-Deploy/" title="「毕」 3. 部署自定义网络"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 3. 部署自定义网络</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project4-Code/" title="「毕」 4. Fabric 源码解析"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「毕」 4. Fabric 源码解析</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project5-Thinking/" title="「毕」 5. Fabric 的改进"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 5. Fabric 的改进</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project6-Contract/" title="「毕」 6. 测试合约及脚本"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 6. 测试合约及脚本</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project7-Experiment/" title="「毕」 7. 实验设计参考"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 7. 实验设计参考</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project8-FabricMan/" title="「毕」 8. 毕业论文（精简版）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 8. 毕业论文（精简版）</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「研」 以太坊区块结构">
+<meta property="og:url" content="https://qanlyma.github.io/Research-Block/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/Research-Block/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Research-Block/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Research-Block/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Research-Block/4.png">
+<meta property="article:published_time" content="2023-03-03T02:25:26.000Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.819Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/Research-Block/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「研」 以太坊区块结构 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「研」 以太坊区块结构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-03 10:25" pubdate>
+          2023年3月3日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「研」 以太坊区块结构</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：10 个月前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>此篇文章用以太坊为例，研究一下一个区块里面到底有什么，以及以太坊中的数据是怎么存储的。</p>
+<span id="more"></span>
+
+<h2 id="区块结构"><a href="#区块结构" class="headerlink" title="区块结构"></a>区块结构</h2><p>一个区块由两部分组成：</p>
+<ul>
+<li>区块头（Header）</li>
+<li>区块体（Body）</li>
+</ul>
+<p><img src="/Research-Block/1.png" srcset="/img/loading.gif" lazyload alt="Block"></p>
+<p>轻节点只会存储 Header。</p>
+<p>区块中的三棵树：</p>
+<ul>
+<li><p><strong>状态树</strong>：状态树是全局的、不断更新的，它的 key 为 keccak256(ethereumAddress)，value 为 rlp(ethereumAccount)。其中 ethereumAddress 表示以太坊账户地址；ethereumAccount 表示以太坊账户，包含四个字段：nonce，balance，storageRoot，codeHash。如果 storageRoot 和 codeHash 不为空，则为合约账户，其中 codeHash 对应合约代码的哈希，storageRoot 对应另一棵树的树根，这棵树我们称为<strong>存储树</strong>。存储树存储了合约的所有状态数据，每个合约有单独的存储树。</p>
+</li>
+<li><p><strong>交易树</strong>：每个区块都有一棵独立的交易树，对应区块头里的交易根。交易树的 key（路径）为 rlp(transactionIndex)，value 为交易序列化后的值。其中 transactionIndex 表示交易在该区块中的下标。</p>
+</li>
+<li><p><strong>回执树</strong>：每个交易对应一个交易回执，交易回执记录了交易执行结果，包括执行状态、Gas 消耗、事件日志等。每个区块有自己的回执树，对应了区块头里的回执根。与交易树类似，key 为 rlp(transactionIndex)，value 为交易回执序列化后的值。</p>
+</li>
+</ul>
+<p><img src="/Research-Block/2.png" srcset="/img/loading.gif" lazyload alt="Trie"></p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>以太坊中的账户状态是用什么数据结构存储的呢？</p>
+<p>有关这个问题<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Vt411X7JF?p=16">肖臻老师的公开课</a>有非常详细的解释。这里直接说结论：<strong>Merkle Patricia Trie（MPT）</strong></p>
+<p><img src="/Research-Block/3.png" srcset="/img/loading.gif" lazyload alt="World State Trie"></p>
+<p>右上角为简化的 key-value 定义。我们可以看到图中有 2 个拓展节点，2 个分支节点，4 个叶子节点。在最下面的两个叶子节点中，prefix 3 的右边有个格子，有个箭头从 7 指向这个格子，表示 3 和 7 两个 nibble 组成一个字节存储。当一个节点被另一个节点在内部指向时（比如上图中的分支节点内部指向了叶子节点），父节点会存储 H(rlp.encode(x))。</p>
+<p>其中 H(y) &#x3D; keccak256(y) if len(y) &gt;&#x3D; 32 else y，rlp.encode 为 RLP 编码函数。</p>
+<p>由于 MPT 树是确定性的，所以如果两棵树存储了完全相同的数据，那么这两棵树的节点将完全相同，包括根节点。假设在某一时刻，当其中一个合约修改了某个变量的数据，使得它与另一个合约的数据不同时，会生成一个新的节点，并从新节点开始由下往上直到根节点，整个路径的节点值都会更新，新生成的节点会存储到硬盘，但旧的节点不会从硬盘删除。</p>
+<p><img src="/Research-Block/4.png" srcset="/img/loading.gif" lazyload alt="update data"></p>
+<h2 id="StateDB"><a href="#StateDB" class="headerlink" title="StateDB"></a>StateDB</h2><p>在以太坊中，StateDB 是一个用于管理账户状态数据的内存数据库，它的数据存储在节点的内存中，并且随着区块链的不断增长而不断变化。但是，为了确保数据的可靠性和持久性，StateDB 数据需要被定期持久化到磁盘中。</p>
+<p>为了实现数据的持久化，以太坊节点使用了 LevelDB 这样的键值对存储引擎。当 StateDB 中的数据发生变化时，节点会将这些变化记录在 LevelDB 中，以便在下次启动时从磁盘中重新加载数据。</p>
+<p>需要注意的是，由于 LevelDB 是一种磁盘存储引擎，相比于内存数据库，它的读写速度要慢很多。因此，在以太坊节点中，StateDB 通常被用作内存数据库，而 LevelDB 则用于实现数据的持久化。这种方式可以同时满足节点的高性能和数据的可靠性要求。</p>
+<h2 id="block-go-源码"><a href="#block-go-源码" class="headerlink" title="block.go 源码"></a>block.go 源码</h2><p>研究那么多不如来看一看区块结构的源码：go-ethereum&#x2F;core&#x2F;types&#x2F;block.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Header represents a block header in the Ethereum blockchain.</span><br><span class="hljs-keyword">type</span> Header <span class="hljs-keyword">struct</span> &#123;<br>	ParentHash  common.Hash    <span class="hljs-comment">// 父区块的哈希</span><br>    UncleHash   common.Hash    <span class="hljs-comment">// 所有叔块的哈希（Block.uncles）</span><br>    Coinbase    common.Address <span class="hljs-comment">// 接受出块奖励的地址，矿工出块时在这个字段填入自己的地址</span><br>    Root        common.Hash    <span class="hljs-comment">// 此区块包含的所有交易完成后，state 对象的哈希值</span><br>    TxHash      common.Hash    <span class="hljs-comment">// 此区块包含的所有交易的哈希（Block.transactions）</span><br>    ReceiptHash common.Hash    <span class="hljs-comment">// 此区块所有交易完成后所产生的所有收据的哈希</span><br>    Bloom       Bloom          <span class="hljs-comment">// 用来快速判断一个参数 Log 对象是否存在于一组已知的 Log 集合中</span><br>    Difficulty  *big.Int       <span class="hljs-comment">// 此区块的难度值</span><br>    Number      *big.Int       <span class="hljs-comment">// 此区块的高度</span><br>    GasLimit    <span class="hljs-type">uint64</span>         <span class="hljs-comment">// 此区块所有交易消耗的 gas 值的上限</span><br>    GasUsed     <span class="hljs-type">uint64</span>         <span class="hljs-comment">// 此区块所有交易消耗的 gas 的实际值</span><br>    Time        *big.Int       <span class="hljs-comment">// 区块时间戳</span><br>    Extra       []<span class="hljs-type">byte</span>         <span class="hljs-comment">// 区块的额外数据</span><br>    MixDigest   common.Hash    <span class="hljs-comment">// 以太坊 hashimoto 算法产生的哈希</span><br>    Nonce       BlockNonce     <span class="hljs-comment">// 通过此字段产生符合 Difficulty 值要求的区块哈希</span><br>&#125;<br><br><span class="hljs-keyword">type</span> Body <span class="hljs-keyword">struct</span> &#123;<br>	Transactions []*Transaction<br>	Uncles       []*Header<br>&#125;<br><br><span class="hljs-comment">// Block represents an entire block in the Ethereum blockchain.</span><br><span class="hljs-keyword">type</span> Block <span class="hljs-keyword">struct</span> &#123;<br>	header       *Header<br>	uncles       []*Header<br>	transactions Transactions<br><br>	<span class="hljs-comment">// caches</span><br>	hash atomic.Value<br>	size atomic.Value<br><br>	<span class="hljs-comment">// 从创世块开始，到当前区块截止，累积的所有区块 Difficulty 之和</span><br>	td *big.Int<br><br>	<span class="hljs-comment">// These fields are used by package eth to track</span><br>	<span class="hljs-comment">// inter-peer block relay.</span><br>	ReceivedAt   time.Time<br>	ReceivedFrom <span class="hljs-keyword">interface</span>&#123;&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可见一个区块携带的数据主要是：<strong>Header 中的信息 + 叔块们的头部信息 + 块中包含的所有交易信息</strong>。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%90%86%E8%AE%BA%E7%A0%94%E7%A9%B6/" class="category-chain-item">理论研究</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「研」 以太坊区块结构</div>
+      <div>https://qanlyma.github.io/Research-Block/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月3日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/ByteDance-2/" title="「训」 笔记(02)：性能调优">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「训」 笔记(02)：性能调优</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Note-Blackwords/" title="「学」  IT 黑话">
+                        <span class="hidden-mobile">「学」  IT 黑话</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="理论研究"
+        id="heading-8d98e6af91d447f6b771495a010cfe63" role="tab" data-toggle="collapse" href="#collapse-8d98e6af91d447f6b771495a010cfe63"
+        aria-expanded="true"
+      >
+        理论研究
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-8d98e6af91d447f6b771495a010cfe63"
+           role="tabpanel" aria-labelledby="heading-8d98e6af91d447f6b771495a010cfe63">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Research-QUIC/" title="「研」 HTTP 和 QUIC"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 HTTP 和 QUIC</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Research-Handshake/" title="「研」 TCP 连接"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 TCP 连接</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Research-FiveLayers/" title="「研」 TCP/IP 分层结构"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 TCP/IP 分层结构</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Research-Block/" title="「研」 以太坊区块结构"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「研」 以太坊区块结构</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Research-Scalability/" title="「研」 区块链扩容调研"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「研」 区块链扩容调研</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -18,11 +18,17 @@
   
     <meta name="description" content="关于 Go 语言的基础和进阶教程，示例代码在我的 Github 上：基础代码，进阶代码">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「训」 笔记(1)：Go 语言">
+<meta property="og:title" content="「训」 笔记(01)：Go 语言">
 <meta property="og:url" content="https://qanlyma.github.io/ByteDance-1/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="关于 Go 语言的基础和进阶教程，示例代码在我的 Github 上：基础代码，进阶代码">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/12.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/14.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/15.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/16.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/17.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/20.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/1.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/3.png">
@@ -30,20 +36,24 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/5.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/6.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/11.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/13.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/8.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/18.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/19.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/9.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-1/10.png">
 <meta property="article:published_time" content="2023-02-18T07:38:59.000Z">
-<meta property="article:modified_time" content="2023-04-16T01:44:21.266Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.365Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-1/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-1/12.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「训」 笔记(1)：Go 语言 - Qanly</title>
+  <title>「训」 笔记(01)：Go 语言 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -184,7 +194,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「训」 笔记(1)：Go 语言"></span>
+            <span id="subtitle" data-typed-text="「训」 笔记(01)：Go 语言"></span>
           
         </div>
 
@@ -263,12 +273,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「训」 笔记(1)：Go 语言</h1>
+            <h1 style="display: none">「训」 笔记(01)：Go 语言</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：13 分钟前
+                    本文最后更新于：10 个月前
                   
                 
               </p>
@@ -279,7 +289,13 @@
                 <p>关于 Go 语言的基础和进阶教程，示例代码在我的 Github 上：<br><a target="_blank" rel="noopener" href="https://github.com/qanlyma/go-by-example">基础代码</a>，<a target="_blank" rel="noopener" href="https://github.com/qanlyma/go-project-example/tree/V0">进阶代码</a></p>
 <span id="more"></span>
 
-<h2 id="1-Go-语言基础"><a href="#1-Go-语言基础" class="headerlink" title="1 Go 语言基础"></a>1 Go 语言基础</h2><h3 id="1-1-Go-语言简介"><a href="#1-1-Go-语言简介" class="headerlink" title="1.1 Go 语言简介"></a>1.1 Go 语言简介</h3><ul>
+<h2 id="1-Go-语言基础"><a href="#1-Go-语言基础" class="headerlink" title="1 Go 语言基础"></a>1 Go 语言基础</h2><h3 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h3><p>在早期 CPU 都是以单核的形式顺序执行机器指令。Go 语言的祖先 C 语言正是这种顺序编程语言的代表。顺序编程语言中的顺序是指：所有的指令都是以串行的方式执行，在相同的时刻有且仅有一个 CPU 在顺序执行程序的指令。</p>
+<p>随着处理器技术的发展，单核时代以提升处理器频率来提高运行效率的方式遇到了瓶颈，单核 CPU 发展的停滞，给多核 CPU 的发展带来了机遇。相应地，编程语言也开始逐步向并行化的方向发展。</p>
+<p>Go 语言正是在多核和网络化的时代背景下诞生的原生支持并发的编程语言。Go 语言从底层原生支持并发，无须第三方库，开发人员可以很轻松地在编写程序时决定怎么使用 CPU 资源。</p>
+<p>Go 语言的并发是基于 goroutine 的，goroutine 类似于线程但并非线程。可以将 goroutine 理解为一种虚拟线程。Go 语言运行时会参与调度 goroutine，并将 goroutine 合理地分配到每个 CPU 中，最大限度地使用 CPU 性能。</p>
+<p>多个 goroutine 中，Go 语言使用通道（channel）进行通信，通道是一种内置的数据结构，可以让用户在不同的 goroutine 之间同步发送具有类型的消息。这让编程模型更倾向于在 goroutine 之间发送消息，而不是让多个 goroutine 争夺同一个数据的使用权。程序可以将需要并发的环节设计为生产者模式和消费者的模式，将数据放入通道，通道另外一端的代码将这些数据进行并发计算并返回结果。</p>
+<p><strong>特点</strong>：</p>
+<ul>
 <li>高性能、高并发</li>
 <li>语法简单、学习曲线平滑</li>
 <li>丰富的标准库</li>
@@ -289,7 +305,99 @@
 <li>跨平台</li>
 <li>垃圾回收</li>
 </ul>
-<h3 id="1-2-基础语法"><a href="#1-2-基础语法" class="headerlink" title="1.2 基础语法"></a>1.2 基础语法</h3><p>Golang 的安装和基础使用，可以参考<a target="_blank" rel="noopener" href="https://www.runoob.com/go/go-tutorial.html">菜鸟教程</a>。</p>
+<h3 id="1-2-容器"><a href="#1-2-容器" class="headerlink" title="1.2 容器"></a>1.2 容器</h3><h4 id="1-2-1-array"><a href="#1-2-1-array" class="headerlink" title="1.2.1 array"></a>1.2.1 array</h4><p>数组是一段固定长度的<strong>连续内存区域</strong>。在 Go 语言中，数组从声明时就确定，使用时可以修改数组成员，但是数组大小不可变化，因此在 Go 语言中很少直接使用数组。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> 数组变量名 [元素数量]Type<br></code></pre></td></tr></table></figure>
+
+<p>也可以是多维数组：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> array_name [size1][size2]...[sizen] array_type<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-2-2-slice"><a href="#1-2-2-slice" class="headerlink" title="1.2.2 slice"></a>1.2.2 slice</h4><p>切片（slice）是对数组的一个连续片段的引用（左闭右开），所以切片是一个引用类型。Go 语言中切片的内部结构包含地址（指针）、大小和容量。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// runtime/slice.go</span><br><span class="hljs-keyword">type</span> slice <span class="hljs-keyword">struct</span> &#123;<br>	array unsafe.Pointer 	<span class="hljs-comment">// 元素指针</span><br>	<span class="hljs-built_in">len</span>   <span class="hljs-type">int</span> 				<span class="hljs-comment">// 长度 </span><br>	<span class="hljs-built_in">cap</span>   <span class="hljs-type">int</span> 				<span class="hljs-comment">// 容量</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>切片默认指向一段连续内存区域，可以是数组，也可以是切片本身：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">slice [开始位置 : 结束位置]<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>取出的元素数量为：结束位置 - 开始位置；</li>
+<li>取出元素不包含结束位置对应的索引，切片最后一个元素使用 slice[len(slice)-1] 获取；</li>
+<li>当缺省开始位置时，表示从连续区域开头到结束位置；</li>
+<li>当缺省结束位置时，表示从开始位置到整个连续区域末尾；</li>
+<li>两者同时缺省时，与切片本身等效；</li>
+<li>两者同时为 0 时，等效于空切片，一般用于<strong>切片复位</strong>。</li>
+</ul>
+<p>切片类型也可以被声明:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> name1 []Type <span class="hljs-comment">// nil 切片</span><br><br>name2 := <span class="hljs-built_in">make</span>([]Type, size, <span class="hljs-built_in">cap</span>) <span class="hljs-comment">// 空切片</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>使用 make() 函数生成的切片一定发生了内存分配操作，但给定开始与结束位置（包括切片复位）的切片只是将新的切片结构指向已经分配好的内存区域，设定开始与结束位置，不会发生内存分配操作。</strong></p>
+<p><strong>nil 切片与空切片：</strong></p>
+<ul>
+<li>nil 切片：指针并不指向底层的数组，而是指向一个没有实际意义的地址；len &#x3D; 0 且 cap &#x3D; 0；<code>var s []int</code></li>
+<li>空切片：指针指向底层数组的地址；len &#x3D; 0，容量由指向的底层数组决定；<code>s1 := []int&#123;&#125;</code> 或 <code>s2 := make([]int, 0)</code></li>
+<li>nil 切片和空切片的区别主要在于指向的地址不同。</li>
+</ul>
+<p>多维切片：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">slice := [][]<span class="hljs-type">int</span>&#123;&#123;<span class="hljs-number">10</span>&#125;, &#123;<span class="hljs-number">100</span>, <span class="hljs-number">200</span>&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/ByteDance-1/12.png" srcset="/img/loading.gif" lazyload></p>
+<p>注意，底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	slice := []<span class="hljs-type">int</span>&#123;<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>&#125;<br>	s1 := slice[<span class="hljs-number">2</span>:<span class="hljs-number">5</span>]<br>	s2 := s1[<span class="hljs-number">2</span>:<span class="hljs-number">6</span>:<span class="hljs-number">7</span>]<br><br>	s2 = <span class="hljs-built_in">append</span>(s2, <span class="hljs-number">100</span>)<br>	s2 = <span class="hljs-built_in">append</span>(s2, <span class="hljs-number">200</span>)<br><br>	s1[<span class="hljs-number">2</span>] = <span class="hljs-number">20</span><br><br>	fmt.Println(s1)			<span class="hljs-comment">// [2 3 20]</span><br>	fmt.Println(s2)			<span class="hljs-comment">// [4 5 6 7 100 200]</span><br>	fmt.Println(slice)			<span class="hljs-comment">// [0 1 2 3 20 5 6 7 100 9]</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>大致流程如下：</p>
+<p><img src="/ByteDance-1/14.png" srcset="/img/loading.gif" lazyload><br><img src="/ByteDance-1/15.png" srcset="/img/loading.gif" lazyload><br><img src="/ByteDance-1/16.png" srcset="/img/loading.gif" lazyload></p>
+<p>s2 扩容之后更换了底层数组，所以不再受 s1 影响了。</p>
+<p><img src="/ByteDance-1/17.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>扩容规则（1.18 版本之后）：</strong></p>
+<ul>
+<li>当原 slice 容量小于 256 的时候，新 slice 容量为原来的 2 倍</li>
+<li>原 slice 容量超过 256，新 slice 容量 newcap &#x3D; oldcap + (oldcap+3*256)&#x2F;4</li>
+<li>由于内存对齐，新 slice 的容量要大于等于按照前半部分生成的 newcap</li>
+</ul>
+<p>当 slice 作为函数参数时，就是一个普通的结构体。若直接传 slice，在调用者看来，实参 slice 并不会被函数中的操作改变；若传的是 slice 的指针，在调用者看来，是会被改变原 slice 的。</p>
+<ul>
+<li>通过类似 <code>s[i] = 10</code> 这种操作可以改变 slice 底层数组元素值</li>
+<li>在函数中使用 <code>s = append(s, 100)</code> 是无法改变外层 slice 的</li>
+</ul>
+<h4 id="1-2-3-map"><a href="#1-2-3-map" class="headerlink" title="1.2.3 map"></a>1.2.3 map</h4><p>Go 语言中 map 是一种特殊的数据结构，一种元素对（pair）的<strong>无序</strong>集合，pair 对应一个 key（索引）和一个 value（值），所以这个结构也称为关联数组或字典，这是一种能够快速寻找值的理想结构。</p>
+<p>在 Go 的内部实现中，map 是通过哈希表来实现的。哈希表用一个哈希函数将 key 分配到不同的桶（bucket，也就是数组的不同 index）。这样，开销主要在哈希函数的计算以及数组的常数访问时间。哈希查找表一般会存在“碰撞”的问题，就是说不同的 key 被哈希到了同一个 bucket。一般有两种应对方法：<strong>链表法</strong>和<strong>开放地址法</strong>。链表法将一个 bucket 实现成一个链表，落在同一个 bucket 中的 key 都会插入这个链表。开放地址法则是碰撞发生后，通过一定的规律，在数组的后面挑选“空位”，用来放置新的 key。Go 使用前者解决哈希碰撞问题。</p>
+<p>在源码中，表示 map 的结构体是 hmap，它是 hashmap 的缩写：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// A header for a Go map.</span><br><span class="hljs-keyword">type</span> hmap <span class="hljs-keyword">struct</span> &#123;<br>	count     <span class="hljs-type">int</span>		<span class="hljs-comment">// 元素个数，调用 len(map) 时，直接返回此值</span><br>	flags     <span class="hljs-type">uint8</span><br>	B         <span class="hljs-type">uint8</span>		<span class="hljs-comment">// buckets 的对数 log_2</span><br>	noverflow <span class="hljs-type">uint16</span>	<span class="hljs-comment">// overflow 的 bucket 近似数</span><br>	hash0     <span class="hljs-type">uint32</span>	<span class="hljs-comment">// 计算 key 的哈希的时候会传入哈希函数</span><br><br>    <span class="hljs-comment">// 指向 buckets 数组，大小为 2^B</span><br>    <span class="hljs-comment">// 如果元素个数为 0，就为 nil</span><br>	buckets    unsafe.Pointer<br>	<span class="hljs-comment">// 等量扩容的时候，buckets 长度和 oldbuckets 相等</span><br>	<span class="hljs-comment">// 双倍扩容的时候，buckets 长度会是 oldbuckets 的两倍</span><br>	oldbuckets unsafe.Pointer<br>	<br>	nevacuate  <span class="hljs-type">uintptr</span>	<span class="hljs-comment">// 指示扩容进度，小于此地址的 buckets 迁移完成</span><br>	extra *mapextra 	<span class="hljs-comment">// optional fields</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>B 是 buckets 数组的长度的对数，也就是说 buckets 数组的长度就是 2^B。bucket 里面存储了 key 和 value，buckets 是一个指针，最终它指向的是一个结构体：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">type</span> bmap <span class="hljs-keyword">struct</span> &#123;<br>	tophash [bucketCnt]<span class="hljs-type">uint8</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>bmap 就是我们常说的“桶”，桶里面会最多装 8 个 key，这些 key 之所以会落入同一个桶，是因为它们经过哈希计算后，哈希结果是“一类”的。在桶内，又会根据 key 计算出来的 hash 值的高 8 位来决定 key 到底落入桶内的哪个位置（一个桶内最多有8个位置）。</p>
+<p><img src="/ByteDance-1/20.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>当我们插入一个键值对时，首先会根据键的哈希值计算出对应的桶的索引。然后，如果该桶为空，直接将键值对放入其中；如果不为空，则需要遍历链表，查找是否已经存在相同的键。如果存在相同的键，那么会更新对应的值；如果不存在相同的键，会将新的键值对添加到链表的末尾。</p>
+</li>
+<li><p>当我们查询一个键的值时，也是通过计算哈希值找到对应的桶，然后遍历链表查找是否存在相同的键。如果找到了相同的键，就返回对应的值；如果遍历完链表仍然没有找到相同的键，就表示该键不存在。</p>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> mapname <span class="hljs-keyword">map</span>[keytype]valuetype		<span class="hljs-comment">// 若只有此行，添加元素会 panic</span><br>mapname = <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[keytype]valuetype)<br></code></pre></td></tr></table></figure>
+
+<p>使用 delete() 内建函数从 map 中删除一组键值对：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-built_in">delete</span>(<span class="hljs-keyword">map</span>, 键)<br></code></pre></td></tr></table></figure>
+
+<p>Go 语言中并没有为 map 提供任何清空所有元素的函数、方法，清空 map 的唯一办法就是重新 make 一个新的 map，不用担心垃圾回收的效率，Go 语言中的并行垃圾回收效率比写一个清空函数要高效的多。</p>
+<p>当 map 和 slice 作为函数参数时，在函数参数内部对 map 的操作会影响 map 自身；而对 slice 却不会。</p>
+<p>主要原因：一个是指针（*hmap），一个是结构体（slice）。Go 语言中的函数传参都是值传递，在函数内部，参数会被 copy 到本地。<code>*hmap</code> 指针 copy 完之后，仍然指向同一个 map，因此函数内部对 map 的操作会影响实参。而 slice 被 copy 后，会成为一个新的 slice，对它进行的操作不会影响到实参。</p>
+<p><strong>扩容过程</strong>：</p>
+<p>使用哈希表的目的就是要快速查找到目标 key，然而，随着向 map 中添加的 key 越来越多，key 发生碰撞的概率也越来越大。bucket 中的 8 个 cell 会被逐渐塞满，查找、插入、删除 key 的效率也会越来越低。最理想的情况是一个 bucket 只装一个 key，这样，就能达到 O(1) 的效率，但这样空间消耗太大，用空间换时间的代价太高。</p>
+<p>Go 语言采用一个 bucket 里装载 8 个 key，定位到某个 bucket 后，还需要再定位到具体的 key，这实际上又用了时间换空间。这样做要有一个度，不然所有的 key 都落在了同一个 bucket 里，直接退化成了链表，各种操作的效率直接降为 O(n)，是不行的。</p>
+<p>因此，需要有一个指标来衡量前面描述的情况，这就是装载因子：<code>loadFactor := count / (2^B)</code>。count 就是 map 的元素个数，2^B 表示 bucket 数量。</p>
+<p>触发扩容的条件：</p>
+<ul>
+<li>装载因子超过阈值，源码里定义的阈值是 6.5。</li>
+<li>overflow 的 bucket 数量过多：当 B 小于 15，也就是 bucket 总数 2^B 小于 2^15 时，如果 overflow 的 bucket 数量超过 2^B；当 B &gt;&#x3D; 15，也就是 bucket 总数 2^B 大于等于 2^15，如果 overflow 的 bucket 数量超过 2^15。</li>
+</ul>
+<p>由于 map 扩容需要将原有的 key&#x2F;value 重新搬迁到新的内存地址，如果有大量的 key&#x2F;value 需要搬迁，会非常影响性能。因此 Go map 的扩容采取了一种称为“渐进式”地方式，原有的 key 并不会一次性搬迁完毕，每次最多只会搬迁 2 个 bucket。每次操作一个旧桶的时，将旧数据驱逐到新桶，读取时不进行驱逐，只判断读取新桶还是旧桶。</p>
+<h4 id="1-2-4-list"><a href="#1-2-4-list" class="headerlink" title="1.2.4 list"></a>1.2.4 list</h4><p>列表是一种非连续的存储容器，由多个节点组成，节点通过一些变量记录彼此之间的关系，列表有多种实现方法，如单链表、双链表等。</p>
+<p>在 Go 语言中，列表使用 <code>container/list</code> 包来实现，内部的实现原理是双链表，列表能够高效地进行任意位置的元素插入和删除操作。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go">list1 := list.New()<br><br><span class="hljs-keyword">var</span> list2 list.List<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-2-5-nil"><a href="#1-2-5-nil" class="headerlink" title="1.2.5 nil"></a>1.2.5 nil</h4><p>在 Go 语言中，布尔类型的零值（初始值）为 <code>false</code>，数值类型的零值为 <code>0</code>，字符串类型的零值为空字符串 <code>&quot;&quot;</code>，而指针、切片、映射、通道、函数和接口的零值则是 <code>nil</code>。</p>
+<p><strong>不同类型的 nil 是不能比较的</strong>，不同类型的 nil 值占用的内存大小可能是不一样的。</p>
+<h3 id="1-3-基础语法"><a href="#1-3-基础语法" class="headerlink" title="1.3 基础语法"></a>1.3 基础语法</h3><p>Golang 的安装和基础使用，可以参考<a target="_blank" rel="noopener" href="https://www.runoob.com/go/go-tutorial.html">菜鸟教程</a>。</p>
 <p>补充几点：</p>
 <ol>
 <li>错误处理</li>
@@ -304,9 +412,10 @@
 </ol>
 <p><img src="/ByteDance-1/3.png" srcset="/img/loading.gif" lazyload alt="字符串格式化"></p>
 <ol start="4">
-<li>JSON 处理</li>
+<li><p>JSON 处理</p>
+<p> 对于一个已有的结构体，只要保证每个字段的第一个字母是大写（公开字段），就可以用 JSON.Marshal 序列化成一个 JSON 字符串。</p>
+</li>
 </ol>
-<p>对于一个已有的结构体，只要保证每个字段的第一个字母是大写（公开字段），就可以用 JSON.Marshal 序列化成一个 JSON 字符串。</p>
 <p><img src="/ByteDance-1/4.png" srcset="/img/loading.gif" lazyload alt="JSON 处理"></p>
 <ol start="5">
 <li>时间处理</li>
@@ -320,51 +429,166 @@
 <li>进程信息</li>
 </ol>
 <p><img src="/ByteDance-1/7.png" srcset="/img/loading.gif" lazyload alt="进程信息"></p>
-<h3 id="1-3-项目实战"><a href="#1-3-项目实战" class="headerlink" title="1.3 项目实战"></a>1.3 项目实战</h3><ol>
-<li><p>猜谜游戏</p>
-<ul>
-<li>生成随机数：用时间戳来初始化随机数种子</li>
-</ul>
- <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs Go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    maxNum := <span class="hljs-number">100</span> <br>    rand.Seed(time.Now().UnixNano()) <br>    secretNumber := rand.Intn(maxNum) <br>    fmt.Println(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<ul>
-<li>读取用户输入</li>
-</ul>
- <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs Go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    maxNum := <span class="hljs-number">100</span><br>    rand.Seed(time.Now().UnixNano())<br>    secretNumber := rand.Intn(maxNum)<br>    fmt.Println(<span class="hljs-string">&quot;The secret number is &quot;</span>, secretNumber)<br><br>    fmt.Println(<span class="hljs-string">&quot;Please input your guess&quot;</span>)<br>    reader := bufio.NewReader(os.Stdin)<br><br>    <span class="hljs-comment">//读取一行输入</span><br>    input, err := reader.ReadString(<span class="hljs-string">&#x27;\n&#x27;</span>)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        fmt.Println(<span class="hljs-string">&quot;An error occured while reading input. Please try again&quot;</span>, err)<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    <span class="hljs-comment">//去掉换行符</span><br>    input = strings.Trim(input, <span class="hljs-string">&quot;\r\n&quot;</span>)<br>    <span class="hljs-comment">//转换为数字</span><br>    guess, err := strconv.Atoi(input)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>        fmt.Println(<span class="hljs-string">&quot;Invalid input. Please enter an integer value&quot;</span>)<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    fmt.Println(<span class="hljs-string">&quot;You guess is&quot;</span>, guess)<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<ul>
-<li>逻辑判断 + 游戏循环：略</li>
-</ul>
-</li>
-</ol>
-<hr>
-<ol start="2">
-<li>命令行词典</li>
-</ol>
-<hr>
-<ol start="3">
-<li>SOCKS5 代理</li>
-</ol>
+<h3 id="1-4-关键字和标识符"><a href="#1-4-关键字和标识符" class="headerlink" title="1.4 关键字和标识符"></a>1.4 关键字和标识符</h3><p>Go 语言中的关键字一共有 25 个：</p>
+<p><img src="/ByteDance-1/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>预定义标识符一共有 36 个：</p>
+<p><img src="/ByteDance-1/13.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>make 和 new</strong>：</p>
+<p>make 用于初始化内置的数据结构，如数组、切片和 Channel 等；new 用于分配并创建一个指向对应类型的指针。</p>
 <h2 id="2-Go-语言进阶"><a href="#2-Go-语言进阶" class="headerlink" title="2 Go 语言进阶"></a>2 Go 语言进阶</h2><h3 id="2-1-Goroutine"><a href="#2-1-Goroutine" class="headerlink" title="2.1 Goroutine"></a>2.1 Goroutine</h3><ul>
 <li><strong>线程</strong>：程序执行的最小单元，是由寄存器集合和堆栈组成，线程是进程中的一个实体，可共享同一进程中所拥有的全部资源。</li>
-<li><strong>协程</strong>：Goroutine 是一种比线程更加轻量级的存在。一个进程可以有多个线程，一个线程可以有多个协程。</li>
+<li><strong>协程</strong>：goroutine 是一种比线程更加轻量级的存在。一个进程可以有多个线程，一个线程可以有多个协程。</li>
+</ul>
+<p><strong>区别：</strong></p>
+<ul>
+<li><p><strong>内存占用</strong></p>
+<p>  创建一个 goroutine 的栈内存消耗为 2 KB，实际运行过程中，如果栈空间不够用，会自动进行扩容。创建一个 thread 则需要消耗 1 MB 栈内存，而且还需要一个被称为 “a guard page” 的区域用于和其他 thread 的栈空间进行隔离。</p>
+</li>
+<li><p><strong>创建和销毀</strong></p>
+<p>  Thread 创建和销毀都会有巨大的消耗，因为要和操作系统打交道，是内核级的，通常解决的办法就是线程池。而 goroutine 因为是由 Go runtime 负责管理的，创建和销毁的消耗非常小，是用户级。</p>
+</li>
+<li><p><strong>切换</strong></p>
+<p>  当 threads 切换时，需要保存各种寄存器，以便将来恢复；而 goroutines 切换只需保存三个寄存器：Program Counter，Stack Pointer，BP。goroutines 切换成本比 threads 要小得多。</p>
+</li>
 </ul>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">hello</span><span class="hljs-params">(i <span class="hljs-type">int</span>)</span></span> &#123;<br>	<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;hello goroutine : &quot;</span> + fmt.Sprint(i))<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">HelloGoRoutine</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++ &#123;<br>		<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(j <span class="hljs-type">int</span>)</span></span> &#123;<br>			hello(j)<br>		&#125;(i)<br>	&#125;<br>	time.Sleep(time.Second)<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="2-2-CSP（Communicating-Sequential-Processes）"><a href="#2-2-CSP（Communicating-Sequential-Processes）" class="headerlink" title="2.2 CSP（Communicating Sequential Processes）"></a>2.2 CSP（Communicating Sequential Processes）</h3><p>提倡<strong>通过通信共享内存</strong>而不是通过共享内存而实现通信。</p>
+<h3 id="2-2-CSP"><a href="#2-2-CSP" class="headerlink" title="2.2 CSP"></a>2.2 CSP</h3><p>Communicating Sequential Processes 提倡<strong>通过通信共享内存</strong>而不是通过共享内存而实现通信。</p>
 <p><img src="/ByteDance-1/8.png" srcset="/img/loading.gif" lazyload alt="CSP"></p>
 <h3 id="2-3-Channel"><a href="#2-3-Channel" class="headerlink" title="2.3 Channel"></a>2.3 Channel</h3><ul>
 <li>无缓冲通道：<code>make(chan int)</code></li>
 <li>有缓冲通道：<code>make(chan int, 2)</code></li>
 </ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">CalSquare</span><span class="hljs-params">()</span></span> &#123;<br>	src := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-type">int</span>)<br>	dest := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-type">int</span>, <span class="hljs-number">3</span>)<br>	<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>		<span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(src)<br>		<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++ &#123;<br>			src &lt;- i<br>		&#125;<br>	&#125;()<br>	<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>		<span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(dest)<br>		<span class="hljs-keyword">for</span> i := <span class="hljs-keyword">range</span> src &#123;<br>			dest &lt;- i * i<br>		&#125;<br>	&#125;()<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-keyword">range</span> dest &#123;<br>		<span class="hljs-comment">//复杂操作</span><br>		<span class="hljs-built_in">println</span>(i)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>应用：停止信号、任务定时、解耦生产方和消费方、控制并发数</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">CalSquare</span><span class="hljs-params">()</span></span> &#123;<br>	src := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-type">int</span>)<br>	dest := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-type">int</span>, <span class="hljs-number">3</span>)<br>	<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>		<span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(src)<br>		<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++ &#123;<br>			src &lt;- i<br>		&#125;<br>	&#125;()<br>	<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>		<span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(dest)<br>		<span class="hljs-keyword">for</span> i := <span class="hljs-keyword">range</span> src &#123;<br>			dest &lt;- i * i<br>		&#125;<br>	&#125;()<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-keyword">range</span> dest &#123;<br>		<span class="hljs-built_in">println</span>(i)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="2-4-Lock-并发安全"><a href="#2-4-Lock-并发安全" class="headerlink" title="2.4 Lock 并发安全"></a>2.4 Lock 并发安全</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> (<br>	x    <span class="hljs-type">int64</span><br>	lock sync.Mutex<br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">addWithLock</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2000</span>; i++ &#123;<br>		lock.Lock()<br>		x += <span class="hljs-number">1</span><br>		lock.Unlock()<br>	&#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">addWithoutLock</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2000</span>; i++ &#123;<br>		x += <span class="hljs-number">1</span><br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Add</span><span class="hljs-params">()</span></span> &#123;<br>	x = <span class="hljs-number">0</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++ &#123;<br>		<span class="hljs-keyword">go</span> addWithoutLock()<br>	&#125;<br>	time.Sleep(time.Second)<br>	<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;WithoutLock:&quot;</span>, x)<br>	x = <span class="hljs-number">0</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++ &#123;<br>		<span class="hljs-keyword">go</span> addWithLock()<br>	&#125;<br>	time.Sleep(time.Second)<br>	<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;WithLock:&quot;</span>, x)<br>&#125;<br></code></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>nil channel</th>
+<th>closed channel</th>
+<th>not nil, not closed channel</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>close</td>
+<td>panic</td>
+<td>panic</td>
+<td>正常关闭</td>
+</tr>
+<tr>
+<td>读 &lt;- ch</td>
+<td>阻塞</td>
+<td>读到对应类型的零值</td>
+<td>阻塞或正常读取数据</td>
+</tr>
+<tr>
+<td>写 ch &lt;-</td>
+<td>阻塞</td>
+<td>panic</td>
+<td>阻塞或正常写入数据</td>
+</tr>
+</tbody></table>
+<p>Channel 可能会引发 goroutine 泄漏：</p>
+<p>泄漏的原因是 goroutine 操作 channel 后，处于发送或接收阻塞状态，而 channel 处于满或空的状态，一直得不到改变。同时，垃圾回收器也不会回收此类资源，进而导致 gouroutine 会一直处于等待队列中，不见天日。</p>
+<h3 id="2-4-Lock-并发安全"><a href="#2-4-Lock-并发安全" class="headerlink" title="2.4 Lock 并发安全"></a>2.4 Lock 并发安全</h3><p>Go 语言的锁：</p>
+<ul>
+<li>互斥锁 <code>Mutex</code></li>
+<li>读写锁 <code>RWMutex</code></li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> (<br>	x    <span class="hljs-type">int64</span><br>	lock sync.Mutex <span class="hljs-comment">// 互斥锁</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">addWithLock</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2000</span>; i++ &#123;<br>		lock.Lock()<br>		x += <span class="hljs-number">1</span><br>		lock.Unlock()<br>	&#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">addWithoutLock</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2000</span>; i++ &#123;<br>		x += <span class="hljs-number">1</span><br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Add</span><span class="hljs-params">()</span></span> &#123;<br>	x = <span class="hljs-number">0</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++ &#123;<br>		<span class="hljs-keyword">go</span> addWithoutLock()<br>	&#125;<br>	time.Sleep(time.Second)<br>	<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;WithoutLock:&quot;</span>, x)<br>	x = <span class="hljs-number">0</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++ &#123;<br>		<span class="hljs-keyword">go</span> addWithLock()<br>	&#125;<br>	time.Sleep(time.Second)<br>	<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;WithLock:&quot;</span>, x)<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="2-5-WaitGroup"><a href="#2-5-WaitGroup" class="headerlink" title="2.5 WaitGroup"></a>2.5 WaitGroup</h3><p>计数器：开启协程 +1；执行结束 -1；主协程阻塞直到计数器为 0。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ManyGoWait</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">var</span> wg sync.WaitGroup<br>	wg.Add(<span class="hljs-number">5</span>)                   <span class="hljs-comment">// 计数器 +5</span><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++ &#123;<br>		<span class="hljs-keyword">go</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(j <span class="hljs-type">int</span>)</span></span> &#123;<br>			<span class="hljs-keyword">defer</span> wg.Done()     <span class="hljs-comment">// 计数器 -1</span><br>			hello(j)<br>		&#125;(i)<br>	&#125;<br>	wg.Wait()                   <span class="hljs-comment">// 阻塞直到计数器为 0</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h2 id="3-依赖管理"><a href="#3-依赖管理" class="headerlink" title="3 依赖管理"></a>3 依赖管理</h2><ul>
+<h3 id="2-6-指针"><a href="#2-6-指针" class="headerlink" title="2.6 指针"></a>2.6 指针</h3><p>Go 语言为程序员提供了控制数据结构指针的能力，但是并不能进行指针运算。Go 语言允许你控制特定集合的数据结构、分配的数量以及内存访问模式。</p>
+<h4 id="2-6-1-基础概念"><a href="#2-6-1-基础概念" class="headerlink" title="2.6.1 基础概念"></a>2.6.1 基础概念</h4><p>指针（pointer）在 Go 语言中可以被拆分为两个核心概念：</p>
+<ul>
+<li><p>类型指针，允许对这个指针类型的数据进行修改，传递数据可以直接使用指针，而无须拷贝数据，类型指针不能进行偏移和运算。</p>
+</li>
+<li><p>切片，由指向起始元素的原始指针、元素数量和容量组成。</p>
+</li>
+</ul>
+<p>受益于这样的约束和拆分，Go 语言的指针类型变量既拥有指针高效访问的特点，又不会发生指针偏移，从而避免了非法修改关键性数据的问题。同时，垃圾回收也比较容易对不会发生偏移的指针进行检索和回收。</p>
+<p>一个指针变量可以指向任何一个值的内存地址，它所指向的值的内存地址在 32 和 64 位机器上分别占用 4 或 8 个字节，占用字节的大小与所指向的值的大小无关。当一个指针被定义后没有分配到任何变量时，它的默认值为 nil。</p>
+<p>每个变量在运行时都拥有一个地址，这个地址代表变量在内存中的位置。Go 语言中使用在变量名前面添加 <code>&amp;</code> 操作符（前缀）来获取变量的内存地址（取地址操作），格式如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go">ptr := &amp;v    <span class="hljs-comment">// v 的类型为 T</span><br>value := *ptr<br></code></pre></td></tr></table></figure>
+<p>取地址操作符 <code>&amp;</code> 和取值操作符 <code>*</code> 是一对互补操作符，<code>&amp;</code> 取出地址，<code>*</code> 根据地址取出地址指向的值。</p>
+<h4 id="2-6-2-使用指针修改值"><a href="#2-6-2-使用指针修改值" class="headerlink" title="2.6.2 使用指针修改值"></a>2.6.2 使用指针修改值</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">swap</span><span class="hljs-params">(a, b *<span class="hljs-type">int</span>)</span></span> &#123;<br>    <span class="hljs-comment">// 取 a 指针的值, 赋给临时变量 t</span><br>    t := *a<br>    <span class="hljs-comment">// 取 b 指针的值, 赋给 a 指针指向的变量</span><br>    *a = *b<br>    <span class="hljs-comment">// 将 a 指针的值赋给 b 指针指向的变量</span><br>    *b = t<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    x, y := <span class="hljs-number">1</span>, <span class="hljs-number">2</span><br>    swap(&amp;x, &amp;y)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>*</code> 操作符作为<strong>右值</strong>时，意义是取指针的值，作为<strong>左值</strong>时，也就是放在赋值操作符的左边时，表示 a 指针指向的变量。其实归纳起来，<code>*</code> 操作符的根本意义就是操作指针指向的变量。</p>
+<h4 id="2-6-3-new-函数"><a href="#2-6-3-new-函数" class="headerlink" title="2.6.3 new() 函数"></a>2.6.3 new() 函数</h4><p>Go 语言还提供了另外一种方法来创建指针变量：<code>new(类型)</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go">str := <span class="hljs-built_in">new</span>(<span class="hljs-type">string</span>)<br>*str = <span class="hljs-string">&quot;Go语言教程&quot;</span><br>fmt.Println(*str)<br></code></pre></td></tr></table></figure>
+
+<p>new() 函数可以创建一个对应类型的指针，创建过程会分配内存，被创建的指针指向默认值。</p>
+<h2 id="3-面向对象编程"><a href="#3-面向对象编程" class="headerlink" title="3 面向对象编程"></a>3 面向对象编程</h2><p>Go 语言的面向对象编程有三个重要的思想：</p>
+<ul>
+<li><p>封装：Go 语言通过 struct 结构体的方式来实现封装，结构体可以包含各种类型的变量和方法，可以将一组相关的变量和方法封装在一起。使用首字母大小写控制变量和方法的访问权限，实现了信息隐藏和访问控制。</p>
+</li>
+<li><p>继承：Go 语言中没有传统的继承机制，但是可以使用嵌入类型来实现类似继承的效果，将一个类型嵌入到另一个类型中，从而继承嵌入类型的方法和属性。嵌入式类型的特点是可以直接访问嵌入类型的属性和方法，不需要通过接口或者其他方式进行转换。在 Go 语言中，可以通过 struct 嵌套和 interface 嵌套来实现继承的效果。</p>
+</li>
+<li><p>多态：Go 语言通过接口来实现多态，一个类型只需要实现了接口的所有方法，就可以被赋值给该接口类型的变量。这样可以实现类似于面向对象语言中的多态性。多态性使得程序可以根据上下文环境自动选择合适的方法实现，提高了代码的灵活性和可复用性。</p>
+</li>
+</ul>
+<h2 id="4-标准库"><a href="#4-标准库" class="headerlink" title="4 标准库"></a>4 标准库</h2><h3 id="4-1-context"><a href="#4-1-context" class="headerlink" title="4.1 context"></a>4.1 context</h3><p>context 主要用来在 goroutine 之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v 等。context.Context 类型的值可以协调多个 groutine 中的代码执行“取消”操作，并且可以存储键值对。最重要的是它是并发安全的。</p>
+<p>Go 常用来写后台服务，通常只需要几行代码，就可以搭建一个 http server。在 Go 的 server 里，通常每来一个请求都会启动若干个 goroutine 同时工作：有些去数据库拿数据，有些调用下游接口获取相关数据……</p>
+<p><img src="/ByteDance-1/18.png" srcset="/img/loading.gif" lazyload></p>
+<p>这些 goroutine 需要共享这个请求的基本数据，例如登陆的 token，处理请求的最大超时时间等等。当请求被取消或是处理时间太长，这有可能是使用者关闭了浏览器或是已经超过了请求方规定的超时时间，请求方直接放弃了这次请求结果。这时，所有正在为这个请求工作的 goroutine 需要快速退出，因为它们不再被需要了。在相关联的 goroutine 都退出后，系统就可以回收相关的资源。</p>
+<p>Go 语言中的 server 实际上是一个<strong>协程模型</strong>，也就是说一个协程处理一个请求。例如在业务的高峰期，某个下游服务的响应变慢，而当前系统的请求又没有超时控制，或者超时时间设置地过大，那么等待下游服务返回数据的协程就会越来越多。而我们知道，协程是要消耗系统资源的，后果就是协程数激增，内存占用飙涨，甚至导致服务不可用。更严重的会导致雪崩效应，整个服务对外表现为不可用，这肯定是 P0 级别的事故。context 包就是为了解决上面所说问题而开发的：在一组 goroutine 之间传递共享的值、取消信号、deadline 等等。</p>
+<p><img src="/ByteDance-1/19.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">type</span> Context <span class="hljs-keyword">interface</span> &#123;<br>	Done() &lt;-<span class="hljs-keyword">chan</span> <span class="hljs-keyword">struct</span>&#123;&#125;<br>	Err() <span class="hljs-type">error</span><br>	Deadline() (deadline time.Time, ok <span class="hljs-type">bool</span>)<br>	Value(key <span class="hljs-keyword">interface</span>&#123;&#125;) <span class="hljs-keyword">interface</span>&#123;&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Done() 返回一个 channel，可以表示 context 被取消的信号：当这个 channel 被关闭时，说明 context 被取消了。注意，这是一个只读的 channel。读一个关闭的 channel 会读出相应类型的零值，并且源码里没有地方会向这个 channel 里面塞入值。换句话说，这是一个 receive-only 的 channel。因此在子协程里读这个 channel，除非被关闭，否则读不出来任何东西。也正是利用了这一点，子协程从 channel 里读出了值（零值）后，就可以做一些收尾工作，尽快退出。</p>
+</li>
+<li><p>Err() 返回一个错误，表示 channel 被关闭的原因。例如是被取消，还是超时。</p>
+</li>
+<li><p>Deadline() 返回 context 的截止时间，通过此时间，函数就可以决定是否进行接下来的操作，如果时间太短，就可以不往下做了，否则浪费系统资源。当然，也可以用这个 deadline 来设置一个 I&#x2F;O 操作的超时时间。</p>
+</li>
+<li><p>Value() 获取之前设置的 key 对应的 value。</p>
+</li>
+</ul>
+<p>对于 Web 服务端开发，往往希望将一个请求处理的整个过程串起来，这就非常依赖于 Thread Local（对于 Go 可理解为单个协程所独有）的变量，而在 Go 语言中并没有这个概念，因此需要在函数调用的时候传递 context。</p>
+<p>现实场景中可能是从一个 HTTP 请求中获取到的 Request-ID：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">const</span> requestIDKey <span class="hljs-type">int</span> = <span class="hljs-number">0</span><br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">WithRequestID</span><span class="hljs-params">(next http.Handler)</span></span> http.Handler &#123;<br>	<span class="hljs-keyword">return</span> http.HandlerFunc(<br>		<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(rw http.ResponseWriter, req *http.Request)</span></span> &#123;<br>			<span class="hljs-comment">// 从 header 中提取 request-id</span><br>			reqID := req.Header.Get(<span class="hljs-string">&quot;X-Request-ID&quot;</span>)<br>			<span class="hljs-comment">// 创建 valueCtx。使用自定义的类型，不容易冲突</span><br>			ctx := context.WithValue(<br>				req.Context(), requestIDKey, reqID)<br>			<br>			<span class="hljs-comment">// 创建新的请求</span><br>			req = req.WithContext(ctx)<br>			<br>			<span class="hljs-comment">// 调用 HTTP 处理函数</span><br>			next.ServeHTTP(rw, req)<br>		&#125;<br>	)<br>&#125;<br><br><span class="hljs-comment">// 获取 request-id</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">GetRequestID</span><span class="hljs-params">(ctx context.Context)</span></span> <span class="hljs-type">string</span> &#123;<br>	ctx.Value(requestIDKey).(<span class="hljs-type">string</span>)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Handle</span><span class="hljs-params">(rw http.ResponseWriter, req *http.Request)</span></span> &#123;<br>	<span class="hljs-comment">// 拿到 reqId，后面可以记录日志等等</span><br>	reqID := GetRequestID(req.Context())<br>	...<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	handler := WithRequestID(http.HandlerFunc(Handle))<br>	http.ListenAndServe(<span class="hljs-string">&quot;/&quot;</span>, handler)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>取消 goroutine：我们先来设想一个场景：打开外卖的订单页，地图上显示外卖小哥的位置，而且是每秒更新 1 次。app 端向后台发起 websocket 连接（现实中可能是轮询）请求后，后台启动一个协程，每隔 1 秒计算 1 次小哥的位置，并发送给端。如果用户退出此页面，则后台需要取消此过程，退出 goroutine，系统回收资源。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)<br>	<span class="hljs-keyword">go</span> Perform(ctx)<br><br>	<span class="hljs-comment">// ……</span><br>	<span class="hljs-comment">// app 端返回页面，调用 cancel 函数</span><br>	cancel()<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Perform</span><span class="hljs-params">(ctx context.Context)</span></span> &#123;<br>    <span class="hljs-keyword">for</span> &#123;<br>        calculatePos()<br>        sendResult()<br><br>        <span class="hljs-keyword">select</span> &#123;<br>        <span class="hljs-keyword">case</span> &lt;-ctx.Done():<br>            <span class="hljs-comment">// 被取消，直接返回</span><br>            <span class="hljs-keyword">return</span><br>        <span class="hljs-keyword">case</span> &lt;-time.After(time.Second):<br>            <span class="hljs-comment">// block 1 秒钟 </span><br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>WithTimeOut 函数返回的 context 和 cancelFun 是分开的。context 本身并没有取消函数，这样做的原因是取消函数只能由外层函数调用，防止子节点 context 调用取消函数，从而严格控制信息的流向：由父节点 context 流向子节点 context。</p>
+<h3 id="4-2-reflect"><a href="#4-2-reflect" class="headerlink" title="4.2 reflect"></a>4.2 reflect</h3><p>Go 语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。</p>
+<p>使用反射的常见场景有以下两种：</p>
+<ul>
+<li>不能明确接口调用哪个函数，需要根据传入的参数在运行时决定。</li>
+<li>不能明确传入函数的参数类型，需要在运行时处理任意对象。</li>
+</ul>
+<p>反射的缺点：</p>
+<ul>
+<li>与反射相关的代码，经常是难以阅读的。</li>
+<li>Go 语言作为一门静态语言，编码过程中编译器能提前发现一些类型错误，但是对于反射代码是无能为力的。</li>
+<li>反射对性能影响比较大，比正常代码运行速度慢一到两个数量级。</li>
+</ul>
+<h3 id="4-3-unsafe"><a href="#4-3-unsafe" class="headerlink" title="4.3 unsafe"></a>4.3 unsafe</h3><p>相比于 C 语言中指针的灵活，Go 的指针多了一些限制：</p>
+<ul>
+<li>限制一：Go 的指针不能进行数学运算。</li>
+<li>限制二：不同类型的指针不能相互转换。</li>
+<li>限制三：不同类型的指针不能使用 &#x3D;&#x3D; 或 !&#x3D; 比较。</li>
+<li>限制四：不同类型的指针变量不能相互赋值。</li>
+</ul>
+<p>unsafe 包提供了 2 点重要的能力：</p>
+<ol>
+<li>任何类型的指针和 unsafe.Pointer 可以相互转换。</li>
+<li>uintptr 类型和 unsafe.Pointer 可以相互转换。</li>
+</ol>
+<p>pointer 不能直接进行数学运算，但可以把它转换成 uintptr，对 uintptr 类型进行数学运算，再转换成 pointer 类型。uintptr 并没有指针的语义，意思就是 uintptr 所指向的对象会被 gc 无情地回收。而 unsafe.Pointer 有指针语义，可以保护它所指向的对象在“有用”的时候不会被垃圾回收。</p>
+<p><strong>如何实现字符串和 byte 切片的零拷贝转换：原理上是利用指针的强转。</strong></p>
+<p>完成这个任务，我们需要了解 slice 和 string 的底层数据结构：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">type</span> StringHeader <span class="hljs-keyword">struct</span> &#123;<br>	Data <span class="hljs-type">uintptr</span><br>	Len  <span class="hljs-type">int</span><br>&#125;<br><br><span class="hljs-keyword">type</span> SliceHeader <span class="hljs-keyword">struct</span> &#123;<br>	Data <span class="hljs-type">uintptr</span><br>	Len  <span class="hljs-type">int</span><br>	Cap  <span class="hljs-type">int</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上面是反射包下的结构体，路径：src&#x2F;reflect&#x2F;value.go。只需要共享底层 Data 和 Len 就可以实现 zero-copy：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">string2bytes</span><span class="hljs-params">(s <span class="hljs-type">string</span>)</span></span> []<span class="hljs-type">byte</span> &#123;<br>	stringHeader := (*reflect.StringHeader)(unsafe.Pointer(&amp;s))<br><br>	bh := reflect.SliceHeader &#123;<br>		Data: stringHeader.Data,<br>		Len:  stringHeader.Len,<br>		Cap:  stringHeader.Len,<br>	&#125;<br><br>	<span class="hljs-keyword">return</span> *(*[]<span class="hljs-type">byte</span>)(unsafe.Pointer(&amp;bh))<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">bytes2string</span><span class="hljs-params">(b []<span class="hljs-type">byte</span>)</span></span> <span class="hljs-type">string</span> &#123;<br>	sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(&amp;b))<br><br>	sh := reflect.StringHeader &#123;<br>		Data: sliceHeader.Data,<br>		Len:  sliceHeader.Len,<br>	&#125;<br><br>	<span class="hljs-keyword">return</span> *(*<span class="hljs-type">string</span>)(unsafe.Pointer(&amp;sh))<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-依赖管理"><a href="#5-依赖管理" class="headerlink" title="5 依赖管理"></a>5 依赖管理</h2><ul>
 <li><strong>GOPATH</strong>：设置环境变量，项目代码依赖 src 下的代码。无法实现 package 的多版本控制。</li>
 <li><strong>Go Vendor</strong>：项目目录下增加 vendor 文件存放依赖包副本。同一项目无法依赖一个 package 的两个不同版本。</li>
 <li><strong>Go Module</strong>：通过 go.mod 文件管理依赖包版本</li>
@@ -376,7 +600,7 @@
 <li>本地工具：go get&#x2F;mod</li>
 </ol>
 <p><img src="/ByteDance-1/9.png" srcset="/img/loading.gif" lazyload alt="Proxy"></p>
-<h2 id="4-测试"><a href="#4-测试" class="headerlink" title="4 测试"></a>4 测试</h2><h3 id="4-1-单元测试"><a href="#4-1-单元测试" class="headerlink" title="4.1 单元测试"></a>4.1 单元测试</h3><ul>
+<h2 id="6-测试"><a href="#6-测试" class="headerlink" title="6 测试"></a>6 测试</h2><h3 id="6-1-单元测试"><a href="#6-1-单元测试" class="headerlink" title="6.1 单元测试"></a>6.1 单元测试</h3><ul>
 <li>测试文件以 <code>_test.go</code> 结尾</li>
 <li>函数 <code>func TestXxx(t *testing.T)</code></li>
 <li>初始化逻辑放入 <code>TestMain(m *testing.M)</code></li>
@@ -388,12 +612,12 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;github.com/stretchr/testify/assert&quot;</span><br>	<span class="hljs-string">&quot;testing&quot;</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestHelloTom</span><span class="hljs-params">(t *testing.T)</span></span> &#123;<br>	output := HelloTom()<br>	expectOutput := <span class="hljs-string">&quot;Tom&quot;</span><br>	assert.Equal(t, expectOutput, output)<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>覆盖率：<code>go test Xxx_test.go Xxx.go --cover</code></p>
-<h3 id="4-2-Mock"><a href="#4-2-Mock" class="headerlink" title="4.2 Mock"></a>4.2 Mock</h3><p>为一个函数&#x2F;方法打桩，不再依赖本地文件。</p>
+<h3 id="6-2-Mock"><a href="#6-2-Mock" class="headerlink" title="6.2 Mock"></a>6.2 Mock</h3><p>为一个函数&#x2F;方法打桩，不再依赖本地文件。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ReadFirstLine</span><span class="hljs-params">()</span></span> <span class="hljs-type">string</span> &#123;<br>	open, err := os.Open(<span class="hljs-string">&quot;log&quot;</span>)<br>	<span class="hljs-keyword">defer</span> open.Close()<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span><br>	&#125;<br>	scanner := bufio.NewScanner(open)<br>	<span class="hljs-keyword">for</span> scanner.Scan() &#123;<br>		<span class="hljs-keyword">return</span> scanner.Text()<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ProcessFirstLine</span><span class="hljs-params">()</span></span> <span class="hljs-type">string</span> &#123;<br>	line := ReadFirstLine()<br>	destLine := strings.ReplaceAll(line, <span class="hljs-string">&quot;11&quot;</span>, <span class="hljs-string">&quot;00&quot;</span>)<br>	<span class="hljs-keyword">return</span> destLine<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>以上函数读取 log 文件的第一行并将 “11” 替换为 “00”，依赖于本地的文件，而使用 Mock 可以避免依赖。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestProcessFirstLine</span><span class="hljs-params">(t *testing.T)</span></span> &#123;<br>	firstLine := ProcessFirstLine()<br>	assert.Equal(t, <span class="hljs-string">&quot;line00&quot;</span>, firstLine)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">TestProcessFirstLineWithMock</span><span class="hljs-params">(t *testing.T)</span></span> &#123;<br>	monkey.Patch(ReadFirstLine, <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> <span class="hljs-type">string</span> &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;line110&quot;</span><br>	&#125;)<br>	<span class="hljs-keyword">defer</span> monkey.Unpatch(ReadFirstLine)<br>	line := ProcessFirstLine()<br>	assert.Equal(t, <span class="hljs-string">&quot;line000&quot;</span>, line)<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-3-Benchmark"><a href="#4-3-Benchmark" class="headerlink" title="4.3 Benchmark"></a>4.3 Benchmark</h3><p>基准测试 <code>go test -bench .</code></p>
+<h3 id="6-3-Benchmark"><a href="#6-3-Benchmark" class="headerlink" title="6.3 Benchmark"></a>6.3 Benchmark</h3><p>基准测试 <code>go test -bench .</code></p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">InitServerIndex</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++ &#123;<br>		ServerIndex[i] = i+<span class="hljs-number">100</span><br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Select</span><span class="hljs-params">()</span></span> <span class="hljs-type">int</span> &#123;<br>	<span class="hljs-keyword">return</span> ServerIndex[rand.Intn(<span class="hljs-number">10</span>)]<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">BenchmarkSelect</span><span class="hljs-params">(b *testing.B)</span></span> &#123;<br>	InitServerIndex()<br>	b.ResetTimer()<br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; b.N; i++ &#123;<br>		Select()<br>	&#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">BenchmarkSelectParallel</span><span class="hljs-params">(b *testing.B)</span></span> &#123;<br>	InitServerIndex()<br>	b.ResetTimer()<br>	b.RunParallel(<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(pb *testing.PB)</span></span> &#123;<br>		<span class="hljs-keyword">for</span> pb.Next() &#123;<br>			Select()<br>		&#125;<br>	&#125;)<br>&#125;<br></code></pre></td></tr></table></figure>
@@ -436,7 +660,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「训」 笔记(1)：Go 语言</div>
+      <div>「训」 笔记(01)：Go 语言</div>
       <div>https://qanlyma.github.io/ByteDance-1/</div>
     </div>
     <div class="license-meta">
@@ -465,7 +689,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Hyperledger-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains">
+                      <a href="/Paper-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
                         <span class="visible-mobile">上一篇</span>
@@ -475,7 +699,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Blockchain-scalability/" title="「研」 区块链扩容调研">
+                      <a href="/Research-Scalability/" title="「研」 区块链扩容调研">
                         <span class="hidden-mobile">「研」 区块链扩容调研</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
@@ -546,7 +770,7 @@
         aria-expanded="true"
       >
         字节青训
-        <span class="list-group-count">(8)</span>
+        <span class="list-group-count">(13)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -560,73 +784,118 @@
     
       
       
-        <a href="/ByteDance-1/" title="「训」 笔记(1)：Go 语言"
+        <a href="/ByteDance-1/" title="「训」 笔记(01)：Go 语言"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「训」 笔记(1)：Go 语言</span>
+          <span class="category-post">「训」 笔记(01)：Go 语言</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优"
+        <a href="/ByteDance-2/" title="「训」 笔记(02)：性能调优"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(2)：性能调优</span>
+          <span class="category-post">「训」 笔记(02)：性能调优</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理"
+        <a href="/ByteDance-3/" title="「训」 笔记(03)：内存管理"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(3)：内存管理</span>
+          <span class="category-post">「训」 笔记(03)：内存管理</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
+        <a href="/ByteDance-4/" title="「训」 笔记(04)：框架三件套"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(4)：框架三件套</span>
+          <span class="category-post">「训」 笔记(04)：框架三件套</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎"
+        <a href="/ByteDance-5/" title="「训」 笔记(05)：规则引擎"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(5)：规则引擎</span>
+          <span class="category-post">「训」 笔记(05)：规则引擎</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探"
+        <a href="/ByteDance-6/" title="「训」 笔记(06)：架构初探"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(6)：架构初探</span>
+          <span class="category-post">「训」 笔记(06)：架构初探</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论"
+        <a href="/ByteDance-7/" title="「训」 笔记(07)：分布式理论"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(7)：分布式理论</span>
+          <span class="category-post">「训」 笔记(07)：分布式理论</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-8/" title="「训」 笔记(8)：微服务框架"
+        <a href="/ByteDance-8/" title="「训」 笔记(08)：微服务框架"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(8)：微服务框架</span>
+          <span class="category-post">「训」 笔记(08)：微服务框架</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-9/" title="「训」 笔记(09)：分布式定时任务"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(09)：分布式定时任务</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-10/" title="「训」 笔记(10)：消息队列"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(10)：消息队列</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-11/" title="「训」 笔记(11)：RPC 原理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(11)：RPC 原理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-12/" title="「训」 笔记(12)：存储和数据库"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(12)：存储和数据库</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-13/" title="「训」 笔记(13)：Q &amp; A"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(13)：Q &amp; A</span>
         </a>
       
     

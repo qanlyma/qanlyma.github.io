@@ -1,0 +1,880 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，“一次编写，到处运行（Write once, run anywhere）”，而 Docker 是 “一次构建，到处运行（Build once，run anywhere）”。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「学」 Docker">
+<meta property="og:url" content="https://qanlyma.github.io/Note-Docker/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，“一次编写，到处运行（Write once, run anywhere）”，而 Docker 是 “一次构建，到处运行（Build once，run anywhere）”。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Docker/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Docker/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Docker/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Docker/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Docker/4.png">
+<meta property="article:published_time" content="2023-02-27T14:36:34.000Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.547Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/Note-Docker/3.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「学」 Docker - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「学」 Docker"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-02-27 22:36" pubdate>
+          2023年2月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「学」 Docker</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：10 个月前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，“一次编写，到处运行（Write once, run anywhere）”，而 Docker 是 “一次构建，到处运行（Build once，run anywhere）”。</p>
+<span id="more"></span>
+
+<h2 id="1-Docker-基本概念"><a href="#1-Docker-基本概念" class="headerlink" title="1 Docker 基本概念"></a>1 Docker 基本概念</h2><p>在没有使用 Docker 时，我们开发完毕一个项目，需要打成 war 包或 jar 包。然后，在服务器上进行各种环境的安装、配置以及应用程序维护，比如：JDK、Tomcat、数据库等。而且，上述的配置在开发环境、测试服务器、生产服务器（通常会有很多个），都需要进行一遍同样的操作，工作量相当繁重。</p>
+<p>在使用了 Docker 之后，我们可以自己创建一个空的镜像从头构建，也可以使用公共仓库中已经构建好的镜像，直接使用。当需要在不同环境中进行部署时，直接使用构建好的镜像即可。</p>
+<p><img src="/Note-Docker/3.png" srcset="/img/loading.gif" lazyload alt="Docker 优势"></p>
+<h3 id="1-1-基本组成"><a href="#1-1-基本组成" class="headerlink" title="1.1 基本组成"></a>1.1 基本组成</h3><p><img src="/Note-Docker/1.png" srcset="/img/loading.gif" lazyload alt="Docker 架构"></p>
+<ul>
+<li><p><strong>镜像（Image）</strong>：相当于是一个 root 文件系统。Docker 镜像是用于创建 Docker 容器的模板，比如 Ubuntu 系统。</p>
+</li>
+<li><p><strong>容器（Container）</strong>：镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。</p>
+</li>
+<li><p><strong>仓库（Repository）</strong>：仓库可看成一个代码控制中心，用来保存镜像。</p>
+</li>
+<li><p><strong>客户端（Client）</strong>：Docker 客户端通过命令行或者其他工具使用 <a target="_blank" rel="noopener" href="https://docs.docker.com/develop/sdk/">Docker SDK</a> 与 Docker 的守护进程通信。</p>
+</li>
+<li><p><strong>主机（Host）</strong>：一个物理或者虚拟的机器用于执行 Docker 守护进程和容器。</p>
+</li>
+</ul>
+<p>Docker 使用客户端-服务器 (C&#x2F;S) 架构模式，使用远程 API 来管理和创建 Docker 容器。</p>
+<h3 id="1-2-Docker-Compose"><a href="#1-2-Docker-Compose" class="headerlink" title="1.2 Docker-Compose"></a>1.2 Docker-Compose</h3><p>通过 Docker-Compose ，不需要使用 shell 脚本来启动容器，而使用 YAML 文件来配置应用程序需要的所有服务，然后使用一个命令根据 YAML 的文件配置创建并启动所有服务。</p>
+<h3 id="1-3-网络"><a href="#1-3-网络" class="headerlink" title="1.3 网络"></a>1.3 网络</h3><p>当你安装 Docker 时，它会自动创建三个网络：</p>
+<ul>
+<li>bridge：创建容器默认连接到此网络，此模式会为每一个容器分配、设置 IP 等，并将容器连接到一个 docker0 虚拟网桥，通过 docker0 网桥以及 Iptables nat 表配置与宿主机通信。</li>
+<li>none：该模式关闭了容器的网络功能。</li>
+<li>host：容器和宿主机共享 Network namespace。容器将不会虚拟出自己的网卡，配置自己的 IP 等，而是使用宿主机的 IP 和端口。</li>
+</ul>
+<p>建议使用自定义的网桥来控制哪些容器可以相互通信，还可以自动 DNS 解析容器名称到 IP 地址。</p>
+<h2 id="2-Docker-容器与虚拟机"><a href="#2-Docker-容器与虚拟机" class="headerlink" title="2 Docker 容器与虚拟机"></a>2 Docker 容器与虚拟机</h2><p>创建虚拟机时，会将实体机的部分硬盘和内存容量作为虚拟机的硬盘和内存。而 Docker 有着比虚拟机更少的抽象层，不需要实现硬件资源虚拟化，运行在 Docker 容器上的程序直接使用实际物理机的硬件资源。Docker 利用的是宿主机的内核，而不需要 Guest OS。</p>
+<p><img src="/Note-Docker/2.png" srcset="/img/loading.gif" lazyload alt="容器与虚拟机"></p>
+<p>传统的虚拟机是在宿主机之上，又添加了一个新的操作系统，这就导致了虚拟机的臃肿，不适合迁移。而 Docker 是直接寄存在宿主机上，完全就会避免大部分虚拟机带来的困扰。</p>
+<p>Docker 是一个黑盒的进程，区别于传统的进程，Docker 可以独立出一个自己的空间，不会使得在 Docker 中的行为以及变量溢出到宿主机上。</p>
+<h2 id="3-Docker-镜像"><a href="#3-Docker-镜像" class="headerlink" title="3 Docker 镜像"></a>3 Docker 镜像</h2><p>镜像是一种轻量级、可执行的独立软件包，用来打包软件运行环境和基于运行环境开发的软件，包含运行某个软件所需的所有内容，包括<strong>代码、运行时库、环境变量和配置文件</strong>。</p>
+<h3 id="3-1-构建镜像"><a href="#3-1-构建镜像" class="headerlink" title="3.1 构建镜像"></a>3.1 构建镜像</h3><p>所有的 Docker 镜像都起始于一个基础镜像层，当进行修改或培加新的内容时，就会在当前镜像层之上，创建新的镜像层。</p>
+<p>举一个简单的例子，假如基于 Ubuntu Linux 16.04 创建一个新的镜像，这就是新镜像的第一层；如果在该镜像中添加 Python 包，就会在基础镜像层之上创建第二个镜像层；如果继续添加一个安全补丁，就会创健第三个镜像层：</p>
+<p><img src="/Note-Docker/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>Docker 镜像都是只读的，当容器启动时，一个新的可写层加载到镜像的顶部。这一层就是我们通常说的容器层，容器之下的都叫镜像层。</p>
+<p>自己构建镜像时首先需要写一个 dockerfile 文件：</p>
+<ol>
+<li>编写一个 dockerfile 文件</li>
+<li>docker build 构建称为一个镜像</li>
+<li>docker run 运行镜像</li>
+</ol>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span>                <span class="hljs-comment"># 基础镜像，一切从这里开始构建</span><br><span class="hljs-keyword">MAINTAINER</span>          <span class="hljs-comment"># 镜像是谁写的，姓名+邮箱</span><br><span class="hljs-keyword">RUN</span><span class="language-bash">                 <span class="hljs-comment"># 镜像构建的时候需要运行的命令</span></span><br><span class="hljs-keyword">ADD</span><span class="language-bash">                 <span class="hljs-comment"># 添加内容</span></span><br><span class="hljs-keyword">WORKDIR</span><span class="language-bash">             <span class="hljs-comment"># 镜像的工作目录</span></span><br><span class="hljs-keyword">VOLUME</span><span class="language-bash">              <span class="hljs-comment"># 挂载的目录</span></span><br><span class="hljs-keyword">EXPOSE</span>              <span class="hljs-comment"># 保留端口配置</span><br><span class="hljs-keyword">CMD</span><span class="language-bash">                 <span class="hljs-comment"># 指定这个容器启动的时候要运行的命令，只有最后一个会生效，可被替代</span></span><br><span class="hljs-keyword">ENTRYPOINT</span><span class="language-bash">          <span class="hljs-comment"># 指定这个容器启动的时候要运行的命令，可以追加命令</span></span><br><span class="hljs-keyword">ONBUILD</span>             <span class="hljs-comment"># 当构建一个被继承 dockerfile 这个时候就会运行 ONBUILD 的指令，触发指令</span><br><span class="hljs-keyword">COPY</span><span class="language-bash">                <span class="hljs-comment"># 类似 ADD，将我们文件拷贝到镜像中</span></span><br><span class="hljs-keyword">ENV</span>                 <span class="hljs-comment"># 构建的时候设置环境变量</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-镜像加速"><a href="#3-2-镜像加速" class="headerlink" title="3.2 镜像加速"></a>3.2 镜像加速</h3><p>国内从 DockerHub 拉取镜像有时会遇到困难，此时可以配置镜像加速器。Docker 官方和国内很多云服务商都提供了国内加速器服务：</p>
+<ul>
+<li>科大镜像：<a target="_blank" rel="noopener" href="https://docker.mirrors.ustc.edu.cn/">https://docker.mirrors.ustc.edu.cn/</a></li>
+<li>网易：<a target="_blank" rel="noopener" href="https://hub-mirror.c.163.com/">https://hub-mirror.c.163.com/</a></li>
+<li>阿里云：https:&#x2F;&#x2F;&lt;你的ID&gt;.mirror.aliyuncs.com（<a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors">阿里云镜像获取地址</a>）</li>
+<li>七牛云加速器：<a target="_blank" rel="noopener" href="https://reg-mirror.qiniu.com/">https://reg-mirror.qiniu.com</a></li>
+</ul>
+<p>对于使用 systemd 的系统，请在 <code>/etc/docker/daemon.json</code> 中写入如下内容（如果文件不存在请新建该文件）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">&#123;&quot;registry-mirrors&quot;:[&quot;https://reg-mirror.qiniu.com/&quot;]&#125;<br></code></pre></td></tr></table></figure>
+<p>之后重新启动服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ sudo systemctl daemon-reload<br>$ sudo systemctl restart docker<br></code></pre></td></tr></table></figure>
+<p>检查是否生效：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker info<br>Registry Mirrors:<br>    https://reg-mirror.qiniu.com<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-Docker-常用命令"><a href="#4-Docker-常用命令" class="headerlink" title="4 Docker 常用命令"></a>4 Docker 常用命令</h2><p><img src="/Note-Docker/4.png" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li><p>当前系统 Docker 信息</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker<br>$ docker info<br>$ docker version<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>容器使用</p>
+<ul>
+<li><p><strong>获取镜像</strong><br>  如果我们本地没有 ubuntu 镜像，我们可以使用 docker pull 命令来载入 ubuntu 镜像：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker pull ubuntu<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动容器</strong><br>  以下命令使用 ubuntu 镜像启动一个容器，参数为以命令行模式进入该容器：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker run -it ubuntu /bin/bash<br></code></pre></td></tr></table></figure>
+<p>  参数说明：<br>  <code>-i</code>：交互式操作。<br>  <code>-t</code>：终端。<br>  <code>ubuntu</code>：ubuntu 镜像。<br>  <code>/bin/bash</code>：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 &#x2F;bin&#x2F;bash。</p>
+<p>  退出终端：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Linux"># exit<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查看所有容器</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker ps -a<br></code></pre></td></tr></table></figure>
+
+<p>  查看当前有哪些容器正在运行</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker ps<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动、停止、重启容器</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker start container_id<br>$ docker stop container_id<br>$ docker restart container_id<br>$ docker kill container_id<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>后台运行</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker run -itd --name ubuntu-test ubuntu /bin/bash<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>进入容器</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker attach container_id<br># 进入容器正在执行的终端，如果从这个容器退出，会导致容器的停止<br><br>$ docker exec -it container_id /bin/bash<br># 进入当前容器后开启一个新的终端，如果从这个容器退出，容器不会停止<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>删除容器</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker rm -f container_id<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>镜像使用</p>
+<ul>
+<li><p><strong>查看宿主机上的镜像</strong><br>   Docker 镜像保存在 &#x2F; var&#x2F;lib&#x2F;docker 目录下</p>
+   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker images<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>拉取新的镜像</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker pull image_name:tag<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>删除镜像</strong></p>
+   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker rmi hello-world<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.runoob.com/docker/docker-hello-world.html">更多命令</a></p>
+</li>
+</ol>
+<h2 id="5-个人疑问"><a href="#5-个人疑问" class="headerlink" title="5 个人疑问"></a>5 个人疑问</h2><p><strong>Linux docker 宿主机是否可以运行 Windows 容器？</strong></p>
+<ul>
+<li>Windows docker 宿主机可以运行 Windows 和 Linux 容器。</li>
+<li>Linux docker 宿主机只能运行 Linux 容器。</li>
+<li>Windows 宿主机可以运行 Linux 容器的原因是： Windows 在后台创建了一个 Linux 子系统，因此 Linux 容器仍在 Linux 上运行。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「学」 Docker</div>
+      <div>https://qanlyma.github.io/Note-Docker/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年2月27日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Note-Git/" title="「学」 Git">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「学」 Git</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Paper-Fabric/" title="「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains">
+                        <span class="hidden-mobile">「论」 Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="学习笔记"
+        id="heading-078425eaf316a180b0989442e53f920b" role="tab" data-toggle="collapse" href="#collapse-078425eaf316a180b0989442e53f920b"
+        aria-expanded="true"
+      >
+        学习笔记
+        <span class="list-group-count">(9)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-078425eaf316a180b0989442e53f920b"
+           role="tabpanel" aria-labelledby="heading-078425eaf316a180b0989442e53f920b">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Note-Blackwords/" title="「学」  IT 黑话"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」  IT 黑话</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Docker/" title="「学」 Docker"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「学」 Docker</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Git/" title="「学」 Git"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Git</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Hexo/" title="「学」 Hexo"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Hexo</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Kubernetes/" title="「学」 Kubernetes"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Kubernetes</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Linux/" title="「学」 Linux"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Linux</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Markdown/" title="「学」 Markdown"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Markdown</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-MySQL/" title="「学」 MySQL"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 MySQL</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Redis/" title="「学」 Redis"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Redis</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

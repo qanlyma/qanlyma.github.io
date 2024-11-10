@@ -18,21 +18,24 @@
   
     <meta name="description" content="本文是关于自动内存管理和 Go 内存管理及优化的笔记。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「训」 笔记(3)：内存管理">
+<meta property="og:title" content="「训」 笔记(03)：内存管理">
 <meta property="og:url" content="https://qanlyma.github.io/ByteDance-3/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="本文是关于自动内存管理和 Go 内存管理及优化的笔记。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/10.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/3.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/4.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/2.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/9.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/9.gif">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/7.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-3/8.png">
 <meta property="article:published_time" content="2023-03-06T04:13:09.000Z">
-<meta property="article:modified_time" content="2023-04-16T01:44:21.290Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.454Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-3/1.png">
@@ -41,7 +44,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「训」 笔记(3)：内存管理 - Qanly</title>
+  <title>「训」 笔记(03)：内存管理 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -182,7 +185,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「训」 笔记(3)：内存管理"></span>
+            <span id="subtitle" data-typed-text="「训」 笔记(03)：内存管理"></span>
           
         </div>
 
@@ -261,12 +264,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「训」 笔记(3)：内存管理</h1>
+            <h1 style="display: none">「训」 笔记(03)：内存管理</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：13 分钟前
+                    本文最后更新于：10 个月前
                   
                 
               </p>
@@ -277,7 +280,12 @@
                 <p>本文是关于自动内存管理和 Go 内存管理及优化的笔记。</p>
 <span id="more"></span>
 
-<h2 id="1-自动内存管理"><a href="#1-自动内存管理" class="headerlink" title="1 自动内存管理"></a>1 自动内存管理</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><p><strong>自动内存管理</strong>（垃圾回收，GC）：由程序语言的运行时系统管理动态内存。避免手动内存管理，专注于实现业务逻辑，并保证内存使用的正确性和安全性: double-free problem, use-after-free problem</p>
+<h2 id="1-Go-垃圾回收"><a href="#1-Go-垃圾回收" class="headerlink" title="1 Go 垃圾回收"></a>1 Go 垃圾回收</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><p><strong>垃圾回收</strong>：GC 是一种自动内存管理的机制。避免手动内存管理，专注于实现业务逻辑，并保证内存使用的正确性和安全性：double-free problem，use-after-free problem。</p>
+<p>通常，垃圾回收器的执行过程被划分为两个半独立的组件：</p>
+<ul>
+<li>赋值器（Mutator）：这一名称本质上是在指代用户态的代码。因为对垃圾回收器而言，用户态的代码仅仅只是在修改对象之间的引用关系，也就是在对象图（对象之间引用关系的一个有向图）上进行操作。</li>
+<li>回收器（Collector）：负责执行垃圾回收的代码。</li>
+</ul>
 <p><strong>三个任务</strong>：</p>
 <ul>
 <li>为新对象分配空间</li>
@@ -286,26 +294,66 @@
 </ul>
 <p><strong>Mutator</strong>: 业务线程，分配新对象，修改对象指向关系<br><strong>Collector</strong>: GC 线程，找到存活对象，回收死亡对象的内存空间<br><strong>Serial GC</strong>: 只有一个 collector<br><strong>Parallel GC</strong>: 并行 GC，支持多个 collectors 同时回收的 GC 算法<br><strong>Concurrent GC</strong>: 并发 GC，支持 mutator(s) 和 collector(s) 同时执行的 GC 算法</p>
 <p><img src="/ByteDance-3/1.png" srcset="/img/loading.gif" lazyload alt="GC"></p>
-<h3 id="1-2-追踪垃圾回收"><a href="#1-2-追踪垃圾回收" class="headerlink" title="1.2 追踪垃圾回收"></a>1.2 追踪垃圾回收</h3><ul>
-<li><p>被回收的条件：指针指向关系不可达对象</p>
+<h3 id="1-2-追踪垃圾回收"><a href="#1-2-追踪垃圾回收" class="headerlink" title="1.2 追踪垃圾回收"></a>1.2 追踪垃圾回收</h3><ol>
+<li><p><strong>标记根对象</strong>（GC roots）：</p>
+<ul>
+<li>全局变量：程序在编译期就能确定的那些存在于程序整个生命周期的变量。</li>
+<li>执行栈：每个 goroutine 都包含自己的执行栈，这些执行栈上包含栈上的变量及指向分配的堆内存区块的指针。</li>
+<li>寄存器：寄存器的值可能表示一个指针，参与计算的这些指针可能指向某些赋值器分配的堆内存区块。</li>
+</ul>
 </li>
-<li><p>过程：</p>
-<p>  <img src="/ByteDance-3/2.png" srcset="/img/loading.gif" lazyload alt="扫描过程"></p>
+<li><p><strong>标记</strong>：三色标记法</p>
+<p> <img src="/ByteDance-3/10.png" srcset="/img/loading.gif" lazyload></p>
 <ol>
-<li><p>标记根对象 (GC roots): 静态变量、全局变量、常量、线程栈等</p>
+<li>首先把所有的对象都放到白色的集合中</li>
+<li>从根节点（例如程序的全局变量、栈中的变量和寄存器中的指针）开始遍历对象，遍历到的白色对象从白色集合中放到灰色集合中</li>
+<li>遍历灰色集合中的对象，把灰色对象引用的白色集合的对象放入到灰色集合中，同时把遍历过的灰色集合中的对象放到黑色的集合中</li>
+<li>循环步骤 3，直到灰色集合中没有对象</li>
+<li>步骤 4 结束后，白色集合中的对象就是不可达对象，也就是垃圾，进行回收</li>
+</ol>
 </li>
-<li><p>标记：找到所有可达对象</p>
-</li>
-<li><p>清理：回收所有不可达对象占据的内存空间</p>
+<li><p><strong>清理</strong>：回收所有不可达对象占据的内存空间</p>
 <ul>
 <li><strong>Copying GC</strong>: 将存活对象从一块内存空间复制到<strong>另外一块内存空间</strong>，原先的空间可以直接进行对象分配<br> <img src="/ByteDance-3/3.png" srcset="/img/loading.gif" lazyload alt="Copying GC"></li>
 <li><strong>Mark-sweep GC</strong>: 将死亡对象所在内存块标记为可分配，使用 free list 管理可分配的空间<br> <img src="/ByteDance-3/4.png" srcset="/img/loading.gif" lazyload alt="Mark-sweep GC"></li>
 <li><strong>Mark-compact GC</strong>: 将存活对象复制到同一块内存区域的开头<br> <img src="/ByteDance-3/5.png" srcset="/img/loading.gif" lazyload alt="Mark-compact GC"></li>
 </ul>
 </li>
+<li><p><strong>STW</strong></p>
+<p> STW 可以是 Stop the World 的缩写，也可以是 Start the World 的缩写。通常意义上指代从 Stop the World 这一动作发生时到 Start the World 这一动作发生时这一段时间间隔，即万物静止。STW 在垃圾回收过程中为了保证实现的正确性、防止无止境的内存增长等问题而不可避免的需要停止赋值器进一步操作对象图的一段过程。STW 如今已经优化到了半毫秒级别以下。</p>
+</li>
+</ol>
+<p><strong>并发标记清除法</strong>：难点在于用户态代码在回收过程中会并发地更新对象图，从而造成赋值器和回收器可能对对象图的结构产生不同的认知。</p>
+<p><img src="/ByteDance-3/2.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>写屏障</strong>：写屏障是一个在并发垃圾回收器中才会出现的概念，垃圾回收器的正确性体现在：不应出现对象的丢失，也不应错误的回收还不需要回收的对象。</p>
+<p>可以证明，当以下两个条件<strong>同时满足</strong>时会破坏垃圾回收器的正确性：</p>
+<ul>
+<li><strong>条件 1</strong>: 赋值器修改对象图，导致某一黑色对象引用白色对象；</li>
+<li><strong>条件 2</strong>: 从灰色对象出发，到达白色对象的、未经访问过的路径被赋值器破坏。</li>
+</ul>
+<p>我们不妨将三色不变性所定义的波面根据这两个条件进行削弱：</p>
+<ul>
+<li>当满足原有的三色不变性定义（或上面的两个条件都不满足时）的情况称为强三色不变性（strong tricolor invariant）</li>
+<li>当赋值器令黑色对象引用白色对象时（满足条件 1 时）的情况称为弱三色不变性（weak tricolor invariant）</li>
+</ul>
+<p>赋值器的写屏障作为一种同步机制，使赋值器在进行指针写操作时，能够“通知”回收器，进而不会破坏弱三色不变性。</p>
+<ul>
+<li><p>灰色赋值器的 Dijkstra 插入屏障的基本思想是避免满足条件 1：为了防止黑色对象指向白色对象，应该假设 <code>*slot</code> 可能会变为黑色，为了确保 <code>ptr</code> 不会在被赋值到 <code>*slot</code> 前变为白色，<code>shade(ptr)</code> 会先将指针 <code>ptr</code> 标记为灰色，进而避免了条件 1。</p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 灰色赋值器 Dijkstra 插入屏障</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">DijkstraWritePointer</span><span class="hljs-params">(slot *unsafe.Pointer, ptr unsafe.Pointer)</span></span> &#123;<br>    shade(ptr)<br>    *slot = ptr<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>  Dijkstra 插入屏障的好处在于可以立刻开始并发标记。但存在两个缺点：</p>
+<ol>
+<li>由于 Dijkstra 插入屏障的“保守”，在一次回收过程中可能会残留一部分对象没有回收成功，只有在下一个回收过程中才会被回收；</li>
+<li>在标记阶段中，每次进行指针赋值操作时，都需要引入写屏障，这无疑会增加大量性能开销；为了避免造成性能问题，Go 团队在最终实现时，没有为所有栈上的指针写操作，启用写屏障，而是当发生栈上的写操作时，将栈标记为灰色，但此举产生了灰色赋值器，将会需要标记终止阶段 STW 时对这些栈进行重新扫描。</li>
 </ol>
 </li>
+<li><p>另一种比较经典的写屏障是黑色赋值器的 Yuasa 删除屏障。其基本思想是避免满足条件 2：为了防止丢失从灰色对象到白色对象的路径，应该假设 <code>*slot</code> 可能会变为黑色，为了确保 <code>ptr</code> 不会在被赋值到 <code>*slot</code> 前变为白色，<code>shade(*slot)</code> 会先将 <code>*slot</code> 标记为灰色，进而该写操作总是创造了一条灰色到灰色或者灰色到白色对象的路径，进而避免了条件 2。</p>
+  <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 黑色赋值器 Yuasa 屏障</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">YuasaWritePointer</span><span class="hljs-params">(slot *unsafe.Pointer, ptr unsafe.Pointer)</span></span> &#123;<br>    shade(*slot)<br>    *slot = ptr<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>  Yuasa 删除屏障的优势在于不需要标记结束阶段的重新扫描，结束时候能够准确的回收所有需要回收的白色对象。缺陷是 Yuasa 删除屏障会拦截写操作，进而导致波面的退后，产生“冗余”的扫描.</p>
+</li>
 </ul>
+<p>Go 在 1.8 的时候为了简化 GC 的流程，同时减少标记终止阶段的重扫成本，将 Dijkstra 插入屏障和 Yuasa 删除屏障进行混合，形成混合写屏障。该屏障提出时的基本思想是：对正在被覆盖的对象进行着色，且如果当前栈未扫描完成，则同样对指针进行着色。</p>
 <h3 id="1-3-分代-GC"><a href="#1-3-分代-GC" class="headerlink" title="1.3 分代 GC"></a>1.3 分代 GC</h3><p>分代假说：most objects die young，很多对象在分配出来后很快就不再使用了</p>
 <ul>
 <li><p>年轻代（Young generation）</p>
@@ -323,7 +371,7 @@
 </li>
 </ul>
 <h3 id="1-4-引用计数"><a href="#1-4-引用计数" class="headerlink" title="1.4 引用计数"></a>1.4 引用计数</h3><p>每个对象都有一个与之关联的引用数目</p>
-<p>对象存活的条件：当且仅当引用数大于 0</p>
+<p>对象存活的条件：<strong>当且仅当引用数大于 0</strong></p>
 <ul>
 <li><p>优点：</p>
 <ul>
@@ -340,7 +388,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="2-Go-内存管理及优化"><a href="#2-Go-内存管理及优化" class="headerlink" title="2 Go 内存管理及优化"></a>2 Go 内存管理及优化</h2><h3 id="2-1-分块"><a href="#2-1-分块" class="headerlink" title="2.1 分块"></a>2.1 分块</h3><p>为对象在 heap 上分配内存，提前将<strong>内存分块</strong></p>
+<h2 id="2-Go-内存管理"><a href="#2-Go-内存管理" class="headerlink" title="2 Go 内存管理"></a>2 Go 内存管理</h2><h3 id="2-1-分块"><a href="#2-1-分块" class="headerlink" title="2.1 分块"></a>2.1 分块</h3><p>为对象在 heap 上分配内存，提前将<strong>内存分块</strong></p>
 <ul>
 <li>调用系统调用 mmap() 向 OS 申请一大块内存，例如 4 MB</li>
 <li>先将内存划分成大块，例如 8 KB，称作 mspan</li>
@@ -351,15 +399,30 @@
 <h3 id="2-2-缓存"><a href="#2-2-缓存" class="headerlink" title="2.2 缓存"></a>2.2 缓存</h3><p>Go 内存管理构成了多级缓存机制，从 OS 分配得的内存被内存管理回收后，也不会立刻归还给 OS，而是在 Go runtime 内部先缓存起来，从而避免频繁向 OS 申请内存。</p>
 <p><img src="/ByteDance-3/6.png" srcset="/img/loading.gif" lazyload alt="多级缓存"></p>
 <ul>
-<li>g：gorotine（协程）</li>
-<li>m：machine（内核线程）</li>
-<li>p：processor（调度器）</li>
 <li>每个 p 包含一个 mcache 用于快速分配，用于为绑定于 p 上的 g 分配对象</li>
 <li>mcache 管理一组 mspan</li>
 <li>当 mchache 中的 mspan 分配完毕，向 mcentral 申请带有未分配块的 mspan</li>
 <li>当 mspan 中没有分配的对象，mspan 会缓存在 mcentral 中，而不是立即释放并归还给 OS</li>
 </ul>
-<h3 id="2-3-优化方案"><a href="#2-3-优化方案" class="headerlink" title="2.3 优化方案"></a>2.3 优化方案</h3><p><strong>Go 内存管理的问题</strong>：对象分配是非常高频的操作，每秒分配 GB 级别的内存；Go 的内存分配流程很长，占用很多 CPU</p>
+<h3 id="2-3-GMP"><a href="#2-3-GMP" class="headerlink" title="2.3 GMP"></a>2.3 GMP</h3><p><img src="/ByteDance-3/9.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>G：goroutine</li>
+<li>M：machine（机器线程）</li>
+<li>P：processor（调度器）</li>
+</ul>
+<p><img src="/ByteDance-3/9.gif" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>每个 P 和一个 M 绑定，M 是真正的执行 P 中 goroutine 的实体</li>
+<li>P 维护了一个 goroutine 的队列，P 的本地队列为空时，就从全局队列里去取</li>
+<li>M 想要运行 G，就得先获取 P，然后从 P 的本地队列获取 G</li>
+</ul>
+<p>工作窃取：当 P 上的一个 G 执行结束后，它会去本地队列获取下一个 G 来执行，如果本地队列空了，此时全局队列也空了，它就会随机选择另一个 P “偷”过来一半的 G。</p>
+<p><strong>模型优点：</strong></p>
+<ul>
+<li>复⽤线程：避免频繁的创建销毁线程</li>
+<li>多核并行</li>
+</ul>
+<h3 id="2-4-优化方案"><a href="#2-4-优化方案" class="headerlink" title="2.4 优化方案"></a>2.4 优化方案</h3><p><strong>Go 内存管理的问题</strong>：对象分配是非常高频的操作，每秒分配 GB 级别的内存；Go 的内存分配流程很长，占用很多 CPU</p>
 <p><strong>字节跳动的优化方案</strong>：Balanced GC</p>
 <p>核心：将 noscan 对象在 per-g allocation buffer (GAB) 上分配，并使用移动对象 GC 管理这部分内存，提高对象分配和回收效率。</p>
 <p><img src="/ByteDance-3/7.png" srcset="/img/loading.gif" lazyload alt="GAB"></p>
@@ -373,6 +436,36 @@
 <p>从 Go runtime 内存管理模块的角度看，一个 allocation buffer 其实是一个大对象。本质上 Balanced GC 是将多次小对象的分配合并成一次大对象的分配。因此，当 GAB 中哪怕只有一个小对象存活时，Go runtime 也会认为整个大对象（即 GAB）存活。为此，balanced GC 会根据 GC 策略，将 GAB 中存活的对象移动到另外的 GAB 中，从而压缩并清理 GAB 的内存空间，原先的 GAB 空间由于不再有存活对象，可以全部释放。</p>
 <p><img src="/ByteDance-3/8.png" srcset="/img/loading.gif" lazyload alt="用 copying GC 管理小对象"></p>
 <p>Balanced GC 只负责 noscan 对象的分配和移动，对象的标记和回收依然依赖 Go GC 本身，并和 Go GC 保持兼容。</p>
+<h2 id="3-Go-逃逸分析"><a href="#3-Go-逃逸分析" class="headerlink" title="3 Go 逃逸分析"></a>3 Go 逃逸分析</h2><p>在程序中，每个函数块都会有自己的内存区域用来存自己的局部变量、返回地址、返回值之类的数据，这一块内存区域有特定的结构，寻址起来十分迅速，开销很少。这一块内存地址称为栈。栈是线程级别的，大小在创建的时候已经确定。但有时候变量会逃逸到堆上，当局部变量通过堆分配和回收时，就叫内存逃逸。</p>
+<ul>
+<li>堆是一块没有特定结构，也没有固定大小的内存区域，可以根据需要进行调整</li>
+<li>全局变量，内存占用较大的局部变量，函数调用结束后不能立刻回收的局部变量都会存在堆里面</li>
+<li>变量在堆上的分配和回收都比在栈上开销大的多</li>
+<li>对于 Go 这种带 GC 的语言来说，会增加 GC 压力，同时也容易造成内存碎片</li>
+</ul>
+<p>Go 语言逃逸分析最基本的原则是：<strong>如果一个函数返回对一个变量的引用，那么它就会发生逃逸</strong>。</p>
+<p>简单来说，编译器会分析代码的特征和代码生命周期，Go 中的变量只有在编译器可以证明在函数返回后不会再被引用的，才分配到栈上，其他情况下都是分配到堆上。通过逃逸分析，可以尽量把那些不需要分配到堆上的变量直接分配到栈上，堆上的变量少了，会减轻分配堆内存的开销，同时也会减少 gc 的压力，提高程序的运行速度。</p>
+<ul>
+<li>如果函数外部对指针没有引用，则优先放到栈中</li>
+<li>如果函数外部对指针存在引用，则必定放到堆中</li>
+<li>当函数内分配一个较大对象时，则优先放到堆中</li>
+<li>编译阶段无法确定的参数，会逃逸到堆上</li>
+</ul>
+<p>查看逃逸分析的结果：<code>go build -gcflags &#39;-m -l&#39; main.go</code>。</p>
+<h3 id="3-1-什么情况会发生内存逃逸"><a href="#3-1-什么情况会发生内存逃逸" class="headerlink" title="3.1 什么情况会发生内存逃逸"></a>3.1 什么情况会发生内存逃逸</h3><ul>
+<li>向 channel 发送指针数据。因为在编译时，不知道 channel 中的数据会被哪个 goroutine 接收，因此编译器没法知道变量什么时候才会被释放，因此只能放入堆中</li>
+<li>方法内把局部变量指针返回。局部变量原本应该在栈中分配，在栈中回收。但是由于返回时被外部引用，因此其生命周期大于栈，则溢出</li>
+<li>在 slice 或 map 中存储指针。比如 []*string，其后面的数组可能是在栈上分配的，但其引用的值还是在堆上</li>
+<li>切片扩容后长度太大，导致栈空间不足，逃逸到堆上</li>
+<li>在 interface 类型上调用方法时会把 interface 变量使用堆分配，因为方法的真正实现只能在运行时知道</li>
+</ul>
+<h3 id="3-2-如何解决内存逃逸"><a href="#3-2-如何解决内存逃逸" class="headerlink" title="3.2 如何解决内存逃逸"></a>3.2 如何解决内存逃逸</h3><ul>
+<li>对于小型的数据，使用传值而不是传指针，避免内存逃逸</li>
+<li>避免使用长度不固定的 slice 切片，在编译期无法确定切片长度，只能将切片使用堆分配</li>
+<li>interface 调用方法会发生内存逃逸，谨慎使用</li>
+<li>指向栈对象上的指针不能被存储到堆中</li>
+<li>指向栈对象上的指针不能超过该栈对象的声明周期</li>
+</ul>
 
                 
               </div>
@@ -411,7 +504,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「训」 笔记(3)：内存管理</div>
+      <div>「训」 笔记(03)：内存管理</div>
       <div>https://qanlyma.github.io/ByteDance-3/</div>
     </div>
     <div class="license-meta">
@@ -440,9 +533,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Go-KMP/" title="「Go」 KMP 算法">
+                      <a href="/ByteDance-4/" title="「训」 笔记(04)：框架三件套">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「Go」 KMP 算法</span>
+                        <span class="hidden-mobile">「训」 笔记(04)：框架三件套</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -450,8 +543,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优">
-                        <span class="hidden-mobile">「训」 笔记(2)：性能调优</span>
+                      <a href="/ByteDance-2/" title="「训」 笔记(02)：性能调优">
+                        <span class="hidden-mobile">「训」 笔记(02)：性能调优</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -521,7 +614,7 @@
         aria-expanded="true"
       >
         字节青训
-        <span class="list-group-count">(8)</span>
+        <span class="list-group-count">(13)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -535,73 +628,118 @@
     
       
       
-        <a href="/ByteDance-1/" title="「训」 笔记(1)：Go 语言"
+        <a href="/ByteDance-1/" title="「训」 笔记(01)：Go 语言"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(1)：Go 语言</span>
+          <span class="category-post">「训」 笔记(01)：Go 语言</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优"
+        <a href="/ByteDance-2/" title="「训」 笔记(02)：性能调优"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(2)：性能调优</span>
+          <span class="category-post">「训」 笔记(02)：性能调优</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理"
+        <a href="/ByteDance-3/" title="「训」 笔记(03)：内存管理"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「训」 笔记(3)：内存管理</span>
+          <span class="category-post">「训」 笔记(03)：内存管理</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
+        <a href="/ByteDance-4/" title="「训」 笔记(04)：框架三件套"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(4)：框架三件套</span>
+          <span class="category-post">「训」 笔记(04)：框架三件套</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎"
+        <a href="/ByteDance-5/" title="「训」 笔记(05)：规则引擎"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(5)：规则引擎</span>
+          <span class="category-post">「训」 笔记(05)：规则引擎</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探"
+        <a href="/ByteDance-6/" title="「训」 笔记(06)：架构初探"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(6)：架构初探</span>
+          <span class="category-post">「训」 笔记(06)：架构初探</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论"
+        <a href="/ByteDance-7/" title="「训」 笔记(07)：分布式理论"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(7)：分布式理论</span>
+          <span class="category-post">「训」 笔记(07)：分布式理论</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-8/" title="「训」 笔记(8)：微服务框架"
+        <a href="/ByteDance-8/" title="「训」 笔记(08)：微服务框架"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(8)：微服务框架</span>
+          <span class="category-post">「训」 笔记(08)：微服务框架</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-9/" title="「训」 笔记(09)：分布式定时任务"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(09)：分布式定时任务</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-10/" title="「训」 笔记(10)：消息队列"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(10)：消息队列</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-11/" title="「训」 笔记(11)：RPC 原理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(11)：RPC 原理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-12/" title="「训」 笔记(12)：存储和数据库"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(12)：存储和数据库</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-13/" title="「训」 笔记(13)：Q &amp; A"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(13)：Q &amp; A</span>
         </a>
       
     

@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="参考几篇关于 Fabirc 改进论文的实验部分，来设计改进后系统的测试方法并进行测试。注：并未记录所有的实验，只是选取了对我的实验有帮助的部分进行了翻译。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「毕」 7. 实验设计参考">
+<meta property="og:url" content="https://qanlyma.github.io/Project7-Experiment/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="参考几篇关于 Fabirc 改进论文的实验部分，来设计改进后系统的测试方法并进行测试。注：并未记录所有的实验，只是选取了对我的实验有帮助的部分进行了翻译。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project7-Experiment/8.png">
+<meta property="article:published_time" content="2023-10-16T05:14:49.000Z">
+<meta property="article:modified_time" content="2024-07-04T09:58:44.599Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/Project7-Experiment/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「毕」 7. 实验设计参考 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「毕」 7. 实验设计参考"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-16 13:14" pubdate>
+          2023年10月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「毕」 7. 实验设计参考</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：4 个月前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>参考几篇关于 Fabirc 改进论文的实验部分，来设计改进后系统的测试方法并进行测试。注：并未记录所有的实验，只是选取了对我的实验有帮助的部分进行了翻译。</p>
+<span id="more"></span>
+
+<h2 id="1-Fabric-1"><a href="#1-Fabric-1" class="headerlink" title="1 Fabric [1]"></a>1 Fabric [1]</h2><p>引入了一个类似于 Bitcoin 的加密货币，称之为 Fabric Coin（Fabcoin）用于测试系统的性能。</p>
+<p>Fabcoin 中的每个状态都是一个元组，形式为 (key, val) &#x3D; (txid.j, (amount, owner, label))，表示作为交易的第 j 个输出创建的币状态，带有标识符 txid，并分配给具有公钥 owner 的实体的金额单位，带有标签 label。标签是用于识别给定类型币（例如，’USD’、’EUR’、’FBC’）的字符串。交易标识符是唯一标识每个 Fabric 交易的短值。Fabcoin 实现包括三个部分：（1）客户端钱包，（2）Fabcoin 链码，（3）用于 Fabcoin 实现其认可策略的自定义 VSCC。</p>
+<h3 id="1-1-实验环境"><a href="#1-1-实验环境" class="headerlink" title="1.1 实验环境"></a>1.1 实验环境</h3><p>(1) 节点运行 Fabric 版本 v1.1.0-preview2，通过本地日志记录进行性能评估；(2) 节点托管在一个 IBM Cloud（SoftLayer）数据中心（DC）中，作为专用 VMs，通过 1 Gbps（名义上的）网络互连；(3) 所有节点都是 2.0 GHz 的 16-vCPU VMs，运行 Ubuntu，具有 8 GB 的 RAM 和 SSD 作为本地磁盘；(4) 单一通道排序服务运行一个典型的 Kafka 配置，包括 3 个 ZooKeeper 节点，4 个 Kafka 节点和 3 个 Fabric 排序者，都在不同的 VMs 上；(5) 总共有 5 个对等节点，都属于不同的组织（orgs）并且都是 Fabcoin 认可者；(6) 签名使用默认的 256 位 ECDSA 方案。为了测量和分析跨多个节点的交易流程中的延迟，节点时钟在整个实验过程中都与 NTP 服务同步。所有 Fabric 节点之间的通信都配置为使用 TLS。</p>
+<p>在每个实验中，第一阶段我们调用仅包含 Fabcoin 铸币操作的交易来生成硬币，然后在实验的第二阶段中，我们调用 Fabcoin 花费操作来花费之前铸币的硬币（实际上运行单输入、单输出的花费交易）。在吞吐量测量时，我们使用越来越多的 Fabric CLI 客户端（经修改以发出并发请求）在单个 VM 上运行，直到端到端吞吐量饱和，并报告略低于饱和的吞吐量。吞吐量数字报告为实验稳定状态期间的平均值，不考虑“尾部”，在尾部一些客户端线程已经停止提交他们的交易。在每个实验中，客户端线程集体调用至少 500,000 次铸币和花费交易。</p>
+<h3 id="1-2-实验结果"><a href="#1-2-实验结果" class="headerlink" title="1.2 实验结果"></a>1.2 实验结果</h3><h4 id="1-2-1-区块大小的选择"><a href="#1-2-1-区块大小的选择" class="headerlink" title="1.2.1 区块大小的选择"></a>1.2.1 区块大小的选择</h4><p>对 0.5 MB 到 4 MB 不同的区块大小设置进行实验。</p>
+<p><img src="/Project7-Experiment/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以观察到吞吐量在区块到达 2 MB 后便没有显著增加了，反而延迟更差。因此，我们采用 2 MB 作为之后实验的块大小，以最大化测量的吞吐量为目标，假设大约 500 ms 的端到端延迟是可以接受的。</p>
+<h4 id="1-2-2-节点-CPU-的影响"><a href="#1-2-2-节点-CPU-的影响" class="headerlink" title="1.2.2 节点 CPU 的影响"></a>1.2.2 节点 CPU 的影响</h4><p>Fabric 节点运行许多 CPU 密集型的加密操作。为了估算 CPU 性能对吞吐量的影响，我们进行了一组实验，在这些实验中，4 个节点分别运行在 4、8、16 和 32 个 vCPU VMs 上，同时进行了粗粒度的块验证延迟分级，以识别瓶颈。验证阶段，特别是 Fabcoin 的 VSCC 验证，由于涉及到大量数字签名验证，因此在计算上是密集的。我们通过在节点本地测量验证阶段的延迟来计算节点的验证吞吐量。</p>
+<p><img src="/Project7-Experiment/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们可以观察到，验证工作明显限制了吞吐量。此外，Fabcoin VSCC 的验证性能随着 CPU 增加几乎是线性的，因为 Fabric 的 VSCC 的背书策略验证是并行的。然而，读写检查和账本访问阶段是顺序的，随着核心数（vCPUs）增加，它们变得更加显著。这在花费交易中尤为明显，因为比铸币交易更多的花费交易可以放入 2 MB 的区块，这会延长顺序验证阶段的持续时间（即读写检查和账本访问）。</p>
+<p>最后，在这个实验中，我们在拥有 32 个 vCPU 的节点上测量到每秒超过 3560 个 SPEND 交易的平均吞吐量。MINT 吞吐量一般略低于 SPEND 吞吐量，但差异在 10% 以内，32 个 vCPU 的节点达到了超过 3420 个 tps 的平均吞吐量。</p>
+<h4 id="1-2-3-阶段性的延迟分析"><a href="#1-2-3-阶段性的延迟分析" class="headerlink" title="1.2.3 阶段性的延迟分析"></a>1.2.3 阶段性的延迟分析</h4><p><img src="/Project7-Experiment/3.png" srcset="/img/loading.gif" lazyload></p>
+<p>在之前的实验中，我们在报告的峰值吞吐量时进行了粗粒度的延迟分析。排序阶段包括广播传递延迟以及在验证开始之前的节点内部延迟。表格报告了铸币和花费的平均延迟、标准差和尾延迟。我们观察到排序阶段占据了整体延迟的主导地位。我们还看到平均延迟低于 550 毫秒，具有次秒级的尾延迟。特别是在我们的实验中，最高的端到端延迟来自于负载建立过程中的第一个区块。</p>
+<h2 id="2-Optimizing-Fabric-2"><a href="#2-Optimizing-Fabric-2" class="headerlink" title="2 Optimizing Fabric [2]"></a>2 Optimizing Fabric [2]</h2><p>本文先是对 Fabric 1.0 进行了测试，总结并优化了其中的几个性能瓶颈，测试部分见我之前翻译的<a href="https://qanlyma.github.io/Paper-Fabric-Optimizing/#IV-EXPERIMENTAL-METHODOLOGY">文章</a>。</p>
+<p>注：此论文的三个优化已经被 Fabric 1.1 采用。</p>
+<h2 id="3-FastFabric-3"><a href="#3-FastFabric-3" class="headerlink" title="3 FastFabric [3]"></a>3 FastFabric [3]</h2><h3 id="3-1-实验环境"><a href="#3-1-实验环境" class="headerlink" title="3.1 实验环境"></a>3.1 实验环境</h3><p>我们使用了一台 1 Gbit&#x2F;s 交换机连接的十五台本地服务器。每台服务器配备了两个 2.10 GHz 的 Intel Xeon CPU E5-2620 v2 处理器，总共提供 24 个硬件线程和 64 GB 的 RAM。我们使用 Fabric 1.2 作为基准，并逐步添加我们的改进以进行比较。默认情况下，Fabric 配置为使用 LevelDB 作为对等方状态数据库，排序节点将已完成的区块存储在内存中，而不是在磁盘上。此外，我们在不使用 Docker 容器的情况下运行整个系统，以避免额外的开销。</p>
+<p>我们确保实现不会改变 Fabric 的验证行为，所有测试都是使用不冲突和有效的交易进行的。这是因为有效的交易必须通过每个验证检查步骤，并且它们的写入集将在提交期间应用于状态数据库。相比之下，无效的交易可以被丢弃。因此，我们的结果评估了最坏情况下的性能。</p>
+<p>在实验中，我们专门关注排序者或提交者时，会隔离相应的系统部分。在排序者实验中，我们从客户端向排序者发送预加载的已认可交易，而模拟的提交者会简单地丢弃已创建的区块。同样，在提交者的基准测试期间，我们将预加载的区块发送给提交者，并创建模拟的认可方和区块存储，它们会丢弃已验证的区块。</p>
+<p>然后，在端到端设置中，我们实现了完整的系统：</p>
+<ul>
+<li>背书节点根据提交者已验证的区块的复制世界状态认可客户端的交易提案；</li>
+<li>排序者从已认可的交易创建区块并将其发送给提交者；</li>
+<li>提交者验证并提交更改到其内存中的世界状态，并将已验证的区块发送给背书节点和区块存储；</li>
+<li>区块存储使用 Fabric 1.2 数据管理来将区块存储在其文件系统中，将状态存储在 LevelDB 中。</li>
+</ul>
+<p>为了进行公平比较，我们在所有实验中使用相同的交易链码：每个交易模拟从一个帐户向另一个帐户的资金转移，读取并修改状态数据库中的两个键。此外，我们使用默认的背书策略，即接受单个背书方签名。</p>
+<h3 id="3-2-实验结果"><a href="#3-2-实验结果" class="headerlink" title="3.2 实验结果"></a>3.2 实验结果</h3><p>实验结果见此<a href="https://qanlyma.github.io/Paper-Fabric-Fast/#IV-RESULTS">文章</a>。</p>
+<p>在最后端到端的测量中，我们设置了单一的排序节点，它使用三个 ZooKeeper 服务器和三个 Kafka 服务器的集群，具有默认的主题复制因子为三，并将其连接到一个对等节点。来自此对等节点的区块被发送到一个单一的数据存储服务器，该服务器将世界状态存储在 LevelDB 中，将区块存储在文件系统中。为了进行横向扩展，五个背书节点复制对等方状态并提供足够的吞吐量来处理客户端背书负载。最后，客户端安装在自己的服务器上；此客户端从五个背书节点服务器请求背书，然后将已背书的交易发送到排序服务。在我们的本地数据中心，总共使用了连接到相同 1 Gbit&#x2F;s 交换机的十五台服务器。</p>
+<p><img src="/Project7-Experiment/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们从客户端发送了共计 100,000 笔已背书的交易给排序节点，排序节点将它们分成每个块包含 100 笔交易的区块，并将它们传递给对等节点。为了估算吞吐量，我们测量了对等节点上提交的区块之间的时间，并对单次运行的平均时间进行了测量。这些运行重复了 100 次。表格显示相对于 Fabric 1.2 基准测试，吞吐量有了显著的 6-7 倍的改进。</p>
+<h2 id="4-Fabric-4"><a href="#4-Fabric-4" class="headerlink" title="4 Fabric++ [4]"></a>4 Fabric++ [4]</h2><p>提出了 reorder 和 early abort 两种优化方案。集群由六台相同的服务器组成，这些服务器位于同一机架内，并通过千兆以太网连接。其中四台机器充当对等节点，一台机器运行排序服务，而另一台机器充当客户端，负责提交交易提案。每台服务器都由两颗四核的 Intel Xeon CPU E5-2407（SandyBridge 架构）组成，主频为 2.2 GHz，拥有 32 KB 的 L1 缓存，256 KB 的 L2 缓存以及 10 MB 的共享 L3 缓存。每个 NUMA 区域都连接有 24 GB 的 DDR3 内存。操作系统采用的是 64 位的 Arch Linux，内核版本为 4.17。Fabric 被设置为使用 LevelDB 作为当前状态数据库。</p>
+<h3 id="4-1-实验环境"><a href="#4-1-实验环境" class="headerlink" title="4.1 实验环境"></a>4.1 实验环境</h3><p><img src="/Project7-Experiment/6.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="4-2-1-Throughput-under-Smallbank"><a href="#4-2-1-Throughput-under-Smallbank" class="headerlink" title="4.2.1 Throughput under Smallbank"></a>4.2.1 Throughput under Smallbank</h4><ol>
+<li><p>选择交易：根据概率 Pw，以均匀方式从五个修改交易中选择一个要执行的交易，或者以概率 1-Pw 选择读取交易。这意味着修改交易和读取交易之间的选择是随机的，并且概率 Pw 控制了执行修改交易的频率。</p>
+</li>
+<li><p>确定账户：对于每个选中的交易，通过遵循 Zipf 分布来确定要访问的账户。Zipf 分布的偏斜度可以通过设置 s 值来调整。如果 s 值为 0，分布将是均匀的，而较高的 s 值将导致分布更加偏斜，即更倾向于访问一小部分账户。</p>
+</li>
+</ol>
+<p><img src="/Project7-Experiment/5.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="4-2-2-Throughput-under-custom-workload"><a href="#4-2-2-Throughput-under-custom-workload" class="headerlink" title="4.2.2 Throughput under custom workload"></a>4.2.2 Throughput under custom workload</h4><p>工作负载完全由一个高度可配置的交易组成，该交易对一组账户余额执行一定数量的读取和写入访问。初始时，我们创建了一定数量的账户（N），每个账户都初始化为一个随机整数。我们的交易在这些账户的子集上执行一定数量的读取和写入操作（RW）。在这些账户中，存在一定数量的热门账户（HSS），它们以更高的概率被选中进行读取或写入访问。选择用于读取的热门账户的概率（HR）和选择用于写入的热门账户的概率（HW）也可以进行配置。</p>
+<p><img src="/Project7-Experiment/7.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="4-2-实验结果"><a href="#4-2-实验结果" class="headerlink" title="4.2 实验结果"></a>4.2 实验结果</h3><p>实验结果见此<a href="https://qanlyma.github.io/Paper-Fabric-Plus/#6-EXPERIMENTAL-EVALUATION">文章</a>。</p>
+<p>Caliper 在高交易触发率下表现不佳，我们以每个客户端每秒 150 次的较低速率触发交易，总共每秒触发 600 次交易。将区块大小调整为 512 次交易。使用 N &#x3D; 10,000、RW &#x3D; 4、HR &#x3D; 40%、HW &#x3D; 10%、HSS &#x3D; 1% 来测试我们的自定义工作负载。</p>
+<p><img src="/Project7-Experiment/8.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="5-FabricSharp-5"><a href="#5-FabricSharp-5" class="headerlink" title="5 FabricSharp [5]"></a>5 FabricSharp [5]</h2><p>实验结果见此<a href="https://qanlyma.github.io/Paper-Fabric-Sharp/#5-EXPERIMENTS">文章</a>。</p>
+<h2 id="6-参考文献"><a href="#6-参考文献" class="headerlink" title="6 参考文献"></a>6 参考文献</h2><p>[1] Androulaki E , Barger A , Bortnikov V , et al. Hyperledger fabric: a distributed operating system for permissioned blockchains[C]&#x2F;&#x2F; European Conference on Computer Systems.ACM, 2018.</p>
+<p>[2] Nathan S , Thakkar P , Vishwanathan B . Performance Benchmarking and Optimizing Hyperledger Fabric Blockchain Platform: IEEE, 10.1109&#x2F;MASCOTS.2018.00034[P]. 2018.</p>
+<p>[3] Gorenflo C ,  Lee S ,  Golab L , et al. FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second[J]. IEEE, 2019.</p>
+<p>[4] Sharma A ,  Schuhknecht F M ,  Agrawal D , et al. Blurring the Lines between Blockchains and Database Systems: the Case of Hyperledger Fabric[C]&#x2F;&#x2F; ACM SIGMOD 2019. ACM, 2019.</p>
+<p>[5] Ruan P ,  Loghin D ,  Ta Q T , et al. A Transactional Perspective on Execute-order-validate Blockchains[J].  2020.</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%AF%95%E8%AE%BE%E9%A1%B9%E7%9B%AE/" class="category-chain-item">毕设项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「毕」 7. 实验设计参考</div>
+      <div>https://qanlyma.github.io/Project7-Experiment/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年10月16日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Project8-FabricMan/" title="「毕」 8. 毕业论文（精简版）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「毕」 8. 毕业论文（精简版）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Project6-Contract/" title="「毕」 6. 测试合约及脚本">
+                        <span class="hidden-mobile">「毕」 6. 测试合约及脚本</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="毕设项目"
+        id="heading-f081d380c266d8d857350bddc6f1b47c" role="tab" data-toggle="collapse" href="#collapse-f081d380c266d8d857350bddc6f1b47c"
+        aria-expanded="true"
+      >
+        毕设项目
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-f081d380c266d8d857350bddc6f1b47c"
+           role="tabpanel" aria-labelledby="heading-f081d380c266d8d857350bddc6f1b47c">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Project1-Test/" title="「毕」 1. 测试 Fabric 2.4.0"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 1. 测试 Fabric 2.4.0</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project2-Compile/" title="「毕」 2. 编译 Fabric 源码"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 2. 编译 Fabric 源码</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project3-Deploy/" title="「毕」 3. 部署自定义网络"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 3. 部署自定义网络</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project4-Code/" title="「毕」 4. Fabric 源码解析"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 4. Fabric 源码解析</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project5-Thinking/" title="「毕」 5. Fabric 的改进"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 5. Fabric 的改进</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project6-Contract/" title="「毕」 6. 测试合约及脚本"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 6. 测试合约及脚本</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project7-Experiment/" title="「毕」 7. 实验设计参考"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「毕」 7. 实验设计参考</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project8-FabricMan/" title="「毕」 8. 毕业论文（精简版）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 8. 毕业论文（精简版）</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

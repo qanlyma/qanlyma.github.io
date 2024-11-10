@@ -1,0 +1,1051 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="存储的本质 —— 状态。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「训」 笔记(12)：存储和数据库">
+<meta property="og:url" content="https://qanlyma.github.io/ByteDance-12/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="存储的本质 —— 状态。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/7.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/8.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/9.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/10.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/11.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/12.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/13.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/14.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/15.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/16.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/17.png">
+<meta property="og:image" content="https://qanlyma.github.io/ByteDance-12/18.png">
+<meta property="article:published_time" content="2023-05-03T11:55:34.000Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.410Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-12/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「训」 笔记(12)：存储和数据库 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「训」 笔记(12)：存储和数据库"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-03 19:55" pubdate>
+          2023年5月3日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「训」 笔记(12)：存储和数据库</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：10 个月前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>存储的本质 —— 状态。</p>
+<span id="more"></span>
+
+<h2 id="1-存储系统"><a href="#1-存储系统" class="headerlink" title="1 存储系统"></a>1 存储系统</h2><p>一个提供了读写、控制类接口，能够安全有效地把数据持久化的软件，就可以称为存储系统。</p>
+<h3 id="1-1-系统特点"><a href="#1-1-系统特点" class="headerlink" title="1.1 系统特点"></a>1.1 系统特点</h3><ul>
+<li>作为后端软件的底座，性能敏感</li>
+<li>存储系统软件架构，容易受硬件影响</li>
+<li>存储系统代码，既“简单”又“复杂”</li>
+</ul>
+<h3 id="1-2-RAID-技术"><a href="#1-2-RAID-技术" class="headerlink" title="1.2 RAID 技术"></a>1.2 RAID 技术</h3><p>单机存储系统怎么做到高性能&#x2F;高性价比&#x2F;高可靠性：R(edundant) A(rray) of I(nexpensive) D(isks)。</p>
+<ul>
+<li><p>RAID 0</p>
+<ul>
+<li>多块磁盘简单组合</li>
+<li>数据条带化存储，提高磁盘带宽</li>
+<li>没有额外的容错设计</li>
+</ul>
+</li>
+<li><p>RAID 1</p>
+<ul>
+<li>一块磁盘对应一块额外镜像盘</li>
+<li>真实空间利用率仅 50%</li>
+<li>容错能力强</li>
+</ul>
+</li>
+<li><p>RAID 0 + 1</p>
+<ul>
+<li>结合了 RAID 0 和 RAID 1</li>
+<li>真实空间利用率仅 50%</li>
+<li>容错能力强，写入带宽好</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-数据库"><a href="#2-数据库" class="headerlink" title="2 数据库"></a>2 数据库</h2><ul>
+<li><p><strong>关系型数据库</strong><br>  关系型数据库是把数据以表的形式进行储存，然后再各个表之间建立关系，通过这些表之间的关系来操作不同表之间的数据。</p>
+<ul>
+<li>结构化数据友好</li>
+<li>支持事务（ACID）</li>
+<li>支持复杂查询语言</li>
+</ul>
+</li>
+<li><p><strong>非关系型数据库</strong><br>  NoSQL 或非关系数据库，支持存储和操作非结构化及半结构化数据。相比于关系型数据库，NoSQL 没有固定的表结构，且数据之间不存在表与表之间的关系，数据之间可以是独立的。NoSQL 的关键是它们放弃了传统关系型数据库的强事务保证和关系模型，通过所谓最终一致性和非关系数据模型（例如键值对，图，文档）来提高 Web 应用所注重的高可用性和可扩展性。</p>
+<ul>
+<li>半结构化数据友好</li>
+<li><strong>可能</strong>支持事务（ACID）</li>
+<li><strong>可能</strong>支持复杂查询语言</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-结构化数据管理"><a href="#2-1-结构化数据管理" class="headerlink" title="2.1 结构化数据管理"></a>2.1 结构化数据管理</h3><p><img src="/ByteDance-12/1.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-2-事物能力"><a href="#2-2-事物能力" class="headerlink" title="2.2 事物能力"></a>2.2 事物能力</h3><ul>
+<li>A(tomicity)，事务内的操作要么全做，要么不做</li>
+<li>C(onsistency)，事务执行前后，数据状态是一致的（数据完整，逻辑一致）</li>
+<li>I(solation)，可以隔离多个并发事务，避免影响</li>
+<li>D(urability)，事务一旦提交成功，数据保证持久性</li>
+</ul>
+<h3 id="2-3-复杂查询能力"><a href="#2-3-复杂查询能力" class="headerlink" title="2.3 复杂查询能力"></a>2.3 复杂查询能力</h3><p><img src="/ByteDance-12/2.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="3-主流产品"><a href="#3-主流产品" class="headerlink" title="3 主流产品"></a>3 主流产品</h2><h3 id="3-1-单机存储"><a href="#3-1-单机存储" class="headerlink" title="3.1 单机存储"></a>3.1 单机存储</h3><p>单个计算机节点上的存储软件系统，一般不涉及网络交互。</p>
+<ul>
+<li><p><strong>本地文件系统</strong>：如 Linux 文件系统</p>
+<ul>
+<li>Index Node 记录文件元数据，如 id、大小、权限、磁盘位置等。inode 是一个文件的唯一标识，会被存储到磁盘上，其总数在格式化文件系统时就固定了。</li>
+<li>Directory Entry 记录文件名、inode 指针，层级关系（parent）等。dentry 是内存结构，与 inode 的关系是 N:1（hardlink的实现）。</li>
+</ul>
+</li>
+<li><p><strong>key-value 存储</strong>：如 RocksDB</p>
+</li>
+</ul>
+<h3 id="3-2-分布式存储"><a href="#3-2-分布式存储" class="headerlink" title="3.2 分布式存储"></a>3.2 分布式存储</h3><p>在单机存储基础上实现了分布式协议，涉及大量网络交互。</p>
+<ul>
+<li><strong>HDFS</strong>：支持海量数据存储，高容错性，弱 POSIX 语义，使用普通 x86 服务器，性价比高</li>
+<li><strong>Ceph</strong>：一套系统支持对象接口、块接口、文件接口，但是一切皆对象，数据写入采用主备复制模型，数据分布模型采用 CRUSH 算法</li>
+</ul>
+<h3 id="3-3-单机数据库"><a href="#3-3-单机数据库" class="headerlink" title="3.3 单机数据库"></a>3.3 单机数据库</h3><p>单个计算机节点上的数据库系统。</p>
+<ul>
+<li><p><strong>关系型数据库</strong></p>
+<ul>
+<li>Oracle</li>
+<li>MySQL</li>
+<li>PostgreSQL</li>
+</ul>
+</li>
+<li><p><strong>非关系型数据库</strong></p>
+<ul>
+<li>MongoDB</li>
+<li>Redis</li>
+<li>Elasticsearch</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-4-分布式数据库"><a href="#3-4-分布式数据库" class="headerlink" title="3.4 分布式数据库"></a>3.4 分布式数据库</h3><ul>
+<li><strong>容量</strong>：单点容量有限，受硬件限制；存储节点池化，动态扩缩容</li>
+<li><strong>弹性</strong>：方便扩缩容</li>
+<li><strong>性价比</strong>：平衡容量与 CPU 利用率需求</li>
+</ul>
+<h2 id="4-MySQL"><a href="#4-MySQL" class="headerlink" title="4 MySQL"></a>4 MySQL</h2><h3 id="4-1-SQL"><a href="#4-1-SQL" class="headerlink" title="4.1 SQL"></a>4.1 SQL</h3><p>一种编程语言，目前几乎所有的关系数据库都使用 SQL (Structured Query Language) 编程语言来查询、操作和定义数据，进行数据访问控制。</p>
+<p><img src="/ByteDance-12/3.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="4-1-1-SQL-引擎"><a href="#4-1-1-SQL-引擎" class="headerlink" title="4.1.1 SQL 引擎"></a>4.1.1 SQL 引擎</h4><ul>
+<li><p><strong>查询解析 Parser</strong>：解析器（Parser）一般分为词法分析（Lexical analysis）、语法分析（Syntax analysis）、语义分析（Semantic analyzer）等步骤。SQL 语言接近自然语言，入门容易。但是各种关键字、操作符组合起来，可以表达丰富的语意。因此想要处理 SQL 命令，首先将文本解析成结构化数据，也就是抽象语法树（AST）</p>
+</li>
+<li><p><strong>查询优化 Optimizer</strong>：SQL 是一门非过程化的语言，只说“做什么”，而不说“怎么做”。所以需要一些复杂的逻辑选择“如何拿数据”，也就是选择一个好的查询计划。优化器的作用根据 AST 优化产生最优执行计划（Plan Tree）</p>
+</li>
+<li><p><strong>查询执行 Executor</strong>：根据查询计划，完成数据读取、处理、写入等操作</p>
+</li>
+</ul>
+<h4 id="4-1-2-事务引擎"><a href="#4-1-2-事务引擎" class="headerlink" title="4.1.2 事务引擎"></a>4.1.2 事务引擎</h4><p>处理事务一致性、并发、读写隔离等。</p>
+<ul>
+<li>Atomicity：Undo Log 是逻辑日志，记录的是数据的增量变化。利用 Undo Log 可以进行事务回滚，从而保证事务的原子性。同时也实现了多版本并发控制（MVCC），解决读写冲突和一致性读的问题</li>
+<li>Isolation：锁、MVCC</li>
+<li>Durability：Redo Log 是物理日志，记录的是页面的变化，它的作用是保证事务持久化。如果数据写入磁盘前发生故障，重启 MySQL 后会根据 Redo Log 重做</li>
+</ul>
+<h4 id="4-1-3-存储引擎"><a href="#4-1-3-存储引擎" class="headerlink" title="4.1.3 存储引擎"></a>4.1.3 存储引擎</h4><p>内存中的数据缓存区、数据文件、日志文件。</p>
+<p><img src="/ByteDance-12/4.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>Buffer Pool</p>
+<p>  <img src="/ByteDance-12/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>  MySQL 中每个 chunk 的大小一般为 128M，每个 block 对应一个page，一个 chunk 下面有 8192 个 block。这样可以避免内存碎片化。分成多个 instance，可以有效避免并发冲突。</p>
+<p>  Page id % instance num 得到它属于哪个 instance。</p>
+</li>
+<li><p>Page</p>
+<p>  <img src="/ByteDance-12/6.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>B+ Tree</p>
+<p>  页目录中使用二分法快速定位到对应的槽，然后再遍历该槽对应分组中的记录即可快速找到指定的记录。<br>  <img src="/ByteDance-12/7.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ul>
+<h2 id="5-Redis"><a href="#5-Redis" class="headerlink" title="5 Redis"></a>5 Redis</h2><p>Redis 用于解决关系型数据库性能问题，可以将经常访问的热数据放入内存中。</p>
+<h3 id="5-1-基本原理"><a href="#5-1-基本原理" class="headerlink" title="5.1 基本原理"></a>5.1 基本原理</h3><p><img src="/ByteDance-12/8.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>内存数据库，数据从内存中读写</li>
+<li>数据保存到硬盘上防止重启数据丢失<ul>
+<li>增量数据保存到 AOF 文件（Append Only File）</li>
+<li>全量数据保存到 RDB 文件（Redis Database Backup file）</li>
+</ul>
+</li>
+<li>单线程处理所有操作命令</li>
+</ul>
+<h3 id="5-2-数据结构"><a href="#5-2-数据结构" class="headerlink" title="5.2 数据结构"></a>5.2 数据结构</h3><h4 id="5-2-1-字符串-sds"><a href="#5-2-1-字符串-sds" class="headerlink" title="5.2.1 字符串 - sds"></a>5.2.1 字符串 - sds</h4><p>最常规的 set&#x2F;get 操作，Value 可以是 String 也可以是数字。一般做一些复杂的计数功能的缓存。</p>
+<p><img src="/ByteDance-12/9.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="5-2-2-链表-Quicklist"><a href="#5-2-2-链表-Quicklist" class="headerlink" title="5.2.2 链表 - Quicklist"></a>5.2.2 链表 - Quicklist</h4><p>Quicklist 由一个双向链表和 listpack 实现。可以做简单的消息队列的功能。</p>
+<p><img src="/ByteDance-12/10.png" srcset="/img/loading.gif" lazyload alt="Quicklist"><br><img src="/ByteDance-12/11.png" srcset="/img/loading.gif" lazyload alt="listpack"></p>
+<h4 id="5-2-3-集合-set"><a href="#5-2-3-集合-set" class="headerlink" title="5.2.3 集合 - set"></a>5.2.3 集合 - set</h4><p>无序的字符串集合，不存在重复的元素。</p>
+<p>因为 Set 堆放的是一堆不重复值的集合。所以可以做全局去重的功能。另外，就是利用交集、并集、差集等操作，可以计算共同喜好，全部的喜好，自己独有的喜好等功能。</p>
+<p>Zset：有序集合，多了一个权重参数 Score，集合中的元素能够按 Score 进行排列。可以做排行榜应用，取 TOP N 操作。</p>
+<h4 id="5-2-4-哈希表-dict"><a href="#5-2-4-哈希表-dict" class="headerlink" title="5.2.4 哈希表 - dict"></a>5.2.4 哈希表 - dict</h4><p>这个结构体里定义了两个哈希表，在正常服务请求阶段，插入的数据，都会写入到 ht[0]，此时的 ht[1] 并没有被分配空间。随着数据逐步增多，会触发 rehash 操作用于扩大空间。</p>
+<p><img src="/ByteDance-12/12.png" srcset="/img/loading.gif" lazyload></p>
+<p>rehash：给 ht[1] 分配空间，一般会比 ht[0] 大 2 倍。将 ht[0] 中的数据，全部迁移到 ht[1] 中。迁移完成后，ht[0] 的空间会被释放，并把 ht[1] 设置为 ht[0]，然后在 ht[1] 新创建一个空白的哈希表，为下次 rehash 做准备。数据量小的场景下，直接将数据从 ht[0] 拷贝到 ht[1] 速度是较快的。数据量大的场景，例如存有上百万的 KV 时，迁移过程将会明显阻塞用户请求。</p>
+<p>渐进式 rehash：为避免出现这种情况，每次用户访问时都会迁移少量数据。将整个迁移过程，平摊到所有请求过程中。</p>
+<h4 id="5-2-5-跳表-zskiplist"><a href="#5-2-5-跳表-zskiplist" class="headerlink" title="5.2.5 跳表 - zskiplist"></a>5.2.5 跳表 - zskiplist</h4><p>链表在查找元素的时候，因为需要逐一查找，所以查询效率非常低，时间复杂度是 O(N)，于是就出现了跳表。跳表是在链表基础上改进过来的，实现了一种<strong>多层</strong>的有序链表，这样的好处是能快读定位数据。</p>
+<p><img src="/ByteDance-12/13.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="5-3-注意事项"><a href="#5-3-注意事项" class="headerlink" title="5.3 注意事项"></a>5.3 注意事项</h3><h4 id="5-3-1-大-Key"><a href="#5-3-1-大-Key" class="headerlink" title="5.3.1 大 Key"></a>5.3.1 大 Key</h4><p>String 类型 value 的字节数大于 10KB 即为大 key；Hash&#x2F;Set&#x2F;Zset&#x2F;list 等复杂数据结构类型元素个数大于 5000 个或总 value 字节数大于 10MB 即为大 key。</p>
+<ul>
+<li>读取成本高</li>
+<li>容易导致慢查询（过期、删除）</li>
+<li>主从复制异常，服务阻塞无法正常响应请求</li>
+</ul>
+<p><strong>解决方法</strong>：</p>
+<ol>
+<li>拆分：将大 key 拆分为小 key。例如一个 String 拆分成多个 String</li>
+<li>压缩：将 value 压缩后写入 redis，读取时解压后再使用</li>
+<li>集合类结构 hash、list、set、set<ol>
+<li>拆分：可以用 hash 取余、位掩码的方式决定放在哪个 key 中</li>
+<li>区分冷热：如榜单列表场景使用 zset，只缓存前 10 页数据，后续数据读取 db</li>
+</ol>
+</li>
+</ol>
+<h4 id="5-3-2-热-Key"><a href="#5-3-2-热-Key" class="headerlink" title="5.3.2 热 Key"></a>5.3.2 热 Key</h4><p>用户访问一个 Key 的 QPS 特别高，导致 Server 实例出现 CPU 负载突增或者不均的情况。</p>
+<p><strong>解决方法</strong>：</p>
+<ol>
+<li>设置 Localcache：在访问 Redis 前，在业务服务侧设置 LocalCache，降低访问 Redis 的 QPS。LocalCache 中缓存过期或未命中，则从 Redis 中将数据更新到 LocalCache</li>
+<li>拆分：将 key:value 这一个热 Key 复制写入多份，例如 keyl:value，key2:value，访问的时候访问多个 key，但 value 是同一个，以此将 QPS 分散到不同实例上，降低负载。代价是，更新时需要更新多个 key，存在数据短暂不一致的风险</li>
+</ol>
+<h4 id="5-3-3-慢查询"><a href="#5-3-3-慢查询" class="headerlink" title="5.3.3 慢查询"></a>5.3.3 慢查询</h4><p><strong>容易导致 Redis 慢查询的操作</strong>：</p>
+<ol>
+<li>批量操作一次性传入过多的 key&#x2F;value，如 mset&#x2F;hmset&#x2F;sadd&#x2F;zadd 等 O(n) 操作建议单批次不要超过 100，超过 100 之后性能下降明显</li>
+<li>zset 大部分命令都是 O(log(n))，当大小超过 5k 以上时，简单的 zadd&#x2F;zrem 也可能导致慢查询</li>
+<li>操作的单个 value 过大，超过 10KB。即避免使用大 Key</li>
+<li>对大 key 的 delete&#x2F;expire 操作也可能导致慢查询</li>
+</ol>
+<h4 id="5-3-4-缓存穿透"><a href="#5-3-4-缓存穿透" class="headerlink" title="5.3.4 缓存穿透"></a>5.3.4 缓存穿透</h4><p>热点数据查询绕过缓存，直接查询数据库。</p>
+<ol>
+<li>查询一个一定不存在的数据（穿透）：通常不会缓存不存在的数据，这类查询请求都会直接打到 db，如果有系统 bug 或人为攻击，那么容易导致 db 响应慢甚至宕机</li>
+<li>缓存过期时（击穿）：在高并发场景下，一个热 key 如果过期，会有大量请求同时击穿至 db，容易影响 db 性能和稳定。同一时间有大量 key 集中过期时，也会导致大量请求落到 db 上，导致查询变慢，甚至出现 db 无法响应新的查询</li>
+</ol>
+<p><strong>解决方法</strong>：</p>
+<ol>
+<li>缓存空值：如一个 id 在缓存和数据库中都不存在。则可以缓存一个空值，下次再查缓存直接反空值</li>
+<li>布隆过滤器：通过 bloom filter 算法来存储合法 Key，得益于该算法超高的压缩率，只需占用极小的空间就能存储大量 key 值</li>
+<li>IP 拉黑，但可能会用不同的 IP 来攻击</li>
+<li>接口层增加参数合法性校验，如用户鉴权校验，id &lt;&#x3D; 0 的直接拦截</li>
+</ol>
+<h4 id="5-3-5-缓存雪崩"><a href="#5-3-5-缓存雪崩" class="headerlink" title="5.3.5 缓存雪崩"></a>5.3.5 缓存雪崩</h4><p>大量缓存同时过期，导致大量请求全部打到数据库，造成数据库挂掉。</p>
+<p><strong>解决方法</strong>：</p>
+<ol>
+<li>设置过期时间：将缓存失效时间分散开，比如在原有的失效时间基础上增加一个随机值，例如不同 Key 过期时间，可以设置为 10 分 1 秒过期，10 分 23 秒过期，10 分 8 秒过期。单位秒部分就是随机时间，这样过期时间就分散了。对于热点数据，过期时间尽量设置得长一些，冷门的数据可以相对设置过期时间短一些</li>
+<li>使用缓存集群，避免单机宕机造成的缓存雪崩</li>
+<li>设置热点数据永远不过期。</li>
+<li>不断的用定时任务去刷新缓存</li>
+</ol>
+<h2 id="6-ClickHouse"><a href="#6-ClickHouse" class="headerlink" title="6 ClickHouse"></a>6 ClickHouse</h2><h3 id="6-1-列式存储"><a href="#6-1-列式存储" class="headerlink" title="6.1 列式存储"></a>6.1 列式存储</h3><p><img src="/ByteDance-12/14.png" srcset="/img/loading.gif" lazyload alt="行式存储"><br><img src="/ByteDance-12/15.png" srcset="/img/loading.gif" lazyload alt="列式存储"><br><img src="/ByteDance-12/16.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>列存的优点</strong>：</p>
+<ol>
+<li><p>数据压缩</p>
+<ul>
+<li>数据压缩可以使读的数据量更少，在 IO 密集型计算中获得大的性能优势</li>
+<li>相同类型压缩效率更高</li>
+<li>排序之后压缩效率更高</li>
+<li>可以针对不同类型使用不同的压缩算法</li>
+<li>几种常见的压缩算法：LZ4、Run-length encoding、Delta encoding</li>
+</ul>
+</li>
+<li><p>数据选择</p>
+<ul>
+<li>可以选择特定的列做计算而不是读所有列，对聚合计算友好</li>
+</ul>
+</li>
+<li><p>延迟物化：</p>
+<ul>
+<li>尽可能推迟物化操作的发生（物化：将列数据转换为可以被计算或者输出的行数据或者内存数据结果的过程，物化后的数据通常可以用来做数据过滤，聚合计算，Join）</li>
+<li>缓存友好</li>
+<li>CPU &#x2F; 内存带宽友好</li>
+<li>可以利用到执行计划和算子的优化，例如 filter</li>
+<li>保留直接在压缩列做计算的机会</li>
+</ul>
+</li>
+<li><p>向量化</p>
+<ul>
+<li>SIMD（single instruction multiple data）：对于现代多核 CPU，其都有能力用一条指令执行多条数据。用 SIMD 指令完成的代码设计和执行的逻辑就叫做向量化</li>
+<li>数据格式要求：需要处理多个数据，因此数据需要是连续内存。需要明确数据类型</li>
+<li>执行模型要求：数据需要按批读取，函数的调用需要明确数据类型</li>
+</ul>
+</li>
+</ol>
+<h3 id="6-2-ClickHouse-存储设计"><a href="#6-2-ClickHouse-存储设计" class="headerlink" title="6.2 ClickHouse 存储设计"></a>6.2 ClickHouse 存储设计</h3><p><img src="/ByteDance-12/17.png" srcset="/img/loading.gif" lazyload></p>
+<p>每个 column 都是一个文件，所有的 column 文件都在自己的 part 文件夹下</p>
+<p>一个 part 有一个主键索引，每个 column 都有列索引</p>
+<p><img src="/ByteDance-12/18.png" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%97%E8%8A%82%E9%9D%92%E8%AE%AD/" class="category-chain-item">字节青训</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「训」 笔记(12)：存储和数据库</div>
+      <div>https://qanlyma.github.io/ByteDance-12/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月3日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Project2-Compile/" title="「毕」 2. 编译 Fabric 源码">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「毕」 2. 编译 Fabric 源码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Paper-Fabric-Sharp/" title="「论」 A Transactional Perspective on Execute-order-validate Blockchains">
+                        <span class="hidden-mobile">「论」 A Transactional Perspective on Execute-order-validate Blockchains</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="字节青训"
+        id="heading-984d1428f71819da297f82a6c866640b" role="tab" data-toggle="collapse" href="#collapse-984d1428f71819da297f82a6c866640b"
+        aria-expanded="true"
+      >
+        字节青训
+        <span class="list-group-count">(13)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-984d1428f71819da297f82a6c866640b"
+           role="tabpanel" aria-labelledby="heading-984d1428f71819da297f82a6c866640b">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/ByteDance-1/" title="「训」 笔记(01)：Go 语言"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(01)：Go 语言</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-2/" title="「训」 笔记(02)：性能调优"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(02)：性能调优</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-3/" title="「训」 笔记(03)：内存管理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(03)：内存管理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-4/" title="「训」 笔记(04)：框架三件套"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(04)：框架三件套</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-5/" title="「训」 笔记(05)：规则引擎"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(05)：规则引擎</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-6/" title="「训」 笔记(06)：架构初探"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(06)：架构初探</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-7/" title="「训」 笔记(07)：分布式理论"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(07)：分布式理论</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-8/" title="「训」 笔记(08)：微服务框架"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(08)：微服务框架</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-9/" title="「训」 笔记(09)：分布式定时任务"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(09)：分布式定时任务</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-10/" title="「训」 笔记(10)：消息队列"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(10)：消息队列</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-11/" title="「训」 笔记(11)：RPC 原理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(11)：RPC 原理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-12/" title="「训」 笔记(12)：存储和数据库"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「训」 笔记(12)：存储和数据库</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-13/" title="「训」 笔记(13)：Q &amp; A"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(13)：Q &amp; A</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

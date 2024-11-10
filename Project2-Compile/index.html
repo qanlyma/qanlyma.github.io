@@ -1,0 +1,946 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文尝试编译 Fabric 源码来构建网络。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「毕」 2. 编译 Fabric 源码">
+<meta property="og:url" content="https://qanlyma.github.io/Project2-Compile/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="本文尝试编译 Fabric 源码来构建网络。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/6.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/5.png">
+<meta property="og:image" content="https://qanlyma.github.io/Project2-Compile/7.png">
+<meta property="article:published_time" content="2023-05-09T07:09:12.000Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.768Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/Project2-Compile/1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「毕」 2. 编译 Fabric 源码 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「毕」 2. 编译 Fabric 源码"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-09 15:09" pubdate>
+          2023年5月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「毕」 2. 编译 Fabric 源码</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：10 个月前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文尝试编译 Fabric 源码来构建网络。</p>
+<span id="more"></span>
+
+<h2 id="bootstrap-sh"><a href="#bootstrap-sh" class="headerlink" title="bootstrap.sh"></a>bootstrap.sh</h2><p>在上一篇文章中，我直接执行了 bootstrap.sh 这个脚本一键部署。使用这个方法根本不需要拉取 Fabric 的源代码，它为我们做了三件事情：</p>
+<ol>
+<li>从 github 上克隆 hyperledger&#x2F;fabric-samples 并进入该目录，然后检出适当的版本</li>
+<li>在 fabric-samples 目录下安装特定平台的 Hyperledger Fabric 二进制可执行文件和配置文件</li>
+<li>下载指定版本的 Hyperledger Fabric 的 docker 镜像</li>
+</ol>
+<p>其中第二步是执行 curl 去下载 tar 包并解压，二进制文件会被放在 bin 目录下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>peer</td>
+<td>负责启动节点，存储区块链数据，运行维护链码</td>
+</tr>
+<tr>
+<td>orderer</td>
+<td>负责启动排序节点，对交易进行排序，并将排序好的交易打包成模块</td>
+</tr>
+<tr>
+<td>cryptogen</td>
+<td>生成组织结构和身份文件</td>
+</tr>
+<tr>
+<td>configtxgen</td>
+<td>生成配置区块和配置交易</td>
+</tr>
+<tr>
+<td>configtxlator</td>
+<td>解读配置信息</td>
+</tr>
+<tr>
+<td>fabric-ca-client</td>
+<td>fabric-ca 客户端命令</td>
+</tr>
+<tr>
+<td>discover</td>
+<td>fabric 发现服务的客户端命令</td>
+</tr>
+<tr>
+<td>idemixgen</td>
+<td>身份混合机制</td>
+</tr>
+</tbody></table>
+<p>部分镜像说明如下：</p>
+<table>
+<thead>
+<tr>
+<th>镜像名称</th>
+<th>是否可选</th>
+<th>镜像说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hyperledger&#x2F;fabric-tools</td>
+<td>可选</td>
+<td>包含 crytogen、configtxgen、configtxlator 工具的镜像文件</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-couchdb</td>
+<td>可选</td>
+<td>CouchDB 的数据库镜像文件、状态数据库选择 CouchDB 的时候才需要</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-kafka</td>
+<td>可选</td>
+<td>Kafka 的镜像文件</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-zookeeper</td>
+<td>可选</td>
+<td>Zookeeper 的镜像文件</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-peer</td>
+<td>必选</td>
+<td>Peer 节点的镜像文件</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-orderer</td>
+<td>必选</td>
+<td>排序服务节点的镜像文件</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-javaenv</td>
+<td>可选</td>
+<td>Java 链码的基础镜像文件</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-ccenv</td>
+<td>必选</td>
+<td>Golang 链码的基础镜像文件</td>
+</tr>
+<tr>
+<td>hyperledger&#x2F;fabric-ca</td>
+<td>可选</td>
+<td>fabric-ca 的镜像文件，用到 fabric-ca 的时候才需要</td>
+</tr>
+</tbody></table>
+<h2 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h2><p>接下来尝试一下从 Fabric 源码入手，来搭建网络。</p>
+<h3 id="1-下载-fabric-源码"><a href="#1-下载-fabric-源码" class="headerlink" title="1. 下载 fabric 源码"></a>1. 下载 fabric 源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ git clone https://github.com/hyperledger/fabric.git<br>$ cd fabric<br>$ git checkout v2.4.0<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-编译-fabric-源码"><a href="#2-编译-fabric-源码" class="headerlink" title="2. 编译 fabric 源码"></a>2. 编译 fabric 源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make release<br></code></pre></td></tr></table></figure>
+
+<p>编译好的二进制可执行文件在 <code>fabric/release/linux-amd64/bin/</code> 下：</p>
+<p><img src="/Project2-Compile/1.png" srcset="/img/loading.gif" lazyload alt="二进制文件"></p>
+<h4 id="测试编译"><a href="#测试编译" class="headerlink" title="测试编译"></a>测试编译</h4><p>我注意到网上的教程都需要我们把 fabric 的源码放在 <code>$GOPATH/src/github.com/heperledger/</code> 目录下，Makefile 文件中的编译路径也是：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs Makefile">PKGNAME = github.com/hyperledger/fabric<br><br>pkgmap.configtxgen    := <span class="hljs-variable">$(PKGNAME)</span>/cmd/configtxgen<br>pkgmap.configtxlator  := <span class="hljs-variable">$(PKGNAME)</span>/cmd/configtxlator<br>pkgmap.cryptogen      := <span class="hljs-variable">$(PKGNAME)</span>/cmd/cryptogen<br>pkgmap.discover       := <span class="hljs-variable">$(PKGNAME)</span>/cmd/discover<br>pkgmap.ledgerutil     := <span class="hljs-variable">$(PKGNAME)</span>/cmd/ledgerutil<br>pkgmap.orderer        := <span class="hljs-variable">$(PKGNAME)</span>/cmd/orderer<br>pkgmap.osnadmin       := <span class="hljs-variable">$(PKGNAME)</span>/cmd/osnadmin<br>pkgmap.peer           := <span class="hljs-variable">$(PKGNAME)</span>/cmd/peer<br></code></pre></td></tr></table></figure>
+
+<p>为了测试能否在自定义路径中编译源码，我修改了 <code>fabric/internal/peer/version/version.go</code> :</p>
+<p><img src="/Project2-Compile/3.png" srcset="/img/loading.gif" lazyload alt="version.go"></p>
+<p>然后编译并执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make peer<br>$ export PATH=$PWD/build/bin<br>$ peer<br></code></pre></td></tr></table></figure>
+
+<p><img src="/Project2-Compile/4.png" srcset="/img/loading.gif" lazyload alt="输出"></p>
+<h3 id="3-下载-fabric-ca-源码"><a href="#3-下载-fabric-ca-源码" class="headerlink" title="3. 下载 fabric-ca 源码"></a>3. 下载 fabric-ca 源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ git clone https://github.com/hyperledger/fabric-ca.git<br>$ cd fabric-ca<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-编译-fabric-ca-源码"><a href="#4-编译-fabric-ca-源码" class="headerlink" title="4. 编译 fabric-ca 源码"></a>4. 编译 fabric-ca 源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make fabric-ca-server<br>$ make fabric-ca-client<br></code></pre></td></tr></table></figure>
+
+<p>编译好的二进制可执行文件在 <code>fabric-ca/bin/</code> 下：</p>
+<p><img src="/Project2-Compile/2.png" srcset="/img/loading.gif" lazyload alt="二进制文件"></p>
+<h2 id="制作镜像"><a href="#制作镜像" class="headerlink" title="制作镜像"></a>制作镜像</h2><p>把当前用户加入到 docker 用户组后，分别在 fabric 和 fabric-ca 目录下执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make docker<br></code></pre></td></tr></table></figure>
+
+<p><img src="/Project2-Compile/6.png" srcset="/img/loading.gif" lazyload alt="Docker Images"></p>
+<h3 id="镜像代码"><a href="#镜像代码" class="headerlink" title="镜像代码"></a>镜像代码</h3><p><code>Makefile</code> 中制作 docker 镜像的代码如下：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs Makefile"><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: docker</span><br><span class="hljs-section">docker: $(RELEASE_IMAGES:%=%-docker)</span><br><br><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: $(RELEASE_IMAGES:%=%-docker)</span><br><span class="hljs-section">$(RELEASE_IMAGES:%=%-docker): %-docker: <span class="hljs-variable">$(BUILD_DIR)</span>/images/%/<span class="hljs-variable">$(DUMMY)</span></span><br><br><span class="hljs-variable">$(BUILD_DIR)</span>/images/baseos/<span class="hljs-variable">$(DUMMY)</span>:  BUILD_CONTEXT=images/baseos<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/ccenv/<span class="hljs-variable">$(DUMMY)</span>:   BUILD_CONTEXT=images/ccenv<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/peer/<span class="hljs-variable">$(DUMMY)</span>:    BUILD_ARGS=--build-arg GO_TAGS=$&#123;GO_TAGS&#125;<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/orderer/<span class="hljs-variable">$(DUMMY)</span>: BUILD_ARGS=--build-arg GO_TAGS=$&#123;GO_TAGS&#125;<br><span class="hljs-variable">$(BUILD_DIR)</span>/images/tools/<span class="hljs-variable">$(DUMMY)</span>:   BUILD_ARGS=--build-arg GO_TAGS=$&#123;GO_TAGS&#125;<br><br><span class="hljs-variable">$(BUILD_DIR)</span>/images/%/<span class="hljs-variable">$(DUMMY)</span>:<br>	@echo <span class="hljs-string">&quot;Building Docker image <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>&quot;</span><br>	@mkdir -p $(@D)<br>	<span class="hljs-variable">$(DBUILD)</span> -f images/<span class="hljs-variable">$*</span>/Dockerfile \<br>		--build-arg GO_VER=<span class="hljs-variable">$(GO_VER)</span> \<br>		--build-arg ALPINE_VER=<span class="hljs-variable">$(ALPINE_VER)</span> \<br>		<span class="hljs-variable">$(BUILD_ARGS)</span> \<br>		-t <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> ./<span class="hljs-variable">$(BUILD_CONTEXT)</span><br>	docker tag <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>:<span class="hljs-variable">$(BASE_VERSION)</span><br>	docker tag <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>:<span class="hljs-variable">$(TWO_DIGIT_VERSION)</span><br>	docker tag <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span> <span class="hljs-variable">$(DOCKER_NS)</span>/fabric-<span class="hljs-variable">$*</span>:<span class="hljs-variable">$(DOCKER_TAG)</span><br>	@touch <span class="hljs-variable">$@</span><br></code></pre></td></tr></table></figure>
+
+<p>其中 <code>$(DBUILD) -f</code> 即 <code>docker build -f</code> 指明了 <code>Dockerfile</code> 的路径。以 <code>fabric/images/peer/Dockerfile</code> 为例：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs Dockerfile"><span class="hljs-keyword">FROM</span> alpine:$&#123;ALPINE_VER&#125; as peer-base<br><span class="hljs-keyword">RUN</span><span class="language-bash"> apk add --no-cache tzdata</span><br><span class="hljs-comment"># set up nsswitch.conf for Go&#x27;s &quot;netgo&quot; implementation</span><br><span class="hljs-comment"># - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275</span><br><span class="hljs-comment"># - docker run --rm debian:stretch grep &#x27;^hosts:&#x27; /etc/nsswitch.conf</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;hosts: files dns&#x27;</span> &gt; /etc/nsswitch.conf</span><br><br><span class="hljs-keyword">FROM</span> golang:$&#123;GO_VER&#125;-alpine$&#123;ALPINE_VER&#125; as golang<br><span class="hljs-keyword">RUN</span><span class="language-bash"> apk add --no-cache \</span><br><span class="language-bash">	bash \</span><br><span class="language-bash">	binutils-gold \</span><br><span class="language-bash">	gcc \</span><br><span class="language-bash">	git \</span><br><span class="language-bash">	make \</span><br><span class="language-bash">	musl-dev</span><br><span class="hljs-keyword">ADD</span><span class="language-bash"> . <span class="hljs-variable">$GOPATH</span>/src/github.com/hyperledger/fabric</span><br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> <span class="hljs-variable">$GOPATH</span>/src/github.com/hyperledger/fabric</span><br><br><span class="hljs-keyword">FROM</span> golang as peer<br><span class="hljs-keyword">ARG</span> GO_TAGS<br><span class="hljs-keyword">RUN</span><span class="language-bash"> make peer GO_TAGS=<span class="hljs-variable">$&#123;GO_TAGS&#125;</span></span><br><br><span class="hljs-keyword">FROM</span> peer-base<br><span class="hljs-keyword">ENV</span> FABRIC_CFG_PATH /etc/hyperledger/fabric<br><span class="hljs-keyword">VOLUME</span><span class="language-bash"> /etc/hyperledger/fabric</span><br><span class="hljs-keyword">VOLUME</span><span class="language-bash"> /var/hyperledger</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> --from=peer /go/src/github.com/hyperledger/fabric/build/bin /usr/local/bin</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> --from=peer /go/src/github.com/hyperledger/fabric/sampleconfig/msp <span class="hljs-variable">$&#123;FABRIC_CFG_PATH&#125;</span>/msp</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> --from=peer /go/src/github.com/hyperledger/fabric/sampleconfig/core.yaml <span class="hljs-variable">$&#123;FABRIC_CFG_PATH&#125;</span></span><br><span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">7051</span><br><span class="hljs-keyword">CMD</span><span class="language-bash"> [<span class="hljs-string">&quot;peer&quot;</span>,<span class="hljs-string">&quot;node&quot;</span>,<span class="hljs-string">&quot;start&quot;</span>]</span><br></code></pre></td></tr></table></figure>
+
+<p>这是一个分阶段构建镜像的过程，每个阶段生成一个镜像，下一个阶段在此基础上生成：</p>
+<ol>
+<li><p><strong>peer-base</strong> 阶段：</p>
+<ul>
+<li>基于指定的 Alpine 版本构建基础镜像。</li>
+<li>安装 tzdata 包，用于时区设置。</li>
+<li>配置 nsswitch.conf 文件，以支持 Go 的 “netgo” 实现。</li>
+</ul>
+</li>
+<li><p><strong>golang</strong> 阶段：</p>
+<ul>
+<li>基于指定的 Go 版本和 Alpine 版本构建 Golang 镜像。</li>
+<li>安装构建所需的工具和依赖，如 bash、binutils-gold、gcc、git、make 和 musl-dev。</li>
+<li>将<strong>当前目录下</strong>的文件复制到 Golang 镜像的对应路径 <code>$GOPATH/src/github.com/hyperledger/fabric</code>。</li>
+</ul>
+</li>
+<li><p><strong>peer</strong> 阶段：</p>
+<ul>
+<li>基于 golang 阶段构建一个临时的 Golang 镜像。</li>
+<li>使用 make 命令构建 Peer 节点的二进制文件。</li>
+<li>使用 GO_TAGS 参数指定构建所需的 Go 标签。</li>
+</ul>
+</li>
+<li><p><strong>最终</strong>阶段：</p>
+<ul>
+<li>基于 peer-base 阶段构建最终的镜像。</li>
+<li>设置环境变量 FABRIC_CFG_PATH 为 &#x2F;etc&#x2F;hyperledger&#x2F;fabric。</li>
+<li>创建两个数据卷，分别用于存储 Fabric 配置文件和 Hyperledger 数据。</li>
+<li>从 peer 阶段复制生成的二进制文件到 &#x2F;usr&#x2F;local&#x2F;bin 目录下。</li>
+<li>从 peer 阶段复制生成的 MSP 配置到 &#x2F;etc&#x2F;hyperledger&#x2F;fabric&#x2F;msp 目录下。</li>
+<li>从 peer 阶段复制生成的核心配置文件 core.yaml 到 &#x2F;etc&#x2F;hyperledger&#x2F;fabric 目录下。</li>
+<li>暴露容器的 7051 端口。</li>
+<li>使用 CMD 指令在容器启动时运行 peer node start 命令。</li>
+</ul>
+</li>
+</ol>
+<p><strong>可以看出该镜像并非直接复制主机编译的二进制文件，而是复制当前目录的代码，在容器中自己编译。</strong></p>
+<h3 id="测试镜像"><a href="#测试镜像" class="headerlink" title="测试镜像"></a>测试镜像</h3><p>保留之前测试编译的更改，制作 peer 镜像并进入容器测试：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ make peer-docker<br>$ docker run hyperledger/fabric-peer<br>$ docker exec -it container_id /bin/sh<br># peer<br></code></pre></td></tr></table></figure>
+
+<p><img src="/Project2-Compile/5.png" srcset="/img/loading.gif" lazyload alt="输出"></p>
+<h2 id="启动网络"><a href="#启动网络" class="headerlink" title="启动网络"></a>启动网络</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ cd fabric-samples<br></code></pre></td></tr></table></figure>
+
+<p>将之前编译的二进制文件全部放在 <code>fabric-samples/bin</code> 下：</p>
+<p><img src="/Project2-Compile/7.png" srcset="/img/loading.gif" lazyload alt="bin"></p>
+<p>此时还需要生成节点的配置文件，将 <code>fabric/sampleconfig</code> 复制到 fabric-samples，并改名 config。</p>
+<p>启动：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Linux">$ cd test-network<br>$ ./network.sh up<br></code></pre></td></tr></table></figure>
+
+<p>成功启动！</p>
+<p>但是在创建通道的时候组织二的节点无法加入，将 peer 的二进制文件更换为官方提供直接下载的则没有这个问题。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%AF%95%E8%AE%BE%E9%A1%B9%E7%9B%AE/" class="category-chain-item">毕设项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「毕」 2. 编译 Fabric 源码</div>
+      <div>https://qanlyma.github.io/Project2-Compile/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月9日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Research-FiveLayers/" title="「研」 TCP/IP 分层结构">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「研」 TCP/IP 分层结构</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/ByteDance-12/" title="「训」 笔记(12)：存储和数据库">
+                        <span class="hidden-mobile">「训」 笔记(12)：存储和数据库</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="毕设项目"
+        id="heading-f081d380c266d8d857350bddc6f1b47c" role="tab" data-toggle="collapse" href="#collapse-f081d380c266d8d857350bddc6f1b47c"
+        aria-expanded="true"
+      >
+        毕设项目
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-f081d380c266d8d857350bddc6f1b47c"
+           role="tabpanel" aria-labelledby="heading-f081d380c266d8d857350bddc6f1b47c">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Project1-Test/" title="「毕」 1. 测试 Fabric 2.4.0"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 1. 测试 Fabric 2.4.0</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project2-Compile/" title="「毕」 2. 编译 Fabric 源码"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「毕」 2. 编译 Fabric 源码</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project3-Deploy/" title="「毕」 3. 部署自定义网络"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 3. 部署自定义网络</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project4-Code/" title="「毕」 4. Fabric 源码解析"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 4. Fabric 源码解析</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project5-Thinking/" title="「毕」 5. Fabric 的改进"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 5. Fabric 的改进</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project6-Contract/" title="「毕」 6. 测试合约及脚本"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 6. 测试合约及脚本</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project7-Experiment/" title="「毕」 7. 实验设计参考"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 7. 实验设计参考</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Project8-FabricMan/" title="「毕」 8. 毕业论文（精简版）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「毕」 8. 毕业论文（精简版）</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

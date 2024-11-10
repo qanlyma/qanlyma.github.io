@@ -1,0 +1,926 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qanly">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="回溯法也可以叫做回溯搜索法，它是一种搜索的方式。回溯是递归的副产品，只要有递归就会有回溯。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「算」 12. 回溯算法">
+<meta property="og:url" content="https://qanlyma.github.io/Algorithm-backtrack/index.html">
+<meta property="og:site_name" content="Qanly">
+<meta property="og:description" content="回溯法也可以叫做回溯搜索法，它是一种搜索的方式。回溯是递归的副产品，只要有递归就会有回溯。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qanlyma.github.io/Algorithm-backtrack/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Algorithm-backtrack/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Algorithm-backtrack/2.png">
+<meta property="og:image" content="https://qanlyma.github.io/Algorithm-backtrack/3.png">
+<meta property="og:image" content="https://qanlyma.github.io/Algorithm-backtrack/5.png">
+<meta property="article:published_time" content="2023-07-19T04:41:03.000Z">
+<meta property="article:modified_time" content="2024-07-04T09:58:44.522Z">
+<meta property="article:author" content="Qanly">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://qanlyma.github.io/Algorithm-backtrack/4.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>「算」 12. 回溯算法 - Qanly</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qanlyma.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>小马 Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="「算」 12. 回溯算法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Qanly
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-19 12:41" pubdate>
+          2023年7月19日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">「算」 12. 回溯算法</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：4 个月前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>回溯法也可以叫做回溯搜索法，它是一种搜索的方式。回溯是递归的副产品，只要有递归就会有回溯。</p>
+<span id="more"></span>
+
+<h2 id="1-理论"><a href="#1-理论" class="headerlink" title="1 理论"></a>1 理论</h2><p>回溯的本质是穷举，穷举所有可能，然后选出我们想要的答案。</p>
+<h3 id="1-1-解决的问题"><a href="#1-1-解决的问题" class="headerlink" title="1.1 解决的问题"></a>1.1 解决的问题</h3><ul>
+<li>组合问题：N 个数里面按一定规则找出 k 个数的集合</li>
+<li>切割问题：一个字符串按一定规则有几种切割方式</li>
+<li>子集问题：一个 N 个数的集合里有多少符合条件的子集</li>
+<li>排列问题：N 个数按一定规则全排列，有几种排列方式</li>
+<li>棋盘问题：N 皇后，解数独等等</li>
+</ul>
+<h3 id="1-2-回溯法模板"><a href="#1-2-回溯法模板" class="headerlink" title="1.2 回溯法模板"></a>1.2 回溯法模板</h3><ol>
+<li>回溯函数模板返回值以及参数</li>
+<li>回溯函数终止条件</li>
+<li>回溯搜索的遍历过程</li>
+</ol>
+<p><img src="/Algorithm-backtrack/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>for 循环可以理解是横向遍历，backtracking（递归）就是纵向遍历，这样就把这棵树全遍历完了。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">backtracking</span><span class="hljs-params">(参数)</span></span> &#123;<br>    <span class="hljs-keyword">if</span> (终止条件) &#123;<br>        存放结果<br>        <span class="hljs-keyword">return</span><br>    &#125;<br><br>    <span class="hljs-keyword">for</span> (选择：本层集合中元素（树中节点孩子的数量就是集合的大小）) &#123;<br>        处理节点<br>        backtracking(路径，选择列表) <span class="hljs-comment">// 递归</span><br>        回溯，撤销处理结果<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-题目"><a href="#2-题目" class="headerlink" title="2 题目"></a>2 题目</h2><h3 id="2-1-leetcode-77-题"><a href="#2-1-leetcode-77-题" class="headerlink" title="2.1 leetcode 77 题"></a>2.1 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combinations/">leetcode 77 题</a></h3><p>给定两个整数 n 和 k，返回范围 [1, n] 中所有可能的 k 个数的组合。你可以按任何顺序返回答案。</p>
+<p>最直接的解法是使用 k 个 for 循环，但是当 k 过大时这个方法显然不适用。所以回溯搜索法来了，虽然回溯法也是暴力，但至少能写出来，不像 for 循环嵌套 k 层让人绝望。</p>
+<p>用树形结构来理解回溯：</p>
+<p><img src="/Algorithm-backtrack/1.png" srcset="/img/loading.gif" lazyload alt="n = 4, k = 2"></p>
+<p>每次从集合中选取元素，可选择的范围随着选择的进行而收缩，调整可选择的范围。</p>
+<p>图中可以发现n相当于树的宽度，k相当于树的深度。每次搜索到了叶子节点，我们就找到了一个结果。</p>
+<ol>
+<li><strong>递归函数的返回值以及参数</strong></li>
+</ol>
+<p>在这里要定义两个全局变量，一个用来存放符合条件单一结果，一个用来存放符合条件结果的集合。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> path []<span class="hljs-type">int</span><br><span class="hljs-keyword">var</span> res  [][]<span class="hljs-type">int</span><br></code></pre></td></tr></table></figure>
+
+<p>函数里一定有两个参数，既然是集合 n 里面取 k 个数，那么 n 和 k 是两个 int 型的参数。</p>
+<p>然后还需要一个参数，为 int 型变量 start，这个参数用来记录本层递归的中，集合从哪里开始遍历（集合就是[1,…,n]）。start 用于防止出现重复的组合。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> backTrace <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(n, k, start <span class="hljs-type">int</span>)</span></span> <br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>回溯函数终止条件</strong></li>
+</ol>
+<p>path 这个数组的大小如果达到 k，说明我们找到了一个子集大小为 k 的组合了，在图中 path 存的就是根节点到叶子节点的路径。</p>
+<p><img src="/Algorithm-backtrack/2.png" srcset="/img/loading.gif" lazyload alt="path"></p>
+<p>此时用 res 二维数组，把 path 保存起来，并终止本层递归。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(path) == k &#123; <br>    tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, k)<br>    <span class="hljs-built_in">copy</span>(tmp, path)<br>    res = <span class="hljs-built_in">append</span>(res, tmp)<br>    <span class="hljs-keyword">return</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>注意不能直接 <code>append(res, path)</code>，后续修改 path 时会影响到 res。</strong></p>
+<ol start="3">
+<li><strong>单层搜索的过程</strong></li>
+</ol>
+<p>回溯法的搜索过程就是一个树型结构的遍历过程，在如下图中，可以看出 for 循环用来横向遍历，递归的过程是纵向遍历。</p>
+<p><img src="/Algorithm-backtrack/3.png" srcset="/img/loading.gif" lazyload alt="遍历"></p>
+<p>for 循环每次从 start 开始遍历，然后用 path 保存取到的节点 i。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">for</span> start &lt;= n &#123;                <span class="hljs-comment">// 控制树的横向遍历</span><br>    path = <span class="hljs-built_in">append</span>(path, start)  <span class="hljs-comment">// 处理节点</span><br>    backTrace(n, k, start + <span class="hljs-number">1</span>)  <span class="hljs-comment">// 递归：控制树的纵向遍历，注意下一层搜索要从 i+1 开始</span><br>    path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]   <span class="hljs-comment">// 回溯：撤销处理的节点</span><br>    start++<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>代码实现</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">combine</span><span class="hljs-params">(n <span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> path []<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span><br><br>    <span class="hljs-keyword">var</span> backTrace <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(a, b, start <span class="hljs-type">int</span>)</span></span> <br>    backTrace = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(a, b, start <span class="hljs-type">int</span>)</span></span> &#123;       <br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(path) == b &#123; <br>            tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, b)<br>            <span class="hljs-built_in">copy</span>(tmp, path)<br>            res = <span class="hljs-built_in">append</span>(res, tmp)<br>            <span class="hljs-keyword">return</span><br>        &#125;<br><br>        <span class="hljs-comment">// 从 start 开始，不往回走，避免出现重复组合</span><br>        <span class="hljs-keyword">for</span> start &lt;= a &#123;<br>            <span class="hljs-keyword">if</span> a - start + <span class="hljs-number">1</span> &lt; b - <span class="hljs-built_in">len</span>(path) &#123; <span class="hljs-comment">// 剪枝</span><br>                <span class="hljs-keyword">break</span><br>            &#125;<br>            path = <span class="hljs-built_in">append</span>(path, start)<br>            backTrace(a, b, start + <span class="hljs-number">1</span>)<br>            path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]<br>            start++<br>        &#125;<br>    &#125;<br><br>    backTrace(n, k, <span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-leetcode-40-题"><a href="#2-2-leetcode-40-题" class="headerlink" title="2.2 leetcode 40 题"></a>2.2 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum-ii/">leetcode 40 题</a></h3><p>给定一个数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。</p>
+<p>candidates 中的每个数字在每个组合中只能使用一次。解集不能包含重复的组合。</p>
+<p>这道题的难点在于去重。要去重的是同一树层上的“使用过”，同一树枝上的都是一个组合里的元素，不用去重。</p>
+<p><img src="/Algorithm-backtrack/5.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><code>used[i - 1] == true</code>，说明同一树枝 candidates[i - 1] 使用过，是进入下一层递归</li>
+<li><code>used[i - 1] == false</code>，说明同一树层 candidates[i - 1] 使用过，是回溯而来的</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">combinationSum2</span><span class="hljs-params">(candidates []<span class="hljs-type">int</span>, target <span class="hljs-type">int</span>)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    sort.Ints(candidates)<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> path []<span class="hljs-type">int</span><br>    used := <span class="hljs-built_in">make</span>([]<span class="hljs-type">bool</span>, <span class="hljs-built_in">len</span>(candidates))<br>    <span class="hljs-keyword">var</span> sum <span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> backtracking <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start <span class="hljs-type">int</span>)</span></span><br>    backtracking = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start <span class="hljs-type">int</span>)</span></span> &#123;<br>        <span class="hljs-keyword">if</span> sum &gt; target &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> sum == target &#123;<br>            tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-built_in">len</span>(path))<br>            <span class="hljs-built_in">copy</span>(tmp, path)<br>            res = <span class="hljs-built_in">append</span>(res, tmp)<br>        &#125;<br><br>        <span class="hljs-keyword">for</span> i := start; i &lt; <span class="hljs-built_in">len</span>(candidates); i++ &#123;<br>            <span class="hljs-keyword">if</span> i &gt; <span class="hljs-number">0</span> &amp;&amp; candidates[i] == candidates[i<span class="hljs-number">-1</span>] &amp;&amp; !used[i<span class="hljs-number">-1</span>] &#123;<br>                <span class="hljs-keyword">continue</span><br>            &#125;<br>            sum += candidates[i]<br>            path = <span class="hljs-built_in">append</span>(path, candidates[i])<br>            used[i] = <span class="hljs-literal">true</span><br>            backtracking(i+<span class="hljs-number">1</span>)<br>            sum -= candidates[i]<br>            path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]<br>            used[i] = <span class="hljs-literal">false</span><br>        &#125;<br>    &#125;<br>    backtracking(<span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-leetcode-131-题"><a href="#2-3-leetcode-131-题" class="headerlink" title="2.3 leetcode 131 题"></a>2.3 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/palindrome-partitioning/">leetcode 131 题</a></h3><p>给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。</p>
+<p>切割问题本质上和组合问题是一样的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">partition</span><span class="hljs-params">(s <span class="hljs-type">string</span>)</span></span> [][]<span class="hljs-type">string</span> &#123;<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">string</span><br>    <span class="hljs-keyword">var</span> path []<span class="hljs-type">string</span><br>    <span class="hljs-keyword">var</span> backtracking <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(sub <span class="hljs-type">string</span>)</span></span> <br>    backtracking = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(sub <span class="hljs-type">string</span>)</span></span> &#123;<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(sub) == <span class="hljs-number">0</span> &#123;<br>            tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">string</span>, <span class="hljs-built_in">len</span>(path))<br>            <span class="hljs-built_in">copy</span>(tmp, path)<br>            res = <span class="hljs-built_in">append</span>(res, tmp)<br>        &#125;<br><br>        <span class="hljs-keyword">for</span> i := <span class="hljs-number">1</span>; i &lt;= <span class="hljs-built_in">len</span>(sub); i++ &#123;<br>            <span class="hljs-keyword">if</span> ifStr(sub[<span class="hljs-number">0</span>:i]) &#123;<br>                path = <span class="hljs-built_in">append</span>(path, sub[<span class="hljs-number">0</span>:i])<br>                backtracking(sub[i:])<br>                path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]<br>            &#125;<br>        &#125;<br>    &#125;<br>    backtracking(s)<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ifStr</span><span class="hljs-params">(s <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>    b := []<span class="hljs-type">byte</span>(s)<br>    <span class="hljs-keyword">for</span> i, j := <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(b)<span class="hljs-number">-1</span>; i &lt; j; i, j = i+<span class="hljs-number">1</span>, j<span class="hljs-number">-1</span> &#123;<br>        <span class="hljs-keyword">if</span> b[i] != b[j] &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-leetcode-90-题"><a href="#2-4-leetcode-90-题" class="headerlink" title="2.4 leetcode 90 题"></a>2.4 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets-ii/">leetcode 90 题</a></h3><p>给你一个整数数组 nums，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">subsetsWithDup</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    sort.Ints(nums)<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> path []<span class="hljs-type">int</span><br>    used := <span class="hljs-built_in">make</span>([]<span class="hljs-type">bool</span>, <span class="hljs-built_in">len</span>(nums))<br>    <span class="hljs-keyword">var</span> backtracking <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start <span class="hljs-type">int</span>)</span></span> <br>    backtracking = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start <span class="hljs-type">int</span>)</span></span> &#123;<br>        tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-built_in">len</span>(path))<br>        <span class="hljs-built_in">copy</span>(tmp, path)<br>        res = <span class="hljs-built_in">append</span>(res, tmp)<br><br>        <span class="hljs-keyword">for</span> i := start; i &lt; <span class="hljs-built_in">len</span>(nums); i++ &#123;<br>            <span class="hljs-keyword">if</span> i &gt; <span class="hljs-number">0</span> &amp;&amp; nums[i] == nums[i<span class="hljs-number">-1</span>] &amp;&amp; !used[i<span class="hljs-number">-1</span>] &#123;<br>                <span class="hljs-keyword">continue</span><br>            &#125;<br>            path = <span class="hljs-built_in">append</span>(path, nums[i])<br>            used[i] = <span class="hljs-literal">true</span><br>            backtracking(i+<span class="hljs-number">1</span>)<br>            path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]<br>            used[i] = <span class="hljs-literal">false</span><br>        &#125;<br>    &#125;<br>    backtracking(<span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-5-leetcode-491-题"><a href="#2-5-leetcode-491-题" class="headerlink" title="2.5 leetcode 491 题"></a>2.5 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-decreasing-subsequences/submissions/">leetcode 491 题</a></h3><p>给你一个整数数组 nums，找出并返回所有该数组中不同的递增子序列，数组中可能含有重复元素。</p>
+<p>不能对数组进行排序，在每一层新建一个 map 进行去重。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">findSubsequences</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> path []<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> backtracking <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start <span class="hljs-type">int</span>)</span></span> <br>    backtracking = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start <span class="hljs-type">int</span>)</span></span> &#123;<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(path) &gt;= <span class="hljs-number">2</span> &#123;<br>            tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-built_in">len</span>(path))<br>            <span class="hljs-built_in">copy</span>(tmp, path)<br>            res = <span class="hljs-built_in">append</span>(res, tmp)<br>        &#125;<br><br>        usedmap := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>]<span class="hljs-type">bool</span>)<br>        <span class="hljs-keyword">for</span> i := start; i &lt; <span class="hljs-built_in">len</span>(nums); i++ &#123;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">len</span>(path) != <span class="hljs-number">0</span> &amp;&amp; nums[i] &lt; path[<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]) || usedmap[nums[i]] &#123;<br>                <span class="hljs-keyword">continue</span><br>            &#125;<br>            path = <span class="hljs-built_in">append</span>(path, nums[i])<br>            usedmap[nums[i]] = <span class="hljs-literal">true</span><br>            backtracking(i+<span class="hljs-number">1</span>)<br>            path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]<br>        &#125;<br>    &#125;<br>    backtracking(<span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-6-leetcode-47-题"><a href="#2-6-leetcode-47-题" class="headerlink" title="2.6 leetcode 47 题"></a>2.6 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/permutations-ii/submissions/">leetcode 47 题</a></h3><p>给定一个可包含重复数字的序列 nums，按任意顺序返回所有不重复的全排列。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">permuteUnique</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    sort.Ints(nums)<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span> <br>    <span class="hljs-keyword">var</span> path []<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> backtracking <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> <br>    used := <span class="hljs-built_in">make</span>([]<span class="hljs-type">bool</span>, <span class="hljs-built_in">len</span>(nums))<br>    backtracking = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(path) == <span class="hljs-built_in">len</span>(nums) &#123;<br>            tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-built_in">len</span>(path))<br>            <span class="hljs-built_in">copy</span>(tmp, path)<br>            res = <span class="hljs-built_in">append</span>(res, tmp)<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(nums); i++ &#123;<br>            <span class="hljs-comment">// used[i] 表示在上一层用过，!used[i-1] 表示在同一层用过</span><br>            <span class="hljs-keyword">if</span> used[i] || (i &gt; <span class="hljs-number">0</span> &amp;&amp; nums[i] == nums[i<span class="hljs-number">-1</span>] &amp;&amp; !used[i<span class="hljs-number">-1</span>]) &#123;<br>                <span class="hljs-keyword">continue</span><br>            &#125;<br>            path = <span class="hljs-built_in">append</span>(path, nums[i])<br>            used[i] = <span class="hljs-literal">true</span><br>            backtracking()<br>            path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]<br>            used[i] = <span class="hljs-literal">false</span><br>        &#125;<br>    &#125;<br>    backtracking()<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-7-leetcode-698-题"><a href="#2-7-leetcode-698-题" class="headerlink" title="2.7 leetcode 698 题"></a>2.7 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/">leetcode 698 题</a></h3><p>给定一个整数数组 nums 和一个正整数 k，找出是否有可能把这个数组分成 k 个非空子集，其总和都相等。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">canPartitionKSubsets</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>, k <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>    <span class="hljs-keyword">var</span> sum <span class="hljs-type">int</span><br>    <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> nums &#123;<br>        sum += v<br>    &#125;<br>    <span class="hljs-keyword">if</span> sum % k != <span class="hljs-number">0</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    &#125;<br>    target := sum / k<br>    sort.Ints(nums)<br>    used := <span class="hljs-built_in">make</span>([]<span class="hljs-type">bool</span>, <span class="hljs-built_in">len</span>(nums))<br>    <span class="hljs-keyword">var</span> dfs <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start, sum, count <span class="hljs-type">int</span>, used []<span class="hljs-type">bool</span>)</span></span> <span class="hljs-type">bool</span><br>    dfs = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(start, sum, count <span class="hljs-type">int</span>, used []<span class="hljs-type">bool</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>        <span class="hljs-keyword">if</span> count == k &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> sum == target &#123;<br>            <span class="hljs-keyword">return</span> dfs(<span class="hljs-built_in">len</span>(nums)<span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, count+<span class="hljs-number">1</span>, used)<br>        &#125;<br><br>        <span class="hljs-keyword">for</span> i := start; i &gt;= <span class="hljs-number">0</span>; i-- &#123;<br>            <span class="hljs-keyword">if</span> used[i] || sum + nums[i] &gt; target &#123;<br>                <span class="hljs-keyword">continue</span><br>            &#125; <br>            used[i] = <span class="hljs-literal">true</span><br>            <span class="hljs-keyword">if</span> dfs(i<span class="hljs-number">-1</span>, sum+nums[i], count, used) &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>            &#125;<br>            used[i] = <span class="hljs-literal">false</span><br>            <span class="hljs-keyword">if</span> sum == <span class="hljs-number">0</span> &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    &#125;<br>    <span class="hljs-keyword">return</span> dfs(<span class="hljs-built_in">len</span>(nums)<span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, used)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-8-leetcode-51-题"><a href="#2-8-leetcode-51-题" class="headerlink" title="2.8 leetcode 51 题"></a>2.8 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/n-queens/">leetcode 51 题</a></h3><p>N 皇后。</p>
+<h3 id="2-9-leetcode-37-题"><a href="#2-9-leetcode-37-题" class="headerlink" title="2.9 leetcode 37 题"></a>2.9 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sudoku-solver/">leetcode 37 题</a></h3><p>解数独。</p>
+<h2 id="3-递归"><a href="#3-递归" class="headerlink" title="3 递归"></a>3 递归</h2><p>在这里整理几道不是二叉树的递归题目。</p>
+<h3 id="3-1-剑指-Offer-25"><a href="#3-1-剑指-Offer-25" class="headerlink" title="3.1 剑指 Offer 25"></a>3.1 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/">剑指 Offer 25</a></h3><p>合并两个排序的链表。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">mergeTwoLists</span><span class="hljs-params">(l1 *ListNode, l2 *ListNode)</span></span> *ListNode &#123;<br>    <span class="hljs-keyword">if</span> l1 == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> l2<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> l2 == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> l1<br>    &#125;<br><br>    <span class="hljs-keyword">var</span> l *ListNode<br>    <span class="hljs-keyword">if</span> l1.Val &lt;= l2.Val &#123;<br>        l = l1<br>        l1 = l1.Next<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        l = l2<br>        l2 = l2.Next<br>    &#125;<br>    l.Next = mergeTwoLists(l1, l2)<br>    <span class="hljs-keyword">return</span> l<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-字节面试题"><a href="#3-2-字节面试题" class="headerlink" title="3.2 字节面试题"></a>3.2 字节面试题</h3><p>计算字符串表达式，字符串包含数字、括号、加法、乘法，例如：”2+3*(4+5)”。</p>
+<p>递归 + 栈：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">calculateExpression</span><span class="hljs-params">(expr <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>	stack := []<span class="hljs-type">int</span>&#123;&#125;<br>	op := <span class="hljs-string">&#x27;.&#x27;</span><br><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(expr); i++ &#123;<br>		<span class="hljs-keyword">if</span> expr[i] != <span class="hljs-string">&#x27;+&#x27;</span> &amp;&amp; expr[i] != <span class="hljs-string">&#x27;*&#x27;</span> &#123;<br>			num := <span class="hljs-number">0</span><br>			<span class="hljs-keyword">if</span> expr[i] &gt;= <span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; expr[i] &lt;= <span class="hljs-string">&#x27;9&#x27;</span> &#123;<br>				<span class="hljs-keyword">for</span> i &lt; <span class="hljs-built_in">len</span>(expr) &amp;&amp; expr[i] &gt;= <span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; expr[i] &lt;= <span class="hljs-string">&#x27;9&#x27;</span> &#123;<br>					num = num*<span class="hljs-number">10</span> + <span class="hljs-type">int</span>(expr[i]-<span class="hljs-string">&#x27;0&#x27;</span>)<br>					i++<br>				&#125;<br>				i--<br>			&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> expr[i] == <span class="hljs-string">&#x27;(&#x27;</span> &#123;<br>				cnt := <span class="hljs-number">1</span><br>				j := i + <span class="hljs-number">1</span><br>				<span class="hljs-keyword">for</span> cnt &gt; <span class="hljs-number">0</span> &#123;<br>					<span class="hljs-keyword">if</span> expr[j] == <span class="hljs-string">&#x27;(&#x27;</span> &#123;<br>						cnt++<br>					&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> expr[j] == <span class="hljs-string">&#x27;)&#x27;</span> &#123;<br>						cnt--<br>					&#125;<br>					j++<br>				&#125;<br>				num = calculateExpression(expr[i+<span class="hljs-number">1</span> : j<span class="hljs-number">-1</span>])<br>				i = j - <span class="hljs-number">1</span><br>			&#125;<br><br>			<span class="hljs-keyword">if</span> op == <span class="hljs-string">&#x27;*&#x27;</span> &#123;<br>				num *= stack[<span class="hljs-built_in">len</span>(stack)<span class="hljs-number">-1</span>]<br>				stack[<span class="hljs-built_in">len</span>(stack)<span class="hljs-number">-1</span>] = num<br>			&#125; <span class="hljs-keyword">else</span> &#123;<br>				stack = <span class="hljs-built_in">append</span>(stack, num)<br>			&#125;<br>		&#125;<br><br>		<span class="hljs-keyword">if</span> expr[i] == <span class="hljs-string">&#x27;*&#x27;</span> || expr[i] == <span class="hljs-string">&#x27;+&#x27;</span> &#123;<br>			op = <span class="hljs-type">rune</span>(expr[i])<br>		&#125;<br>	&#125;<br><br>	result := <span class="hljs-number">0</span><br>	<span class="hljs-keyword">for</span> _, val := <span class="hljs-keyword">range</span> stack &#123;<br>		result += val<br>	&#125;<br>	<span class="hljs-keyword">return</span> result<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-图论"><a href="#4-图论" class="headerlink" title="4 图论"></a>4 图论</h2><p>直接看题吧，参考<a target="_blank" rel="noopener" href="https://programmercarl.com/%E5%9B%BE%E8%AE%BA%E6%B7%B1%E6%90%9C%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html">卡哥教程</a></p>
+<h3 id="4-1-leetcode-797-题"><a href="#4-1-leetcode-797-题" class="headerlink" title="4.1 leetcode 797 题"></a>4.1 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/all-paths-from-source-to-target/">leetcode 797 题</a></h3><p>所有可能的路径。</p>
+<p>使用深度优先搜索遍历图即可，由于题目限制不用考虑环的问题。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">allPathsSourceTarget</span><span class="hljs-params">(graph [][]<span class="hljs-type">int</span>)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> path []<span class="hljs-type">int</span><br>    dst := <span class="hljs-built_in">len</span>(graph) - <span class="hljs-number">1</span><br>    <span class="hljs-keyword">var</span> dfs <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(node <span class="hljs-type">int</span>)</span></span><br>    dfs = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(node <span class="hljs-type">int</span>)</span></span> &#123;<br>        <span class="hljs-keyword">if</span> node == dst &#123;<br>            path = <span class="hljs-built_in">append</span>(path, dst)<br>            tmp := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, <span class="hljs-built_in">len</span>(path))<br>            <span class="hljs-built_in">copy</span>(tmp, path)<br>            res = <span class="hljs-built_in">append</span>(res, tmp)<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        path = <span class="hljs-built_in">append</span>(path, node)<br>        <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(graph[node]); i++ &#123;<br>            nxt := graph[node][i]<br>            dfs(nxt)<br>            path = path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>]<br>        &#125;<br>    &#125;<br>    dfs(<span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-leetcode-200-题"><a href="#4-2-leetcode-200-题" class="headerlink" title="4.2 leetcode 200 题"></a>4.2 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-islands/">leetcode 200 题</a></h3><p>岛屿数量。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 遍历 grid 遇到 &#x27;1&#x27; 就开始递归染色，相连的 &#x27;1&#x27; 都染成 &#x27;0&#x27;</span><br><span class="hljs-comment">// 属于深度优先 dfs</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">numIslands</span><span class="hljs-params">(grid [][]<span class="hljs-type">byte</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>    m, n := <span class="hljs-built_in">len</span>(grid), <span class="hljs-built_in">len</span>(grid[<span class="hljs-number">0</span>])<br>    <span class="hljs-keyword">var</span> res <span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> mark <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(i, j <span class="hljs-type">int</span>)</span></span> <br>    mark = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(i, j <span class="hljs-type">int</span>)</span></span> &#123;<br>        <span class="hljs-keyword">if</span> i &lt; <span class="hljs-number">0</span> || i &gt;= m || j &lt; <span class="hljs-number">0</span> || j &gt;= n || grid[i][j] == <span class="hljs-string">&#x27;0&#x27;</span> &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        grid[i][j] = <span class="hljs-string">&#x27;0&#x27;</span><br>        mark(i<span class="hljs-number">-1</span>, j)<br>        mark(i+<span class="hljs-number">1</span>, j)<br>        mark(i, j<span class="hljs-number">-1</span>)<br>        mark(i, j+<span class="hljs-number">1</span>)<br>    &#125;<br><br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; m; i++ &#123;<br>        <span class="hljs-keyword">for</span> j := <span class="hljs-number">0</span>; j &lt; n; j++ &#123;<br>            <span class="hljs-keyword">if</span> grid[i][j] == <span class="hljs-string">&#x27;1&#x27;</span> &#123;<br>                res++<br>                mark(i, j)<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-leetcode-207-题"><a href="#4-3-leetcode-207-题" class="headerlink" title="4.3 leetcode 207 题"></a>4.3 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/course-schedule/">leetcode 207 题</a></h3><p>课程表。</p>
+<p>一道拓扑排序的题，由两种解法：</p>
+<ul>
+<li>BFS，维护一个入度表以及边的信息，每次将入度为 0 的边进行排序，并根据边的信息消除它们对其他顶点入度的影响。</li>
+<li>DFS，维护一个 visited 数组用于标记节点状态：0：未访问；1：搜索中；2：已搜索，若 dfs 中再次搜索到 1 的节点，则判断成环。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// BFS</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">canFinish</span><span class="hljs-params">(numCourses <span class="hljs-type">int</span>, prerequisites [][]<span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>    tomap := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[<span class="hljs-type">int</span>][]<span class="hljs-type">int</span>)<br>    indeg := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, numCourses)<br>    <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> prerequisites &#123;<br>        tomap[v[<span class="hljs-number">1</span>]] = <span class="hljs-built_in">append</span>(tomap[v[<span class="hljs-number">1</span>]], v[<span class="hljs-number">0</span>])<br>        indeg[v[<span class="hljs-number">0</span>]]++<br>    &#125;<br>    <br>    <span class="hljs-keyword">for</span> numCourses &gt; <span class="hljs-number">0</span> &#123;<br>        <span class="hljs-keyword">var</span> queue []<span class="hljs-type">int</span><br>        <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(indeg); i++ &#123;<br>            <span class="hljs-keyword">if</span> indeg[i] == <span class="hljs-number">0</span> &#123;<br>                <span class="hljs-comment">// 将入度为 0 的顶点加入队列排序</span><br>                queue = <span class="hljs-built_in">append</span>(queue, i)<br>                indeg[i]--<br>            &#125;<br>        &#125;<br>        l := <span class="hljs-built_in">len</span>(queue)<br>        <span class="hljs-keyword">if</span> l == <span class="hljs-number">0</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>        &#125;<br>        <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; l; i++ &#123;<br>            <span class="hljs-keyword">for</span> j := <span class="hljs-number">0</span>; j &lt; <span class="hljs-built_in">len</span>(tomap[queue[i]]); j++ &#123;<br>                <span class="hljs-comment">// 消除入度为 0 的顶点的影响</span><br>                indeg[tomap[queue[i]][j]]--<br>            &#125;<br>        &#125;<br>        numCourses -= l<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>&#125;<br><br><span class="hljs-comment">// DFS</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">canFinish</span><span class="hljs-params">(numCourses <span class="hljs-type">int</span>, prerequisites [][]<span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>    res := <span class="hljs-literal">true</span><br>    visited := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, numCourses)<br>    <span class="hljs-keyword">var</span> dfs <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(n <span class="hljs-type">int</span>)</span></span> <br>    dfs = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(n <span class="hljs-type">int</span>)</span></span> &#123;<br>        <span class="hljs-keyword">if</span> visited[n] == <span class="hljs-number">2</span> || !res &#123;<br>            <span class="hljs-keyword">return</span> <br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> visited[n] == <span class="hljs-number">1</span> &#123;<br>            res = <span class="hljs-literal">false</span><br>        &#125;<br>        visited[n] = <span class="hljs-number">1</span><br>        <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> prerequisites &#123;<br>            <span class="hljs-keyword">if</span> v[<span class="hljs-number">1</span>] == n &#123;<br>                dfs(v[<span class="hljs-number">0</span>])<br>            &#125;<br>        &#125;<br>        visited[n] = <span class="hljs-number">2</span><br>    &#125;<br><br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; numCourses; i++ &#123;<br>        <span class="hljs-keyword">if</span> visited[i] == <span class="hljs-number">0</span> &amp;&amp; res &#123;<br>            dfs(i)<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-并查集"><a href="#5-并查集" class="headerlink" title="5 并查集"></a>5 并查集</h2><p>并查集常用来解决连通性问题。当我们需要判断两个元素是否在同一个集合里的时候，就要想到用并查集。</p>
+<p>并查集主要有两个功能：</p>
+<ul>
+<li>将两个元素添加到一个集合中</li>
+<li>判断两个元素在不在同一个集合</li>
+</ul>
+<h3 id="5-1-leetcode-200-题"><a href="#5-1-leetcode-200-题" class="headerlink" title="5.1 leetcode 200 题"></a>5.1 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-if-path-exists-in-graph/">leetcode 200 题</a></h3><p>寻找图中是否存在路径。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">validPath</span><span class="hljs-params">(n <span class="hljs-type">int</span>, edges [][]<span class="hljs-type">int</span>, source <span class="hljs-type">int</span>, destination <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>    father := <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, n)<br><br>    <span class="hljs-comment">// 寻根</span><br>    <span class="hljs-keyword">var</span> find <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(n <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">int</span> <br>    find = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(n <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>        <span class="hljs-keyword">if</span> father[n] == n &#123; <span class="hljs-keyword">return</span> n &#125;<br>        father[n] = find(father[n]) <span class="hljs-comment">// 路径压缩</span><br>        <span class="hljs-keyword">return</span> father[n]<br>    &#125;<br><br>    <span class="hljs-comment">// 判断 u 和 v 是否找到同一个根</span><br>    <span class="hljs-keyword">var</span> isSame <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(u, v <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> <br>    isSame = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(u, v <span class="hljs-type">int</span>)</span></span> <span class="hljs-type">bool</span> &#123;<br>        <span class="hljs-keyword">return</span> find(u) == find(v)<br>    &#125;<br><br>    <span class="hljs-comment">// 加入并查集</span><br>    <span class="hljs-keyword">var</span> join <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(u, v <span class="hljs-type">int</span>)</span></span> <br>    join = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(u, v <span class="hljs-type">int</span>)</span></span> &#123;<br>        u = find(u)<br>        v = find(v)<br>        <span class="hljs-comment">// 一定要先通过 find 函数寻根再进行关联，不可以写 if find(u) == find(v) &#123; return &#125;</span><br>        <span class="hljs-keyword">if</span> u == v &#123; <span class="hljs-keyword">return</span> &#125;<br>        father[v] = u<br>    &#125;<br><br>    <span class="hljs-comment">// 并查集初始化</span><br>    <span class="hljs-keyword">for</span> i, _ := <span class="hljs-keyword">range</span> father &#123;<br>        father[i] = i<br>    &#125;<br><br>    <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> edges &#123;<br>        join(v[<span class="hljs-number">0</span>], v[<span class="hljs-number">1</span>])<br>    &#125;<br>    <span class="hljs-keyword">return</span> isSame(source, destination)<br>&#125;<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95%E6%95%B0%E6%9E%84/" class="category-chain-item">算法数构</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>「算」 12. 回溯算法</div>
+      <div>https://qanlyma.github.io/Algorithm-backtrack/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qanly</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年7月19日</div>
+        </div>
+      
+      
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Algorithm-greedy/" title="「算」 13. 贪心算法">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「算」 13. 贪心算法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Algorithm-sort/" title="「算」 11. 排序算法">
+                        <span class="hidden-mobile">「算」 11. 排序算法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'qanlyma/Blog_comments');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="算法数构"
+        id="heading-94d0db6bea84149870fdc383a8ebdc98" role="tab" data-toggle="collapse" href="#collapse-94d0db6bea84149870fdc383a8ebdc98"
+        aria-expanded="true"
+      >
+        算法数构
+        <span class="list-group-count">(14)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-94d0db6bea84149870fdc383a8ebdc98"
+           role="tabpanel" aria-labelledby="heading-94d0db6bea84149870fdc383a8ebdc98">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/Algorithm-typeTransfer/" title="「算」 01. 类型转换"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 01. 类型转换</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-array/" title="「算」 02. 数组"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 02. 数组</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-list/" title="「算」 03. 链表"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 03. 链表</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-map/" title="「算」 04. 哈希表"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 04. 哈希表</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-string/" title="「算」 05. 字符串"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 05. 字符串</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-KMP/" title="「算」 06. KMP 算法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 06. KMP 算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-stack/" title="「算」 08. 栈与队列"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 08. 栈与队列</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-binaryTree/" title="「算」 09. 二叉树"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 09. 二叉树</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-heap/" title="「算」 10. 堆结构"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 10. 堆结构</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-sort/" title="「算」 11. 排序算法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 11. 排序算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-backtrack/" title="「算」 12. 回溯算法"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">「算」 12. 回溯算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-greedy/" title="「算」 13. 贪心算法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 13. 贪心算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-dp/" title="「算」 14. 动态规划"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 14. 动态规划</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Algorithm-io/" title="「算」 15. 输入输出"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「算」 15. 输入输出</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

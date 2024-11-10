@@ -18,7 +18,7 @@
   
     <meta name="description" content="微服务框架 —— 不变的基建">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「训」 笔记(8)：微服务框架">
+<meta property="og:title" content="「训」 笔记(08)：微服务框架">
 <meta property="og:url" content="https://qanlyma.github.io/ByteDance-8/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="微服务框架 —— 不变的基建">
@@ -36,8 +36,8 @@
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-8/11.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-8/12.png">
 <meta property="og:image" content="https://qanlyma.github.io/ByteDance-8/13.png">
-<meta property="article:published_time" content="2023-04-11T07:48:43.000Z">
-<meta property="article:modified_time" content="2023-04-16T01:44:21.343Z">
+<meta property="article:published_time" content="2023-03-28T07:48:43.000Z">
+<meta property="article:modified_time" content="2024-01-18T11:08:19.468Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/ByteDance-8/1.png">
@@ -46,7 +46,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「训」 笔记(8)：微服务框架 - Qanly</title>
+  <title>「训」 笔记(08)：微服务框架 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「训」 笔记(8)：微服务框架"></span>
+            <span id="subtitle" data-typed-text="「训」 笔记(08)：微服务框架"></span>
           
         </div>
 
@@ -203,8 +203,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-11 15:48" pubdate>
-          2023年4月11日 下午
+        <time datetime="2023-03-28 15:48" pubdate>
+          2023年3月28日 下午
         </time>
       </span>
     
@@ -266,12 +266,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「训」 笔记(8)：微服务框架</h1>
+            <h1 style="display: none">「训」 笔记(08)：微服务框架</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：13 分钟前
+                    本文最后更新于：10 个月前
                   
                 
               </p>
@@ -282,7 +282,7 @@
                 <p>微服务框架 —— 不变的基建</p>
 <span id="more"></span>
 
-<h2 id="微服务架构介绍"><a href="#微服务架构介绍" class="headerlink" title="微服务架构介绍"></a>微服务架构介绍</h2><h3 id="系统架构的演进历史"><a href="#系统架构的演进历史" class="headerlink" title="系统架构的演进历史"></a>系统架构的演进历史</h3><p><img src="/ByteDance-8/1.png" srcset="/img/loading.gif" lazyload alt="演变历史"></p>
+<h2 id="1-微服务架构介绍"><a href="#1-微服务架构介绍" class="headerlink" title="1 微服务架构介绍"></a>1 微服务架构介绍</h2><h3 id="1-1-系统架构的演进历史"><a href="#1-1-系统架构的演进历史" class="headerlink" title="1.1 系统架构的演进历史"></a>1.1 系统架构的演进历史</h3><p><img src="/ByteDance-8/1.png" srcset="/img/loading.gif" lazyload alt="演变历史"></p>
 <ul>
 <li>单体架构：All in one process</li>
 <li>垂直应用架构：按照业务线垂直划分</li>
@@ -290,8 +290,8 @@
 <li>SOA 架构：面向服务</li>
 <li>微服务架构：彻底的服务化</li>
 </ul>
-<h3 id="微服务架构概览"><a href="#微服务架构概览" class="headerlink" title="微服务架构概览"></a>微服务架构概览</h3><p><img src="/ByteDance-8/2.png" srcset="/img/loading.gif" lazyload alt="架构"></p>
-<h3 id="微服务架构的三大要素"><a href="#微服务架构的三大要素" class="headerlink" title="微服务架构的三大要素"></a>微服务架构的三大要素</h3><ul>
+<h3 id="1-2-微服务架构概览"><a href="#1-2-微服务架构概览" class="headerlink" title="1.2 微服务架构概览"></a>1.2 微服务架构概览</h3><p><img src="/ByteDance-8/2.png" srcset="/img/loading.gif" lazyload alt="架构"></p>
+<h3 id="1-3-微服务架构的三大要素"><a href="#1-3-微服务架构的三大要素" class="headerlink" title="1.3 微服务架构的三大要素"></a>1.3 微服务架构的三大要素</h3><ul>
 <li><p>服务治理：服务注册、服务发现、负载均衡、扩缩容、流量治理、稳定性治理</p>
 </li>
 <li><p>可观测性：日志采集、日志分析、监控打点、监控大盘、异常报警、链路追踪</p>
@@ -299,7 +299,7 @@
 <li><p>安全：身份验证、认证授权、访问令牌、审计、传输加密、黑产攻击</p>
 </li>
 </ul>
-<h2 id="微服务架构原理及特征"><a href="#微服务架构原理及特征" class="headerlink" title="微服务架构原理及特征"></a>微服务架构原理及特征</h2><h3 id="基本概念及组件"><a href="#基本概念及组件" class="headerlink" title="基本概念及组件"></a>基本概念及组件</h3><p><img src="/ByteDance-8/3.png" srcset="/img/loading.gif" lazyload alt="基本概念"></p>
+<h2 id="2-微服务架构原理及特征"><a href="#2-微服务架构原理及特征" class="headerlink" title="2 微服务架构原理及特征"></a>2 微服务架构原理及特征</h2><h3 id="2-1-基本概念及组件"><a href="#2-1-基本概念及组件" class="headerlink" title="2.1 基本概念及组件"></a>2.1 基本概念及组件</h3><p><img src="/ByteDance-8/3.png" srcset="/img/loading.gif" lazyload alt="基本概念"></p>
 <ul>
 <li><p><strong>服务</strong>（service）：一组具有相同逻辑的运行实体</p>
 </li>
@@ -312,19 +312,19 @@
 <li><p>常见的实例承载形式：进程、VM、k8s pod …</p>
 </li>
 </ul>
-<h3 id="服务间通信"><a href="#服务间通信" class="headerlink" title="服务间通信"></a>服务间通信</h3><p>对于单体服务，不同模块通信只是简单的函数调用。<br>微服务之间通过网络进行通信，常见的通信协议包括 HTTP、RPC。</p>
+<h3 id="2-2-服务间通信"><a href="#2-2-服务间通信" class="headerlink" title="2.2 服务间通信"></a>2.2 服务间通信</h3><p>对于单体服务，不同模块通信只是简单的函数调用。<br>微服务之间通过网络进行通信，常见的通信协议包括 HTTP、RPC。</p>
 <p><img src="/ByteDance-8/4.png" srcset="/img/loading.gif" lazyload alt="通信"></p>
-<h3 id="服务注册及服务发现"><a href="#服务注册及服务发现" class="headerlink" title="服务注册及服务发现"></a>服务注册及服务发现</h3><p><strong>基本问题</strong>：服务间调用中，如何指定下游服务实例的地址？</p>
+<h3 id="2-3-服务注册及服务发现"><a href="#2-3-服务注册及服务发现" class="headerlink" title="2.3 服务注册及服务发现"></a>2.3 服务注册及服务发现</h3><p><strong>基本问题</strong>：服务间调用中，如何指定下游服务实例的地址？</p>
 <p><strong>简单方案</strong>：</p>
 <ul>
-<li><p>直接指定 ip:port？</p>
+<li><p>直接指定 ip:port</p>
 <p><img src="/ByteDance-8/5.png" srcset="/img/loading.gif" lazyload alt="Hardcode"></p>
 <ul>
 <li>没有任何动态能力</li>
 <li>有多个实例下游实例怎么办？</li>
 </ul>
 </li>
-<li><p>使用 DNS？</p>
+<li><p>使用 DNS</p>
 <p><img src="/ByteDance-8/6.png" srcset="/img/loading.gif" lazyload alt="DNS"></p>
 <ul>
 <li>本地 DNS 存在缓存，导致延迟</li>
@@ -347,7 +347,7 @@
 <li>统一网关入口</li>
 <li>外网通信多数采用 HTTP，内网通信多数采用 RPC（Thrift, gRPC）</li>
 </ul>
-<h2 id="核心服务治理功能"><a href="#核心服务治理功能" class="headerlink" title="核心服务治理功能"></a>核心服务治理功能</h2><h3 id="服务发布"><a href="#服务发布" class="headerlink" title="服务发布"></a>服务发布</h3><p>服务发布（deployment）是让一个服务升级运行新的代码的过程。</p>
+<h2 id="3-核心服务治理功能"><a href="#3-核心服务治理功能" class="headerlink" title="3 核心服务治理功能"></a>3 核心服务治理功能</h2><h3 id="3-1-服务发布"><a href="#3-1-服务发布" class="headerlink" title="3.1 服务发布"></a>3.1 服务发布</h3><p>服务发布（deployment）是让一个服务升级运行新的代码的过程。</p>
 <p><strong>难点</strong>：服务不可用、服务抖动、服务回滚</p>
 <p><strong>蓝绿部署</strong></p>
 <p><img src="/ByteDance-8/9.png" srcset="/img/loading.gif" lazyload alt="蓝绿部署"></p>
@@ -363,10 +363,10 @@
 <li>不需要增加资源</li>
 <li>回滚难度大，基础设施要求高</li>
 </ul>
-<h3 id="流量治理"><a href="#流量治理" class="headerlink" title="流量治理"></a>流量治理</h3><p>流量控制是在微服务架构中，可以从各个维度对端到端的流量在链路上进行精确控制。</p>
+<h3 id="3-2-流量治理"><a href="#3-2-流量治理" class="headerlink" title="3.2 流量治理"></a>3.2 流量治理</h3><p>流量控制是在微服务架构中，可以从各个维度对端到端的流量在链路上进行精确控制。</p>
 <p>控制维度：地区维度、集群维度、实例维度、请求维度</p>
 <p><img src="/ByteDance-8/11.png" srcset="/img/loading.gif" lazyload alt="流量治理"></p>
-<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>负载均衡（Load Balance）负责分配请求在每个下游实例上的分布。</p>
+<h3 id="3-3-负载均衡"><a href="#3-3-负载均衡" class="headerlink" title="3.3 负载均衡"></a>3.3 负载均衡</h3><p>负载均衡（Load Balance）负责分配请求在每个下游实例上的分布。</p>
 <p>常见 LB 策略：</p>
 <ul>
 <li>Round Robin</li>
@@ -374,7 +374,7 @@
 <li>Ring Hash</li>
 <li>Least Request</li>
 </ul>
-<h3 id="稳定性治理"><a href="#稳定性治理" class="headerlink" title="稳定性治理"></a>稳定性治理</h3><p>线上服务总是会出问题的，这与程序的正确性无关。</p>
+<h3 id="3-4-稳定性治理"><a href="#3-4-稳定性治理" class="headerlink" title="3.4 稳定性治理"></a>3.4 稳定性治理</h3><p>线上服务总是会出问题的，这与程序的正确性无关。</p>
 <ul>
 <li><p>限流：限制服务处理的最大 QPS，拒绝过多请求。</p>
 </li>
@@ -385,7 +385,7 @@
 <li><p>降级：服务处理能力不足时，拒绝低级别的请求，只响应线上高优请求。</p>
 </li>
 </ul>
-<h2 id="字节跳动服务治理实践"><a href="#字节跳动服务治理实践" class="headerlink" title="字节跳动服务治理实践"></a>字节跳动服务治理实践</h2><h3 id="重试的意义"><a href="#重试的意义" class="headerlink" title="重试的意义"></a>重试的意义</h3><p>本地函数调用：通常没有重试意义。</p>
+<h2 id="4-字节跳动服务治理实践"><a href="#4-字节跳动服务治理实践" class="headerlink" title="4 字节跳动服务治理实践"></a>4 字节跳动服务治理实践</h2><h3 id="4-1-重试的意义"><a href="#4-1-重试的意义" class="headerlink" title="4.1 重试的意义"></a>4.1 重试的意义</h3><p>本地函数调用：通常没有重试意义。</p>
 <p>远程函数调用：网络抖动、下游负载高、下游机器宕机… 重试是有意义的，可以避免偶发性的错误，提高 SLA（Service-Level Agreement）。</p>
 <p><strong>意义</strong>：</p>
 <ul>
@@ -406,7 +406,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="重试的难点"><a href="#重试的难点" class="headerlink" title="重试的难点"></a>重试的难点</h3><ul>
+<h3 id="4-2-重试的难点"><a href="#4-2-重试的难点" class="headerlink" title="4.2 重试的难点"></a>4.2 重试的难点</h3><ul>
 <li><p>幂等性：多次请求可能会造成数据不一致。</p>
 </li>
 <li><p>重试风暴：随着调用链路的增加，重试次数呈指数级上升。</p>
@@ -416,7 +416,7 @@
 <ul>
 <li>超时设置：假设调用时间一共 1s，经过多少时间开始重试？</li>
 </ul>
-<h3 id="重试的策略"><a href="#重试的策略" class="headerlink" title="重试的策略"></a>重试的策略</h3><ul>
+<h3 id="4-3-重试的策略"><a href="#4-3-重试的策略" class="headerlink" title="4.3 重试的策略"></a>4.3 重试的策略</h3><ul>
 <li><p>限制重试比例：设定一个重试比例阈值（例如 1%），重试次数占所有请求比例不超过该阈值。</p>
 </li>
 <li><p>防止链路重试：返回特殊的 status code，表示“请求失败，但别重试”。</p>
@@ -463,7 +463,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「训」 笔记(8)：微服务框架</div>
+      <div>「训」 笔记(08)：微服务框架</div>
       <div>https://qanlyma.github.io/ByteDance-8/</div>
     </div>
     <div class="license-meta">
@@ -476,7 +476,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月11日</div>
+          <div>2023年3月28日</div>
         </div>
       
       
@@ -492,12 +492,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/Paper-Taming-Conflicts/" title="「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「论」 Utilizing Parallelism in Smart Contracts on Decentralized Blockchains by Taming Application-Inherent Conflicts</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论">
-                        <span class="hidden-mobile">「训」 笔记(7)：分布式理论</span>
+                      <a href="/Paper-Fabric-Fast/" title="「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second">
+                        <span class="hidden-mobile">「论」 FastFabric: Scaling Hyperledger Fabric to 20,000 Transactions per Second</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -567,7 +573,7 @@
         aria-expanded="true"
       >
         字节青训
-        <span class="list-group-count">(8)</span>
+        <span class="list-group-count">(13)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -581,73 +587,118 @@
     
       
       
-        <a href="/ByteDance-1/" title="「训」 笔记(1)：Go 语言"
+        <a href="/ByteDance-1/" title="「训」 笔记(01)：Go 语言"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(1)：Go 语言</span>
+          <span class="category-post">「训」 笔记(01)：Go 语言</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-2/" title="「训」 笔记(2)：性能调优"
+        <a href="/ByteDance-2/" title="「训」 笔记(02)：性能调优"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(2)：性能调优</span>
+          <span class="category-post">「训」 笔记(02)：性能调优</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-3/" title="「训」 笔记(3)：内存管理"
+        <a href="/ByteDance-3/" title="「训」 笔记(03)：内存管理"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(3)：内存管理</span>
+          <span class="category-post">「训」 笔记(03)：内存管理</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-4/" title="「训」 笔记(4)：框架三件套"
+        <a href="/ByteDance-4/" title="「训」 笔记(04)：框架三件套"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(4)：框架三件套</span>
+          <span class="category-post">「训」 笔记(04)：框架三件套</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-5/" title="「训」 笔记(5)：规则引擎"
+        <a href="/ByteDance-5/" title="「训」 笔记(05)：规则引擎"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(5)：规则引擎</span>
+          <span class="category-post">「训」 笔记(05)：规则引擎</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-6/" title="「训」 笔记(6)：架构初探"
+        <a href="/ByteDance-6/" title="「训」 笔记(06)：架构初探"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(6)：架构初探</span>
+          <span class="category-post">「训」 笔记(06)：架构初探</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-7/" title="「训」 笔记(7)：分布式理论"
+        <a href="/ByteDance-7/" title="「训」 笔记(07)：分布式理论"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「训」 笔记(7)：分布式理论</span>
+          <span class="category-post">「训」 笔记(07)：分布式理论</span>
         </a>
       
     
       
       
-        <a href="/ByteDance-8/" title="「训」 笔记(8)：微服务框架"
+        <a href="/ByteDance-8/" title="「训」 笔记(08)：微服务框架"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「训」 笔记(8)：微服务框架</span>
+          <span class="category-post">「训」 笔记(08)：微服务框架</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-9/" title="「训」 笔记(09)：分布式定时任务"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(09)：分布式定时任务</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-10/" title="「训」 笔记(10)：消息队列"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(10)：消息队列</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-11/" title="「训」 笔记(11)：RPC 原理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(11)：RPC 原理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-12/" title="「训」 笔记(12)：存储和数据库"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(12)：存储和数据库</span>
+        </a>
+      
+    
+      
+      
+        <a href="/ByteDance-13/" title="「训」 笔记(13)：Q &amp; A"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「训」 笔记(13)：Q &amp; A</span>
         </a>
       
     
