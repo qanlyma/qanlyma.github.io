@@ -7,7 +7,7 @@ categories: 算法数构
 banner_img:
 ---
 
-Golang 数组相关题目。
+数组相关题目。
 
 <!-- more -->
 
@@ -38,6 +38,25 @@ func search(nums []int, target int) int {
         }
     }
     return -1
+}
+```
+
+```java
+class Solution {
+    public int search(int[] nums, int target) {
+        int len = nums.length;
+        for (int i = 0, j = len-1; i <= j; ) {
+            int k = i + (j-i)/2;
+            if (nums[k] == target) {
+                return k;
+            } else if (nums[k] < target) {
+                i = k + 1;
+            } else {
+                j = k - 1;
+            }
+        }
+        return -1;
+    }
 }
 ```
 
