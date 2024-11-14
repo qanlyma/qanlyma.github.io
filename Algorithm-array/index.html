@@ -24,7 +24,7 @@
 <meta property="og:description" content="数组相关题目。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-11T12:50:10.000Z">
-<meta property="article:modified_time" content="2024-07-21T01:53:40.584Z">
+<meta property="article:modified_time" content="2024-11-14T12:58:32.980Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -257,7 +257,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 个月前
+                    本文最后更新于：14 分钟前
                   
                 
               </p>
@@ -331,9 +331,9 @@
 <h2 id="5-模拟过程"><a href="#5-模拟过程" class="headerlink" title="5 模拟过程"></a>5 模拟过程</h2><h3 id="leetcode-59-题"><a href="#leetcode-59-题" class="headerlink" title="leetcode 59 题"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/spiral-matrix-ii/">leetcode 59 题</a></h3><p>给你一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">generateMatrix</span><span class="hljs-params">(n <span class="hljs-type">int</span>)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    top, bottom := <span class="hljs-number">0</span>, n<span class="hljs-number">-1</span><br>    left, right := <span class="hljs-number">0</span>, n<span class="hljs-number">-1</span><br>    num := <span class="hljs-number">1</span><br>    tar := n * n<br>    matrix := <span class="hljs-built_in">make</span>([][]<span class="hljs-type">int</span>, n)<br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; n; i++ &#123;<br>        matrix[i] = <span class="hljs-built_in">make</span>([]<span class="hljs-type">int</span>, n)<br>    &#125;<br>    <span class="hljs-keyword">for</span> num &lt;= tar &#123;<br>        <span class="hljs-keyword">for</span> i := left; i &lt;= right; i++ &#123;<br>            matrix[top][i] = num<br>            num++<br>        &#125;<br>        top++<br>        <span class="hljs-keyword">for</span> i := top; i &lt;= bottom; i++ &#123;<br>            matrix[i][right] = num<br>            num++<br>        &#125;<br>        right--<br>        <span class="hljs-keyword">for</span> i := right; i &gt;= left; i-- &#123;<br>            matrix[bottom][i] = num<br>            num++<br>        &#125;<br>        bottom--<br>        <span class="hljs-keyword">for</span> i := bottom; i &gt;= top; i-- &#123;<br>            matrix[i][left] = num<br>            num++<br>        &#125;<br>        left++<br>    &#125;<br>    <span class="hljs-keyword">return</span> matrix<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h2 id="6-查找算法"><a href="#6-查找算法" class="headerlink" title="6 查找算法"></a>6 查找算法</h2><h3 id="剑指-Offer-03"><a href="#剑指-Offer-03" class="headerlink" title="剑指 Offer 03"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/">剑指 Offer 03</a></h3><p>找出数组中重复的数字。</p>
+<h2 id="6-查找算法"><a href="#6-查找算法" class="headerlink" title="6 查找算法"></a>6 查找算法</h2><h3 id="LCR-120-题"><a href="#LCR-120-题" class="headerlink" title="LCR 120 题"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/">LCR 120 题</a></h3><p>找出重复的文件。</p>
 <p>由于此题的特殊限制，可以使用数组下标作为 map。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">findRepeatNumber</span><span class="hljs-params">(nums []<span class="hljs-type">int</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(nums); &#123;<br>        <span class="hljs-keyword">if</span> nums[i] == i &#123;<br>            i++<br>            <span class="hljs-keyword">continue</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> nums[nums[i]] == nums[i] &#123;<br>            <span class="hljs-keyword">return</span> nums[i]<br>        &#125; <br>        nums[i], nums[nums[i]] = nums[nums[i]], nums[i]<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">findRepeatDocument</span><span class="hljs-params">(documents []<span class="hljs-type">int</span>)</span></span> <span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">len</span>(documents); &#123;<br>        <span class="hljs-keyword">if</span> documents[i] == i &#123;<br>            i++<br>            <span class="hljs-keyword">continue</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> documents[i] == documents[documents[i]] &#123;<br>            <span class="hljs-keyword">return</span> documents[i]<br>        &#125;<br>        documents[i], documents[documents[i]] = documents[documents[i]], documents[i]<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span><br>&#125;<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -549,73 +549,73 @@
     
       
       
-        <a href="/Algorithm-stack/" title="「算」 08. 栈与队列"
+        <a href="/Algorithm-stack/" title="「算」 07. 栈与队列"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 08. 栈与队列</span>
+          <span class="category-post">「算」 07. 栈与队列</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-binaryTree/" title="「算」 09. 二叉树"
+        <a href="/Algorithm-binaryTree/" title="「算」 08. 二叉树"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 09. 二叉树</span>
+          <span class="category-post">「算」 08. 二叉树</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-heap/" title="「算」 10. 堆结构"
+        <a href="/Algorithm-heap/" title="「算」 09. 堆结构"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 10. 堆结构</span>
+          <span class="category-post">「算」 09. 堆结构</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-sort/" title="「算」 11. 排序算法"
+        <a href="/Algorithm-sort/" title="「算」 10. 排序算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 11. 排序算法</span>
+          <span class="category-post">「算」 10. 排序算法</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-backtrack/" title="「算」 12. 回溯算法"
+        <a href="/Algorithm-backtrack/" title="「算」 11. 回溯算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 12. 回溯算法</span>
+          <span class="category-post">「算」 11. 回溯算法</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-greedy/" title="「算」 13. 贪心算法"
+        <a href="/Algorithm-greedy/" title="「算」 12. 贪心算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 13. 贪心算法</span>
+          <span class="category-post">「算」 12. 贪心算法</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-dp/" title="「算」 14. 动态规划"
+        <a href="/Algorithm-dp/" title="「算」 13. 动态规划"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 14. 动态规划</span>
+          <span class="category-post">「算」 13. 动态规划</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-io/" title="「算」 15. 输入输出"
+        <a href="/Algorithm-io/" title="「算」 14. 输入输出"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 15. 输入输出</span>
+          <span class="category-post">「算」 14. 输入输出</span>
         </a>
       
     

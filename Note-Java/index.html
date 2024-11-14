@@ -18,27 +18,27 @@
   
     <meta name="description" content="学习 Java 的笔记。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「爪」 Java">
-<meta property="og:url" content="https://qanlyma.github.io/JAVA-1/index.html">
+<meta property="og:title" content="「学」 Java">
+<meta property="og:url" content="https://qanlyma.github.io/Note-Java/index.html">
 <meta property="og:site_name" content="Qanly">
 <meta property="og:description" content="学习 Java 的笔记。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://qanlyma.github.io/JAVA-1/1.png">
-<meta property="og:image" content="https://qanlyma.github.io/JAVA-1/2.jpg">
-<meta property="og:image" content="https://qanlyma.github.io/JAVA-1/3.svg">
-<meta property="og:image" content="https://qanlyma.github.io/JAVA-1/4.png">
-<meta property="og:image" content="https://qanlyma.github.io/JAVA-1/5.jpg">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Java/1.png">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Java/2.jpg">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Java/3.svg">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Java/4.png">
+<meta property="og:image" content="https://qanlyma.github.io/Note-Java/5.jpg">
 <meta property="article:published_time" content="2024-07-04T09:55:37.000Z">
-<meta property="article:modified_time" content="2024-11-10T14:29:23.322Z">
+<meta property="article:modified_time" content="2024-11-12T15:22:55.963Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://qanlyma.github.io/JAVA-1/1.png">
+<meta name="twitter:image" content="https://qanlyma.github.io/Note-Java/1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「爪」 Java - Qanly</title>
+  <title>「学」 Java - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -179,7 +179,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「爪」 Java"></span>
+            <span id="subtitle" data-typed-text="「学」 Java"></span>
           
         </div>
 
@@ -258,12 +258,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「爪」 Java</h1>
+            <h1 style="display: none">「学」 Java</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：3 分钟前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -287,9 +287,9 @@
 <li><p>构造方法名称必须与类同名。</p>
 </li>
 </ul>
-<p><img src="/JAVA-1/1.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/Note-Java/1.png" srcset="/img/loading.gif" lazyload></p>
 <p>所有的 Java 程序由 <code>public static void main(String[] args)</code> 方法开始执行。</p>
-<p><img src="/JAVA-1/2.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/Note-Java/2.jpg" srcset="/img/loading.gif" lazyload></p>
 <h3 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">type identifier [ = value][, identifier [= value] ...] ;<br></code></pre></td></tr></table></figure>
 
 <ul>
@@ -368,7 +368,7 @@
 <p>StringBuilder 类在 Java 5 中被提出，它和 StringBuffer 之间的最大不同在于 StringBuilder 的方法不是线程安全的。在应用程序要求线程安全的情况下，则必须使用 StringBuffer 类。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RunoobTest</span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String args[])</span>&#123;<br>        <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">sb</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>(<span class="hljs-number">10</span>);<br>        sb.append(<span class="hljs-string">&quot;Runoob..&quot;</span>);<br>        System.out.println(sb);  <br>        sb.append(<span class="hljs-string">&quot;!&quot;</span>);<br>        System.out.println(sb); <br>        sb.insert(<span class="hljs-number">8</span>, <span class="hljs-string">&quot;Java&quot;</span>);<br>        System.out.println(sb); <br>        sb.delete(<span class="hljs-number">5</span>,<span class="hljs-number">8</span>);<br>        System.out.println(sb);  <br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p><img src="/JAVA-1/3.svg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/Note-Java/3.svg" srcset="/img/loading.gif" lazyload></p>
 <h3 id="方法重载"><a href="#方法重载" class="headerlink" title="方法重载"></a>方法重载</h3><p>有两个同名函数：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">max</span><span class="hljs-params">(<span class="hljs-type">int</span> num1, <span class="hljs-type">int</span> num2)</span> &#123;<br>   <span class="hljs-type">int</span> result;<br>   <span class="hljs-keyword">if</span> (num1 &gt; num2)<br>      result = num1;<br>   <span class="hljs-keyword">else</span><br>      result = num2;<br> <br>   <span class="hljs-keyword">return</span> result; <br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">double</span> <span class="hljs-title function_">max</span><span class="hljs-params">(<span class="hljs-type">double</span> num1, <span class="hljs-type">double</span> num2)</span> &#123;<br>  <span class="hljs-keyword">if</span> (num1 &gt; num2)<br>    <span class="hljs-keyword">return</span> num1;<br>  <span class="hljs-keyword">else</span><br>    <span class="hljs-keyword">return</span> num2;<br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -378,7 +378,7 @@
 <p>通常会使用构造方法给一个类的实例变量赋初值，或者执行其它必要的步骤来创建一个完整的对象。</p>
 <p>不管你是否自定义构造方法，所有的类都有构造方法，因为 Java 自动提供了一个默认构造方法，默认构造方法的访问修饰符和类的访问修饰符相同（类为 public，构造函数也为 public；类改为 protected，构造函数也改为 protected）。</p>
 <p>一旦你定义了自己的构造方法，默认构造方法就会失效。</p>
-<h2 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h2><h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p><img src="/JAVA-1/4.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h2><h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p><img src="/Note-Java/4.png" srcset="/img/loading.gif" lazyload></p>
 <ul>
 <li><p>子类拥有父类非 private 的属性、方法。</p>
 </li>
@@ -454,7 +454,7 @@
 <li>重写</li>
 <li>父类引用指向子类对象：<code>Parent p = new Child();</code></li>
 </ul>
-<p><img src="/JAVA-1/5.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/Note-Java/5.jpg" srcset="/img/loading.gif" lazyload></p>
 <p>当使用多态方式调用方法时，首先检查父类中是否有该方法，如果没有，则编译错误；如果有，再去调用子类的同名方法。</p>
 <p>多态的好处：可以使程序有良好的扩展，并可以对所有类的对象进行通用处理。</p>
 <h3 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h3><p>在面向对象的概念中，所有的对象都是通过类来描绘的，但是反过来，并不是所有的类都是用来描绘对象的，如果一个类中没有包含足够的信息来描绘一个具体的对象，这样的类就是抽象类。</p>
@@ -518,7 +518,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%88%AA%E5%93%87%E5%BC%80%E5%8F%91/" class="category-chain-item">爪哇开发</a>
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
   
   
 
@@ -538,8 +538,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「爪」 Java</div>
-      <div>https://qanlyma.github.io/JAVA-1/</div>
+      <div>「学」 Java</div>
+      <div>https://qanlyma.github.io/Note-Java/</div>
     </div>
     <div class="license-meta">
       
@@ -566,6 +566,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/Note-practice1/" title="「学」 Practice">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">「学」 Practice</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
@@ -637,17 +643,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="爪哇开发"
-        id="heading-02f86997244a17048c35a21e38efac53" role="tab" data-toggle="collapse" href="#collapse-02f86997244a17048c35a21e38efac53"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="学习笔记"
+        id="heading-078425eaf316a180b0989442e53f920b" role="tab" data-toggle="collapse" href="#collapse-078425eaf316a180b0989442e53f920b"
         aria-expanded="true"
       >
-        爪哇开发
-        <span class="list-group-count">(1)</span>
+        学习笔记
+        <span class="list-group-count">(10)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-02f86997244a17048c35a21e38efac53"
-           role="tabpanel" aria-labelledby="heading-02f86997244a17048c35a21e38efac53">
+      <div class="category-collapse collapse show" id="collapse-078425eaf316a180b0989442e53f920b"
+           role="tabpanel" aria-labelledby="heading-078425eaf316a180b0989442e53f920b">
         
         
           
@@ -656,10 +662,91 @@
     
       
       
-        <a href="/JAVA-1/" title="「爪」 Java"
+        <a href="/Note-Docker/" title="「学」 Docker"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Docker</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Git/" title="「学」 Git"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Git</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Hexo/" title="「学」 Hexo"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Hexo</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Java/" title="「学」 Java"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「爪」 Java</span>
+          <span class="category-post">「学」 Java</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Kubernetes/" title="「学」 Kubernetes"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Kubernetes</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Linux/" title="「学」 Linux"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Linux</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Markdown/" title="「学」 Markdown"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Markdown</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-MySQL/" title="「学」 MySQL"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 MySQL</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-practice1/" title="「学」 Practice"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Practice</span>
+        </a>
+      
+    
+      
+      
+        <a href="/Note-Redis/" title="「学」 Redis"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">「学」 Redis</span>
         </a>
       
     

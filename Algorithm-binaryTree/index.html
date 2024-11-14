@@ -16,12 +16,12 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Golang 二叉树相关题目。">
+    <meta name="description" content="二叉树相关题目。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「算」 09. 二叉树">
+<meta property="og:title" content="「算」 08. 二叉树">
 <meta property="og:url" content="https://qanlyma.github.io/Algorithm-binaryTree/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="Golang 二叉树相关题目。">
+<meta property="og:description" content="二叉树相关题目。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qanlyma.github.io/Algorithm-binaryTree/1.png">
 <meta property="og:image" content="https://qanlyma.github.io/Algorithm-binaryTree/2.png">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Algorithm-binaryTree/7.png">
 <meta property="og:image" content="https://qanlyma.github.io/Algorithm-binaryTree/1.gif">
 <meta property="article:published_time" content="2023-07-15T08:28:45.000Z">
-<meta property="article:modified_time" content="2024-07-04T09:58:44.535Z">
+<meta property="article:modified_time" content="2024-11-14T13:07:35.073Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Algorithm-binaryTree/1.png">
@@ -44,7 +44,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「算」 09. 二叉树 - Qanly</title>
+  <title>「算」 08. 二叉树 - Qanly</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -185,7 +185,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="「算」 09. 二叉树"></span>
+            <span id="subtitle" data-typed-text="「算」 08. 二叉树"></span>
           
         </div>
 
@@ -264,12 +264,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">「算」 09. 二叉树</h1>
+            <h1 style="display: none">「算」 08. 二叉树</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 个月前
+                    本文最后更新于：5 分钟前
                   
                 
               </p>
@@ -277,7 +277,7 @@
             
               <div class="markdown-body">
                 
-                <p>Golang 二叉树相关题目。</p>
+                <p>二叉树相关题目。</p>
 <span id="more"></span>
 
 <h2 id="1-理论"><a href="#1-理论" class="headerlink" title="1 理论"></a>1 理论</h2><h3 id="1-1-二叉树的种类"><a href="#1-1-二叉树的种类" class="headerlink" title="1.1 二叉树的种类"></a>1.1 二叉树的种类</h3><ol>
@@ -358,17 +358,19 @@
 </ul>
 <p>做二叉树相关题目，经常会使用递归的方式来实现深度优先遍历，也就是实现前中后序遍历，使用递归是比较方便的。栈其实就是递归的一种实现结构，也就说前中后序遍历的逻辑其实都是可以借助栈使用非递归的方式来实现的。</p>
 <p>而广度优先遍历的实现一般使用队列来实现，这也是队列先进先出的特点所决定的，因为需要先进先出的结构，才能一层一层的来遍历二叉树。</p>
-<h3 id="2-1-前序遍历：leetcode-144-题"><a href="#2-1-前序遍历：leetcode-144-题" class="headerlink" title="2.1 前序遍历：leetcode 144 题"></a>2.1 <strong>前序遍历</strong>：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-preorder-traversal/">leetcode 144 题</a></h3><ol>
+<h3 id="2-1-前序遍历：leetcode-144-题"><a href="#2-1-前序遍历：leetcode-144-题" class="headerlink" title="2.1 前序遍历：leetcode 144 题"></a>2.1 <strong>前序遍历</strong>：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-preorder-traversal/">leetcode 144 题</a></h3><p>递归：</p>
+<ol>
 <li>确定递归函数的参数和返回值</li>
 <li>确定终止条件</li>
 <li>确定单层递归的逻辑</li>
 </ol>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">preorderTraversal</span><span class="hljs-params">(root *TreeNode)</span></span> []<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> res []<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> dfs <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(node *TreeNode)</span></span> <br>    dfs = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(node *TreeNode)</span></span> &#123;<br>        <span class="hljs-keyword">if</span> node == <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        res = <span class="hljs-built_in">append</span>(res, node.Val)<br>        dfs(node.Left)<br>        dfs(node.Right)<br>    &#125;<br><br>    dfs(root)<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>迭代</p>
+<p>迭代：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">preorderTraversal</span><span class="hljs-params">(root *TreeNode)</span></span> []<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> res []<span class="hljs-type">int</span><br>    <span class="hljs-keyword">var</span> stack []*TreeNode<br>    <span class="hljs-keyword">if</span> root == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> res<br>    &#125;<br>    stack = <span class="hljs-built_in">append</span>(stack, root)<br>    <span class="hljs-keyword">for</span> <span class="hljs-built_in">len</span>(stack) &gt; <span class="hljs-number">0</span> &#123;<br>        node := stack[<span class="hljs-built_in">len</span>(stack)<span class="hljs-number">-1</span>]<br>        res = <span class="hljs-built_in">append</span>(res, node.Val)<br>        stack = stack[:<span class="hljs-built_in">len</span>(stack)<span class="hljs-number">-1</span>]<br>        <span class="hljs-keyword">if</span> node.Right != <span class="hljs-literal">nil</span> &#123;<br>            stack = <span class="hljs-built_in">append</span>(stack, node.Right)<br>        &#125;<br>        <span class="hljs-keyword">if</span> node.Left != <span class="hljs-literal">nil</span> &#123;<br>            stack = <span class="hljs-built_in">append</span>(stack, node.Left)<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="2-2-层序遍历：leetcode-102-题"><a href="#2-2-层序遍历：leetcode-102-题" class="headerlink" title="2.2 层序遍历：leetcode 102 题"></a>2.2 <strong>层序遍历</strong>：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-level-order-traversal/">leetcode 102 题</a></h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 递归</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">levelOrder</span><span class="hljs-params">(root *TreeNode)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>	arr := [][]<span class="hljs-type">int</span>&#123;&#125;<br>	depth := <span class="hljs-number">0</span><br>	<span class="hljs-keyword">var</span> order <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(root *TreeNode, depth <span class="hljs-type">int</span>)</span></span><br>	order = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(root *TreeNode, depth <span class="hljs-type">int</span>)</span></span> &#123;<br>		<span class="hljs-keyword">if</span> root == <span class="hljs-literal">nil</span> &#123;<br>			<span class="hljs-keyword">return</span><br>		&#125;<br>		<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(arr) == depth &#123;<br>			arr = <span class="hljs-built_in">append</span>(arr, []<span class="hljs-type">int</span>&#123;&#125;)<br>		&#125;<br>		arr[depth] = <span class="hljs-built_in">append</span>(arr[depth], root.Val)<br><br>		order(root.Left, depth+<span class="hljs-number">1</span>)<br>		order(root.Right, depth+<span class="hljs-number">1</span>)<br>	&#125;<br><br>	order(root, depth)<br>	<span class="hljs-keyword">return</span> arr<br>&#125;<br><br><span class="hljs-comment">// 切片模拟队列</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">levelOrder</span><span class="hljs-params">(root *TreeNode)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span><br>    <span class="hljs-keyword">if</span> root == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> res<br>    &#125;<br>    <span class="hljs-keyword">var</span> queue []*TreeNode<br>    queue = <span class="hljs-built_in">append</span>(queue, root)<br>    <span class="hljs-keyword">for</span> <span class="hljs-built_in">len</span>(queue) &gt; <span class="hljs-number">0</span> &#123;<br>        l := <span class="hljs-built_in">len</span>(queue)<br>        <span class="hljs-keyword">var</span> temp []<span class="hljs-type">int</span><br>        <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; l; i++ &#123;<br>            node := queue[i]<br>            temp = <span class="hljs-built_in">append</span>(temp, node.Val)<br>            <span class="hljs-keyword">if</span> node.Left != <span class="hljs-literal">nil</span> &#123;<br>                queue = <span class="hljs-built_in">append</span>(queue, node.Left)<br>            &#125;<br>            <span class="hljs-keyword">if</span> node.Right != <span class="hljs-literal">nil</span> &#123;<br>                queue = <span class="hljs-built_in">append</span>(queue, node.Right)<br>            &#125;<br>        &#125;<br>        queue = queue[l:]<br>        res = <span class="hljs-built_in">append</span>(res, temp)<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="2-2-层序遍历：leetcode-102-题"><a href="#2-2-层序遍历：leetcode-102-题" class="headerlink" title="2.2 层序遍历：leetcode 102 题"></a>2.2 <strong>层序遍历</strong>：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-level-order-traversal/">leetcode 102 题</a></h3><p>二叉树层序遍历递归法并非一层一层生成结果，而是创建好二维切片，遍历树根据 depth 填入对应切片。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 递归</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">levelOrder</span><span class="hljs-params">(root *TreeNode)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>	arr := [][]<span class="hljs-type">int</span>&#123;&#125;<br>	depth := <span class="hljs-number">0</span><br>	<span class="hljs-keyword">var</span> order <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(root *TreeNode, depth <span class="hljs-type">int</span>)</span></span><br>	order = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(root *TreeNode, depth <span class="hljs-type">int</span>)</span></span> &#123;<br>		<span class="hljs-keyword">if</span> root == <span class="hljs-literal">nil</span> &#123;<br>			<span class="hljs-keyword">return</span><br>		&#125;<br>		<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(arr) == depth &#123;<br>			arr = <span class="hljs-built_in">append</span>(arr, []<span class="hljs-type">int</span>&#123;&#125;)<br>		&#125;<br>		arr[depth] = <span class="hljs-built_in">append</span>(arr[depth], root.Val)<br><br>		order(root.Left, depth+<span class="hljs-number">1</span>)<br>		order(root.Right, depth+<span class="hljs-number">1</span>)<br>	&#125;<br><br>	order(root, depth)<br>	<span class="hljs-keyword">return</span> arr<br>&#125;<br><br><span class="hljs-comment">// 切片模拟队列</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">levelOrder</span><span class="hljs-params">(root *TreeNode)</span></span> [][]<span class="hljs-type">int</span> &#123;<br>    <span class="hljs-keyword">var</span> res [][]<span class="hljs-type">int</span><br>    <span class="hljs-keyword">if</span> root == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> res<br>    &#125;<br>    <span class="hljs-keyword">var</span> queue []*TreeNode<br>    queue = <span class="hljs-built_in">append</span>(queue, root)<br>    <span class="hljs-keyword">for</span> <span class="hljs-built_in">len</span>(queue) &gt; <span class="hljs-number">0</span> &#123;<br>        l := <span class="hljs-built_in">len</span>(queue)<br>        <span class="hljs-keyword">var</span> temp []<span class="hljs-type">int</span><br>        <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; l; i++ &#123;<br>            node := queue[i]<br>            temp = <span class="hljs-built_in">append</span>(temp, node.Val)<br>            <span class="hljs-keyword">if</span> node.Left != <span class="hljs-literal">nil</span> &#123;<br>                queue = <span class="hljs-built_in">append</span>(queue, node.Left)<br>            &#125;<br>            <span class="hljs-keyword">if</span> node.Right != <span class="hljs-literal">nil</span> &#123;<br>                queue = <span class="hljs-built_in">append</span>(queue, node.Right)<br>            &#125;<br>        &#125;<br>        queue = queue[l:]<br>        res = <span class="hljs-built_in">append</span>(res, temp)<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h2 id="3-题目"><a href="#3-题目" class="headerlink" title="3 题目"></a>3 题目</h2><h3 id="3-1-leetcode-101-题"><a href="#3-1-leetcode-101-题" class="headerlink" title="3.1 leetcode 101 题"></a>3.1 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/symmetric-tree/">leetcode 101 题</a></h3><p>给你一个二叉树的根节点 root ， 检查它是否轴对称。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">isSymmetric</span><span class="hljs-params">(root *TreeNode)</span></span> <span class="hljs-type">bool</span> &#123;<br>    <span class="hljs-keyword">var</span> dfs <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(node1, node2 *TreeNode)</span></span> <span class="hljs-type">bool</span><br>    dfs = <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(node1, node2 *TreeNode)</span></span> <span class="hljs-type">bool</span> &#123;<br>        <span class="hljs-keyword">if</span> node1 == <span class="hljs-literal">nil</span> &amp;&amp; node2 == <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> node1 == <span class="hljs-literal">nil</span> &amp;&amp; node2 != <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> node1 != <span class="hljs-literal">nil</span> &amp;&amp; node2 == <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> node1.Val != node2.Val &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>        &#125;<br><br>        <span class="hljs-keyword">return</span> dfs(node1.Left, node2.Right) &amp;&amp; dfs(node1.Right, node2.Left)<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> dfs(root.Left, root.Right)<br>&#125;<br></code></pre></td></tr></table></figure>
@@ -420,7 +422,7 @@
 <p><img src="/Algorithm-binaryTree/1.gif" srcset="/img/loading.gif" lazyload></p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">deleteNode</span><span class="hljs-params">(root *TreeNode, key <span class="hljs-type">int</span>)</span></span> *TreeNode &#123;<br>    <span class="hljs-keyword">if</span> root == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> root<br>    &#125;<br>    <span class="hljs-keyword">if</span> key &lt; root.Val &#123;<br>        root.Left = deleteNode(root.Left, key)<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> key &gt; root.Val &#123;<br>        root.Right = deleteNode(root.Right, key)<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">if</span> root.Left == <span class="hljs-literal">nil</span> &amp;&amp; root.Right == <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span><br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> root.Left != <span class="hljs-literal">nil</span> &amp;&amp; root.Right == <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span> root.Left<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> root.Right != <span class="hljs-literal">nil</span> &amp;&amp; root.Left == <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span> root.Right<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            temp := root.Left <br>            cur := root.Right<br>            <span class="hljs-keyword">for</span> cur.Left != <span class="hljs-literal">nil</span> &#123;<br>                cur = cur.Left<br>            &#125;<br>            cur.Left = temp<br>            <span class="hljs-keyword">return</span> root.Right<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> root<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="3-10-剑指-Offer-26"><a href="#3-10-剑指-Offer-26" class="headerlink" title="3.10 剑指 Offer 26"></a>3.10 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/shu-de-zi-jie-gou-lcof/">剑指 Offer 26</a></h3><p>输入两棵二叉树 A 和 B，判断 B 是不是 A 的子结构。</p>
+<h3 id="3-10-LCR-143-题"><a href="#3-10-LCR-143-题" class="headerlink" title="3.10 LCR 143 题"></a>3.10 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/shu-de-zi-jie-gou-lcof/">LCR 143 题</a></h3><p>输入两棵二叉树 A 和 B，判断 B 是不是 A 的子结构。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">isSubStructure</span><span class="hljs-params">(A *TreeNode, B *TreeNode)</span></span> <span class="hljs-type">bool</span> &#123;<br>    <span class="hljs-keyword">if</span> B == <span class="hljs-literal">nil</span> || A == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    &#125;<br>    <span class="hljs-keyword">return</span> isSub(A, B) || isSubStructure(A.Left, B) || isSubStructure(A.Right, B)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">isSub</span><span class="hljs-params">(A, B *TreeNode)</span></span> <span class="hljs-type">bool</span> &#123;<br>    <span class="hljs-keyword">if</span> B == <span class="hljs-literal">nil</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>    &#125;<br>    <span class="hljs-keyword">if</span> A == <span class="hljs-literal">nil</span> || A.Val != B.Val &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    &#125; <br>    <span class="hljs-keyword">return</span> isSub(A.Left, B.Left) &amp;&amp; isSub(A.Right, B.Right)<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="3-11-leetcode-662-题"><a href="#3-11-leetcode-662-题" class="headerlink" title="3.11 leetcode 662 题"></a>3.11 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-width-of-binary-tree/">leetcode 662 题</a></h3><p>二叉树最大宽度。</p>
@@ -463,7 +465,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「算」 09. 二叉树</div>
+      <div>「算」 08. 二叉树</div>
       <div>https://qanlyma.github.io/Algorithm-binaryTree/</div>
     </div>
     <div class="license-meta">
@@ -641,73 +643,73 @@
     
       
       
-        <a href="/Algorithm-stack/" title="「算」 08. 栈与队列"
+        <a href="/Algorithm-stack/" title="「算」 07. 栈与队列"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 08. 栈与队列</span>
+          <span class="category-post">「算」 07. 栈与队列</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-binaryTree/" title="「算」 09. 二叉树"
+        <a href="/Algorithm-binaryTree/" title="「算」 08. 二叉树"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">「算」 09. 二叉树</span>
+          <span class="category-post">「算」 08. 二叉树</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-heap/" title="「算」 10. 堆结构"
+        <a href="/Algorithm-heap/" title="「算」 09. 堆结构"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 10. 堆结构</span>
+          <span class="category-post">「算」 09. 堆结构</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-sort/" title="「算」 11. 排序算法"
+        <a href="/Algorithm-sort/" title="「算」 10. 排序算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 11. 排序算法</span>
+          <span class="category-post">「算」 10. 排序算法</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-backtrack/" title="「算」 12. 回溯算法"
+        <a href="/Algorithm-backtrack/" title="「算」 11. 回溯算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 12. 回溯算法</span>
+          <span class="category-post">「算」 11. 回溯算法</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-greedy/" title="「算」 13. 贪心算法"
+        <a href="/Algorithm-greedy/" title="「算」 12. 贪心算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 13. 贪心算法</span>
+          <span class="category-post">「算」 12. 贪心算法</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-dp/" title="「算」 14. 动态规划"
+        <a href="/Algorithm-dp/" title="「算」 13. 动态规划"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 14. 动态规划</span>
+          <span class="category-post">「算」 13. 动态规划</span>
         </a>
       
     
       
       
-        <a href="/Algorithm-io/" title="「算」 15. 输入输出"
+        <a href="/Algorithm-io/" title="「算」 14. 输入输出"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">「算」 15. 输入输出</span>
+          <span class="category-post">「算」 14. 输入输出</span>
         </a>
       
     
