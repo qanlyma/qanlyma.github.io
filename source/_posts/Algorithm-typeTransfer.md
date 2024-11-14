@@ -7,7 +7,7 @@ categories: 算法数构
 banner_img:
 ---
 
-在做 leetcode 和自己写 go 程序的时候，总是会遇到一些类型转换的问题，在这里总结一下。
+类型转换的问题。
 
 <!-- more -->
 

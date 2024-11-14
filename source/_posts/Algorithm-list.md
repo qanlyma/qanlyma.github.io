@@ -7,7 +7,7 @@ categories: 算法数构
 banner_img:
 ---
 
-Golang 链表相关题目。
+链表相关题目。
 
 <!-- more -->
 

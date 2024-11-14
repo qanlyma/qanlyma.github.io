@@ -8,6 +8,7 @@ banner_img:
 ---
 
 题目：《对于 Execute-Order-Validate 区块链高并发冲突问题的优化》
+发表：https://zte.magtechjournal.com/EN/10.12142/ZTECOM.202402004
 
 <!-- more -->
 

@@ -1,5 +1,5 @@
 ---
-title: 「算」 14. 动态规划
+title: 「算」 13. 动态规划
 category_bar: true
 date: 2023-07-23 20:47:39
 tags:

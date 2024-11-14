@@ -7,7 +7,7 @@ categories: 算法数构
 banner_img:
 ---
 
-Golang 字符串相关题目。
+字符串相关题目。
 
 <!-- more -->
 
@@ -60,7 +60,7 @@ func reverseString(s []byte) {
 }
 ```
 
-### 2.2 [剑指 Offer 05](https://leetcode.cn/problems/ti-huan-kong-ge-lcof/)
+### 2.2 [剑指 Offer 05]
 
 把字符串 s 中的每个空格替换成"%20"。
 

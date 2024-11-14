@@ -1,9 +1,9 @@
 ---
-title: 「爪」 Java
+title: 「学」 Java
 category_bar: true
 date: 2024-07-04 17:55:37
 tags:
-categories: 爪哇开发
+categories: 学习笔记
 banner_img:
 ---
 

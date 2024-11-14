@@ -1,5 +1,5 @@
 ---
-title: 「算」 13. 贪心算法
+title: 「算」 12. 贪心算法
 category_bar: true
 date: 2023-07-19 15:38:27
 tags:

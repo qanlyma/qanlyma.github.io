@@ -1,5 +1,5 @@
 ---
-title: 「算」 08. 栈与队列
+title: 「算」 07. 栈与队列
 category_bar: true
 date: 2023-04-15 11:49:50
 tags:
@@ -7,7 +7,7 @@ categories: 算法数构
 banner_img:
 ---
 
-Golang 栈与队列相关题目。
+栈与队列相关题目。
 
 <!-- more -->
 

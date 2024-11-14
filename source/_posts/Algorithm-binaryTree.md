@@ -1,5 +1,5 @@
 ---
-title: 「算」 09. 二叉树
+title: 「算」 08. 二叉树
 category_bar: true
 date: 2023-07-15 16:28:45
 tags:
@@ -7,7 +7,7 @@ categories: 算法数构
 banner_img:
 ---
 
-Golang 二叉树相关题目。
+二叉树相关题目。
 
 <!-- more -->
 
@@ -119,6 +119,8 @@ type TreeNode struct {
 
 ### 2.1 **前序遍历**：[leetcode 144 题](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
 
+递归：
+
 1. 确定递归函数的参数和返回值
 2. 确定终止条件
 3. 确定单层递归的逻辑
@@ -141,7 +143,7 @@ func preorderTraversal(root *TreeNode) []int {
 }
 ```
 
-迭代
+迭代：
 
 ```go
 func preorderTraversal(root *TreeNode) []int {
@@ -167,6 +169,8 @@ func preorderTraversal(root *TreeNode) []int {
 ```
 
 ### 2.2 **层序遍历**：[leetcode 102 题](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
+
+二叉树层序遍历递归法并非一层一层生成结果，而是创建好二维切片，遍历树根据 depth 填入对应切片。
 
 ```go
 // 递归
@@ -474,7 +478,7 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 }
 ```
 
-### 3.10 [剑指 Offer 26](https://leetcode.cn/problems/shu-de-zi-jie-gou-lcof/)
+### 3.10 [LCR 143 题](https://leetcode.cn/problems/shu-de-zi-jie-gou-lcof/)
 
 输入两棵二叉树 A 和 B，判断 B 是不是 A 的子结构。
 

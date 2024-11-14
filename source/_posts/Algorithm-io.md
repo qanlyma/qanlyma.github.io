@@ -1,5 +1,5 @@
 ---
-title: 「算」 15. 输入输出
+title: 「算」 14. 输入输出
 category_bar: true
 date: 2023-08-07 19:30:22
 tags:

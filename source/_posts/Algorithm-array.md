@@ -300,23 +300,23 @@ func generateMatrix(n int) [][]int {
 
 ## 6 查找算法
 
-### [剑指 Offer 03](https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
+### [LCR 120 题](https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
 
-找出数组中重复的数字。
+找出重复的文件。
 
 由于此题的特殊限制，可以使用数组下标作为 map。
 
 ```go
-func findRepeatNumber(nums []int) int {
-    for i := 0; i < len(nums); {
-        if nums[i] == i {
+func findRepeatDocument(documents []int) int {
+    for i := 0; i < len(documents); {
+        if documents[i] == i {
             i++
             continue
         }
-        if nums[nums[i]] == nums[i] {
-            return nums[i]
-        } 
-        nums[i], nums[nums[i]] = nums[nums[i]], nums[i]
+        if documents[i] == documents[documents[i]] {
+            return documents[i]
+        }
+        documents[i], documents[documents[i]] = documents[documents[i]], documents[i]
     }
     return -1
 }
