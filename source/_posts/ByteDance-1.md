@@ -7,8 +7,7 @@ categories: 字节青训
 banner_img:
 ---
 
-关于 Go 语言的基础和进阶教程，示例代码在我的 Github 上：
-[基础代码](https://github.com/qanlyma/go-by-example)，[进阶代码](https://github.com/qanlyma/go-project-example/tree/V0)
+示例代码在我的 Github 上：[基础代码](https://github.com/qanlyma/go-by-example)，[进阶代码](https://github.com/qanlyma/go-project-example/tree/V0)
 
 <!-- more -->
 
@@ -69,7 +68,7 @@ type slice struct {
 切片默认指向一段连续内存区域，可以是数组，也可以是切片本身：
 
 ```go
-slice [开始位置 : 结束位置]
+slice[开始位置 : 结束位置]
 ```
 
 * 取出的元素数量为：结束位置 - 开始位置；
@@ -91,8 +90,12 @@ name2 := make([]Type, size, cap) // 空切片
 
 **nil 切片与空切片：**
 
-* nil 切片：指针并不指向底层的数组，而是指向一个没有实际意义的地址；len = 0 且 cap = 0；`var s []int`
-* 空切片：指针指向底层数组的地址；len = 0，容量由指向的底层数组决定；`s1 := []int{}` 或 `s2 := make([]int, 0)`
+* nil 切片：指针并不指向底层的数组，而是指向一个没有实际意义的地址；
+	len = 0 且 cap = 0；`var s []int`
+
+* 空切片：指针指向底层数组的地址；len = 0，容量由指向的底层数组决定；
+	`s1 := []int{}` 或 `s2 := make([]int, 0)`
+
 * nil 切片和空切片的区别主要在于指向的地址不同。
 
 多维切片：
@@ -137,6 +140,8 @@ s2 扩容之后更换了底层数组，所以不再受 s1 影响了。
 * 当原 slice 容量小于 256 的时候，新 slice 容量为原来的 2 倍
 * 原 slice 容量超过 256，新 slice 容量 newcap = oldcap + (oldcap+3*256)/4
 * 由于内存对齐，新 slice 的容量要大于等于按照前半部分生成的 newcap
+
+**参数传递：**
 
 当 slice 作为函数参数时，就是一个普通的结构体。若直接传 slice，在调用者看来，实参 slice 并不会被函数中的操作改变；若传的是 slice 的指针，在调用者看来，是会被改变原 slice 的。
 
@@ -246,33 +251,33 @@ Golang 的安装和基础使用，可以参考[菜鸟教程](https://www.runoob.
 
 1. 错误处理
 
-![错误处理](1.png)
+![](1.png)
 
 2. 字符串操作
 
-![字符串操作](2.png)
+![](2.png)
 
 3. 字符串格式化
 
-![字符串格式化](3.png)
+![](3.png)
 
 4. JSON 处理
 
 	对于一个已有的结构体，只要保证每个字段的第一个字母是大写（公开字段），就可以用 JSON.Marshal 序列化成一个 JSON 字符串。
 
-![JSON 处理](4.png)
+![](4.png)
 
 5. 时间处理
 
-![时间处理](5.png)
+![](5.png)
 
 6. 数字解析
 
-![数字解析](6.png)
+![](6.png)
 
 7. 进程信息
 
-![进程信息](7.png)
+![](7.png)
 
 ### 1.4 关键字和标识符
 
@@ -283,10 +288,6 @@ Go 语言中的关键字一共有 25 个：
 预定义标识符一共有 36 个：
 
 ![](13.png)
-
-**make 和 new**：
-
-make 用于初始化内置的数据结构，如数组、切片和 Channel 等；new 用于分配并创建一个指向对应类型的指针。
 
 ## 2 Go 语言进阶
 
@@ -341,18 +342,21 @@ Communicating Sequential Processes 提倡**通过通信共享内存**而不是�
 func CalSquare() {
 	src := make(chan int)
 	dest := make(chan int, 3)
+
 	go func() {
 		defer close(src)
 		for i := 0; i < 10; i++ {
 			src <- i
 		}
 	}()
+
 	go func() {
 		defer close(dest)
 		for i := range src {
 			dest <- i * i
 		}
 	}()
+
 	for i := range dest {
 		println(i)
 	}
@@ -365,9 +369,21 @@ func CalSquare() {
 | 读 <- ch | 阻塞 | 读到对应类型的零值 | 阻塞或正常读取数据 |
 | 写 ch <- | 阻塞 | panic | 阻塞或正常写入数据 |
 
-Channel 可能会引发 goroutine 泄漏：
+##### Q：Channel 可能会引发 goroutine 泄漏
 
 泄漏的原因是 goroutine 操作 channel 后，处于发送或接收阻塞状态，而 channel 处于满或空的状态，一直得不到改变。同时，垃圾回收器也不会回收此类资源，进而导致 gouroutine 会一直处于等待队列中，不见天日。
+
+##### Q：select 语句如何处理多个通道操作
+
+1. 非阻塞通道操作，通过在 default 分支中处理没有准备好执行的操作，可以避免阻塞。
+
+2. 超时处理，通过结合 time.After 函数，可以在指定时间内等待通道操作，如果超时则执行其他逻辑。
+
+3. 多通道监听，等待任意一个通道准备好执行操作，这在处理多个并发任务时非常有用。
+
+4. 优雅关闭，通过监听一个关闭通道，可以在接收到关闭信号时优雅地退出循环或处理未完成的任务。
+
+5. 优先级选择，虽然 select 语句默认是随机选择已经准备好的通道操作，但可以通过在 default 分支中处理特定逻辑来实现某种形式的优先级选择。
 
 ### 2.4 Lock 并发安全
 
@@ -482,6 +498,11 @@ fmt.Println(*str)
 ```
 
 new() 函数可以创建一个对应类型的指针，创建过程会分配内存，被创建的指针指向默认值。
+
+##### Q：make 和 new 方法有什么区别
+
+* make 用于初始化内置的数据结构，如数组、切片和 channel 等。
+* new 用于分配并创建一个指向对应类型的指针。
 
 ## 3 面向对象编程
 

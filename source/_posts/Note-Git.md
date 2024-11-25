@@ -11,7 +11,7 @@ Git is very good!
 
 <!--more-->
 
-## 工作流程
+## 1 工作流程
 
 * 克隆 Git 资源作为工作目录。
 * 在克隆的资源上添加或修改文件。
@@ -22,7 +22,7 @@ Git is very good!
 
 ![工作流程](1.png)
 
-## 基本概念
+## 2 基本概念
 
 * **工作区**：就是你在电脑里能看到的目录。
 * **暂存区**：英文叫 stage 或 index。一般存放在 .git 目录下的 index 文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。
@@ -31,7 +31,7 @@ Git is very good!
 
 ![关系](2.jpg)
 
-## 基本操作
+## 3 基本操作
 
 * `git init`：初始化仓库
 * `git config`：配置开发者用户名和邮箱
@@ -48,7 +48,7 @@ Git is very good!
 
 具体参数可参考[这篇文章](https://mp.weixin.qq.com/s/Q_O0ey4C9tryPZaZeJocbA)
 
-## 分支管理
+## 4 分支管理
 
 * 分支（Branch）：分支是为了将修改记录的整个流程分开存储，让分开的分支不受其它分支的影响，所以在同一个数据库里可以同时进行多个不同的修改。
 * 主分支（Master/Main）：前面提到过 master 是 Git 为我们自动创建的第一个分支，也叫主分支，其它分支开发完成后都要合并到 master。
@@ -60,7 +60,7 @@ Git is very good!
 * `git checkout`：切换分支
 * `git merge`：合并分支
 
-## Github
+## 5 Github
 
 如果你想通过 Git 分享你的代码或者与其他开发人员合作。你就需要将数据放到一台其他开发人员能够连接的服务器上。
 

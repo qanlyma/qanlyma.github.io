@@ -36,10 +36,10 @@ Dynamic Programming，简称 DP，如果某一问题有很多重叠子问题，�
 ![](2.png)
 
 那么可以有两个方向推出来 dp[i][j]：
-1. 不放物品 i：由 dp[i - 1][j] 推出，即背包容量为 j，里面不放物品 i 的最大价值，此时 dp[i][j] 就是 dp[i - 1][j]。
-2. 放物品 i：由 dp[i - 1][j - weight[i]] 推出，dp[i - 1][j - weight[i]] 为背包容量为 j - weight[i] 的时候不放物品 i 的最大价值，那么 dp[i - 1][j - weight[i]] + value[i] 就是背包放物品i得到的最大价值。
+1. 不放物品 i：由 dp[i-1][j] 推出，即背包容量为 j，里面不放物品 i 的最大价值，此时 dp[i][j] 就是 dp[i-1][j]。
+2. 放物品 i：由 dp[i-1][j - weight[i]] 推出，dp[i-1][j-weight[i]] 为背包容量为 j - weight[i] 的时候不放物品 i 的最大价值，那么 dp[i-1][j-weight[i]] + value[i] 就是背包放物品i得到的最大价值。
 
-递推公式：`dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i])`
+递推公式：`dp[i][j] = max(dp[i-1][j], dp[i-1][j-weight[i]] + value[i])`
 
 初始化：
 
@@ -74,13 +74,13 @@ func bag_problem1(weight, value []int, bagweight int) int {
 
 滚动数组可以把二维 dp 降为一维 dp。
 
-在使用二维数组的时候，递推公式：dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i])
+在使用二维数组的时候，递推公式：dp[i][j] = max(dp[i-1][j], dp[i-1][j-weight[i]] + value[i])
 
-其实可以发现如果把 dp[i - 1] 那一层拷贝到 dp[i] 上，表达式完全可以是：dp[i][j] = max(dp[i][j], dp[i][j - weight[i]] + value[i])
+其实可以发现如果把 dp[i-1] 那一层拷贝到 dp[i] 上，表达式完全可以是：dp[i][j] = max(dp[i][j], dp[i][j - weight[i]] + value[i])
 
-与其把 dp[i - 1] 这一层拷贝到 dp[i] 上，不如只用一个一维数组了，只用 dp[j]。
+与其把 dp[i-1] 这一层拷贝到 dp[i] 上，不如只用一个一维数组了，只用 dp[j]。
 
-在一维dp数组中，dp[j] 表示：**容量为 j 的背包，所背的物品价值可以最大为 dp[j]**。
+在一维dp数组中，dp[j] 表示：**容量为 j 的背包，所背的物品价值可以最大为 dp[j]。**
 
 递推公式：`dp[j] = max(dp[j], dp[j - weight[i]] + value[i])`
 
@@ -154,7 +154,7 @@ func climbStairs(n int) int {
 }
 ```
 
-### 2.2 [leetcode 63 题](https://leetcode.cn/problems/unique-paths-ii/)
+### 2.3 [leetcode 63 题](https://leetcode.cn/problems/unique-paths-ii/)
 
 一个机器人位于一个 m x n 网格的左上角，机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角。
 
@@ -192,7 +192,7 @@ func uniquePathsWithObstacles(obstacleGrid [][]int) int {
 }
 ```
 
-### 2.3 [leetcode 343 题](https://leetcode.cn/problems/integer-break/)
+### 2.4 [leetcode 343 题](https://leetcode.cn/problems/integer-break/)
 
 给定一个正整数 n，将其拆分为 k 个正整数的和（k >= 2），并使这些整数的乘积最大化。
 
@@ -216,7 +216,7 @@ func integerBreak(n int) int {
 }
 ```
 
-### 2.3 [leetcode 96 题](https://leetcode.cn/problems/unique-binary-search-trees/submissions/)
+### 2.5 [leetcode 96 题](https://leetcode.cn/problems/unique-binary-search-trees/submissions/)
 
 不同的二叉搜索树。
 
@@ -233,7 +233,7 @@ func numTrees(n int) int {
 }
 ```
 
-### 2.4 [leetcode 416 题](https://leetcode.cn/problems/partition-equal-subset-sum/)
+### 2.6 [leetcode 416 题](https://leetcode.cn/problems/partition-equal-subset-sum/)
 
 给你一个只包含正整数的非空数组 nums。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
 
@@ -257,7 +257,7 @@ func canPartition(nums []int) bool {
 }
 ```
 
-### 2.5 [leetcode 494 题](https://leetcode.cn/problems/target-sum/)
+### 2.7 [leetcode 494 题](https://leetcode.cn/problems/target-sum/)
 
 目标和。
 
@@ -297,7 +297,7 @@ func findTargetSumWays(nums []int, target int) int {
 }
 ```
 
-### 2.6 [leetcode 518 题](https://leetcode.cn/problems/coin-change-ii/)
+### 2.8 [leetcode 518 题](https://leetcode.cn/problems/coin-change-ii/)
 
 给你一个整数数组 coins 表示不同面额的硬币，另给一个整数 amount 表示总金额。请你计算并返回可以凑成总金额的硬币组合数。
 
@@ -316,7 +316,7 @@ func change(amount int, coins []int) int {
 }
 ```
 
-### 2.7 [leetcode 377 题](https://leetcode.cn/problems/combination-sum-iv/)
+### 2.9 [leetcode 377 题](https://leetcode.cn/problems/combination-sum-iv/)
 
 给定一个由正整数组成且不存在重复数字的数组，找出和为给定目标正整数的组合的个数。
 
@@ -337,7 +337,7 @@ func combinationSum4(nums []int, target int) int {
 }
 ```
 
-### 2.8 [leetcode 139 题](https://leetcode.cn/problems/word-break/)
+### 2.10 [leetcode 139 题](https://leetcode.cn/problems/word-break/)
 
 单词拆分。
 
@@ -361,7 +361,7 @@ func wordBreak(s string,wordDict []string) bool  {
 }
 ```
 
-### 2.9 [leetcode 337 题](https://leetcode.cn/problems/house-robber-iii/)
+### 2.11 [leetcode 337 题](https://leetcode.cn/problems/house-robber-iii/)
 
 打劫二叉树。
 
@@ -384,7 +384,7 @@ func rob(root *TreeNode) int {
 } 
 ```
 
-### 2.10 [leetcode 121 题](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
+### 2.12 [leetcode 121 题](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
 
 买卖股票的最佳时机。
 
@@ -419,7 +419,7 @@ func maxProfit(prices []int) int {
 }
 ```
 
-### 2.11 [leetcode 718 题](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/)
+### 2.13 [leetcode 718 题](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/)
 
 给两个整数数组 nums1 和 nums2，返回两个数组中公共的、长度最长的子数组的长度。
 
@@ -443,7 +443,7 @@ func findLength(nums1 []int, nums2 []int) int {
 }
 ```
 
-### 2.12 [leetcode 1143 题](https://leetcode.cn/problems/longest-common-subsequence/)
+### 2.14 [leetcode 1143 题](https://leetcode.cn/problems/longest-common-subsequence/)
 
 给定两个字符串 text1 和 text2，返回这两个字符串的最长公共子序列的长度。
 
@@ -467,7 +467,7 @@ func longestCommonSubsequence(text1 string, text2 string) int {
 }
 ```
 
-### 2.12 [leetcode 1035 题](https://leetcode.cn/problems/uncrossed-lines/)
+### 2.15 [leetcode 1035 题](https://leetcode.cn/problems/uncrossed-lines/)
 
 不相交的线。
 
@@ -491,7 +491,7 @@ func maxUncrossedLines(nums1 []int, nums2 []int) int {
 }
 ```
 
-### 2.13 [leetcode 53 题](https://leetcode.cn/problems/maximum-subarray/)
+### 2.16 [leetcode 53 题](https://leetcode.cn/problems/maximum-subarray/)
 
 最大子数组和。
 
@@ -512,7 +512,7 @@ func maxSubArray(nums []int) int {
 }
 ```
 
-### 2.14 [leetcode 72 题](https://leetcode.cn/problems/edit-distance/)
+### 2.17 [leetcode 72 题](https://leetcode.cn/problems/edit-distance/)
 
 编辑距离。
 
@@ -543,7 +543,7 @@ func minDistance(word1 string, word2 string) int {
 }
 ```
 
-### 2.15 [leetcode 132 题](https://leetcode.cn/problems/palindrome-partitioning-ii/)
+### 2.18 [leetcode 132 题](https://leetcode.cn/problems/palindrome-partitioning-ii/)
 
 分割回文串 II。
 

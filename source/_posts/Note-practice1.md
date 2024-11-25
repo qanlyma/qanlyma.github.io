@@ -61,7 +61,7 @@ public class GenerateTaskController {
 
 * `@RestController` 注解，说明它是一个 RESTful 风格的控制器，所有的方法返回值都会直接写入 HTTP 响应体中，而不是返回视图名。
 * `@RequestParam` 可以将请求参数绑定到你的控制器方法参数上。当客户端向服务器发送请求时，如果 URL 中包含请求参数，那么 Spring MVC 会尝试匹配并将这些请求参数绑定到使用 `@RequestParam` 注解的方法参数上。
-* 这个控制器类中定义了一个 POST 请求的处理方法 `taskGenerate`，该方法接收一个 `GenerateParams` 类型的请求体参数，并调用 `GenerateTaskService` 的 `taskGenerate` 方法处理这个请求，最后返回处理结果
+* 这个控制器类中定义了一个 POST 请求的处理方法 `taskGenerate`，该方法接收一个 `GenerateParams` 类型的请求体参数，并调用 `GenerateTaskService` 的 `taskGenerate` 方法处理这个请求，最后返回处理结果。
 * POST 请求的 URL 路径是 `/generateApi/taskGenerate`，这是由类级别的 `@RequestMapping("/generateApi")` 和方法级别的 `@PostMapping("/taskGenerate")` 两个注解共同决定的。
 * 方法参数前的 `@Valid` 注解表示启用对这个参数的数据校验，`@RequestBody` 注解表示这个参数的值来自于请求体。
 
@@ -70,7 +70,7 @@ public class GenerateTaskController {
 实体类通常存放于此包中，每一个类代表了数据库中的一个表结构，用于 ORM（对象关系映射）操作。
 
 * `@Data` 是 Lombok 的注解，会自动为类的所有属性生成 getter 和 setter 方法，以及 equals、canEqual、hashCode、toString 方法。
-* `@TableName`是 MyBatis-Plus 的注解，表示这个类对应的数据库表名。
+* `@TableName` 是 MyBatis-Plus 的注解，表示这个类对应的数据库表名。
 * 类中的每个属性都对应着数据表中的一个字段，用 `@TableField` 注解标注。`value` 属性表示对应的数据库字段名。
 
 ### 2.5 enums
