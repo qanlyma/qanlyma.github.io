@@ -16,12 +16,12 @@
   <meta name="author" content="Qanly">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，“一次编写，到处运行（Write once, run anywhere）”，而 Docker 是 “一次构建，到处运行（Build once，run anywhere）”。">
+    <meta name="description" content="Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，Write once, run anywhere，而 Docker 是 Build once，run anywhere。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="「学」 Docker">
 <meta property="og:url" content="https://qanlyma.github.io/Note-Docker/index.html">
 <meta property="og:site_name" content="Qanly">
-<meta property="og:description" content="Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，“一次编写，到处运行（Write once, run anywhere）”，而 Docker 是 “一次构建，到处运行（Build once，run anywhere）”。">
+<meta property="og:description" content="Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，Write once, run anywhere，而 Docker 是 Build once，run anywhere。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qanlyma.github.io/Note-Docker/3.png">
 <meta property="og:image" content="https://qanlyma.github.io/Note-Docker/1.png">
@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Note-Docker/5.png">
 <meta property="og:image" content="https://qanlyma.github.io/Note-Docker/4.png">
 <meta property="article:published_time" content="2023-02-27T14:36:34.000Z">
-<meta property="article:modified_time" content="2024-01-18T11:08:19.547Z">
+<meta property="article:modified_time" content="2024-11-14T13:26:18.746Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Note-Docker/3.png">
@@ -263,7 +263,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：10 个月前
+                    本文最后更新于：11 天前
                   
                 
               </p>
@@ -271,7 +271,7 @@
             
               <div class="markdown-body">
                 
-                <p>Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，“一次编写，到处运行（Write once, run anywhere）”，而 Docker 是 “一次构建，到处运行（Build once，run anywhere）”。</p>
+                <p>Docker 容器将软件以及它运行安装所需的一切文件（代码、运行时库、系统工具、系统库）打包到一起，这就保证了不管是在什么样的运行环境，总是能以相同的方式运行。就好像 Java 虚拟机一样，Write once, run anywhere，而 Docker 是 Build once，run anywhere。</p>
 <span id="more"></span>
 
 <h2 id="1-Docker-基本概念"><a href="#1-Docker-基本概念" class="headerlink" title="1 Docker 基本概念"></a>1 Docker 基本概念</h2><p>在没有使用 Docker 时，我们开发完毕一个项目，需要打成 war 包或 jar 包。然后，在服务器上进行各种环境的安装、配置以及应用程序维护，比如：JDK、Tomcat、数据库等。而且，上述的配置在开发环境、测试服务器、生产服务器（通常会有很多个），都需要进行一遍同样的操作，工作量相当繁重。</p>
@@ -304,7 +304,7 @@
 <p>传统的虚拟机是在宿主机之上，又添加了一个新的操作系统，这就导致了虚拟机的臃肿，不适合迁移。而 Docker 是直接寄存在宿主机上，完全就会避免大部分虚拟机带来的困扰。</p>
 <p>Docker 是一个黑盒的进程，区别于传统的进程，Docker 可以独立出一个自己的空间，不会使得在 Docker 中的行为以及变量溢出到宿主机上。</p>
 <h2 id="3-Docker-镜像"><a href="#3-Docker-镜像" class="headerlink" title="3 Docker 镜像"></a>3 Docker 镜像</h2><p>镜像是一种轻量级、可执行的独立软件包，用来打包软件运行环境和基于运行环境开发的软件，包含运行某个软件所需的所有内容，包括<strong>代码、运行时库、环境变量和配置文件</strong>。</p>
-<h3 id="3-1-构建镜像"><a href="#3-1-构建镜像" class="headerlink" title="3.1 构建镜像"></a>3.1 构建镜像</h3><p>所有的 Docker 镜像都起始于一个基础镜像层，当进行修改或培加新的内容时，就会在当前镜像层之上，创建新的镜像层。</p>
+<h3 id="3-1-构建镜像"><a href="#3-1-构建镜像" class="headerlink" title="3.1 构建镜像"></a>3.1 构建镜像</h3><p>所有的 Docker 镜像都起始于一个基础镜像层，当进行修改或添加新的内容时，就会在当前镜像层之上，创建新的镜像层。</p>
 <p>举一个简单的例子，假如基于 Ubuntu Linux 16.04 创建一个新的镜像，这就是新镜像的第一层；如果在该镜像中添加 Python 包，就会在基础镜像层之上创建第二个镜像层；如果继续添加一个安全补丁，就会创健第三个镜像层：</p>
 <p><img src="/Note-Docker/5.png" srcset="/img/loading.gif" lazyload></p>
 <p>Docker 镜像都是只读的，当容器启动时，一个新的可写层加载到镜像的顶部。这一层就是我们通常说的容器层，容器之下的都叫镜像层。</p>
@@ -359,7 +359,7 @@
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker run -itd --name ubuntu-test ubuntu /bin/bash<br></code></pre></td></tr></table></figure>
 </li>
 <li><p><strong>进入容器</strong></p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker attach container_id<br># 进入容器正在执行的终端，如果从这个容器退出，会导致容器的停止<br><br>$ docker exec -it container_id /bin/bash<br># 进入当前容器后开启一个新的终端，如果从这个容器退出，容器不会停止<br></code></pre></td></tr></table></figure>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker attach container_id<br># 进入容器正在执行的终端，如果从这个终端退出，会导致容器的停止<br><br>$ docker exec -it container_id /bin/bash<br># 进入当前容器后开启一个新的终端，如果从这个终端退出，容器不会停止<br></code></pre></td></tr></table></figure>
 </li>
 <li><p><strong>删除容器</strong></p>
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs linux">$ docker rm -f container_id<br></code></pre></td></tr></table></figure></li>
