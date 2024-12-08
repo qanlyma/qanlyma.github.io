@@ -13,7 +13,7 @@ banner_img:
 
 ## 1 二分查找
 
-### [leetcode 704 题](https://leetcode.cn/problems/binary-search/)
+### 1.1 [二分法](https://leetcode.cn/problems/binary-search/)
 
 这道题目的前提是数组为**有序数组**，同时题目还强调数组中**无重复元素**，因为一旦有重复元素，使用二分查找法返回的元素下标可能不是唯一的，这些都是使用二分法的前提条件。
 
@@ -63,7 +63,7 @@ class Solution {
 * 暴力解法时间复杂度：O(n)
 * 二分法时间复杂度：O(logn)
 
-### [leetcode 34 题](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
+### 1.2 [查找元素](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
 
 在排序数组中查找元素的第一个和最后一个位置。
 
@@ -112,7 +112,7 @@ func getRight(nums []int, target int) int {
 
 ## 2 快慢指针
 
-### [leetcode 27 题](https://leetcode.cn/problems/remove-element/)
+### 2.1 [移除元素](https://leetcode.cn/problems/remove-element/)
 
 给你一个数组 nums 和一个值 val，你需要**原地**移除所有数值等于 val 的元素，并返回移除后数组的新长度。
 
@@ -142,7 +142,7 @@ func removeElement(nums []int, val int) int {
 
 ## 3 双指针法
 
-### [leetcode 977 题](https://leetcode.cn/problems/squares-of-a-sorted-array/)
+### 3.1 [有序数组的平方](https://leetcode.cn/problems/squares-of-a-sorted-array/)
 
 给你一个按**非递减顺序**排序的整数数组 nums，返回每个数字的平方组成的新数组，要求也按非递减顺序排序。
 
@@ -172,11 +172,9 @@ func sortedSquares(nums []int) []int {
 }
 ```
 
-### [leetcode 844 题](https://leetcode.cn/problems/backspace-string-compare/)
+### 3.2 [比较含退格的字符串](https://leetcode.cn/problems/backspace-string-compare/)
 
-比较含退格的字符串。
-
-普通方法是用栈模拟操作，空间复杂度为 O(m+n)。可以使用从后向前的双指针来优化。
+给定 s 和 t 两个字符串，当它们分别被输入到空白的文本编辑器后，如果两者相等，返回 true 。`#` 代表退格字符。
 
 ```go
 func backspaceCompare(s, t string) bool {
@@ -219,17 +217,19 @@ func backspaceCompare(s, t string) bool {
 }
 ```
 
+普通方法是用栈模拟操作，空间复杂度为 O(m + n)。可以使用从后向前的双指针来优化。
+
 ## 4 滑动窗口
 
-### [leetcode 209 题](https://leetcode.cn/problems/minimum-size-subarray-sum/)
+### 4.1 [长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 
-给定一个含有 n 个正整数的数组和一个正整数 s，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。
+给定一个含有 n 个正整数的数组和一个正整数 target。找出该数组中满足其总和大于等于 target 的长度最小的子数组并返回其长度。如果不存在符合条件的子数组，返回 0。
 
 实现滑动窗口，主要确定如下三点：
 
-* 窗口内是什么？
-* 如何移动窗口的起始位置？（本题使用 for 循环一次移动多位）
-* 如何移动窗口的结束位置？（本题一次移动一位）
+1. 窗口内是什么？
+2. 如何移动窗口的起始位置？（本题使用 for 循环一次移动多位）
+3. 如何移动窗口的结束位置？（本题一次移动一位）
 
 ```go
 func minSubArrayLen(target int, nums []int) int {
@@ -258,7 +258,7 @@ func minSubArrayLen(target int, nums []int) int {
 
 ## 5 模拟过程
 
-### [leetcode 59 题](https://leetcode.cn/problems/spiral-matrix-ii/)
+### 5.1 [螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)
 
 给你一个正整数 n，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix。
 
@@ -300,11 +300,9 @@ func generateMatrix(n int) [][]int {
 
 ## 6 查找算法
 
-### [LCR 120 题](https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
+### 6.1 [寻找文件副本](https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
 
-找出重复的文件。
-
-由于此题的特殊限制，可以使用数组下标作为 map。
+设备中存有 n 个文件，文件 id 记于数组 documents。若文件 id 相同，则定义为该文件存在副本。请返回任一存在副本的文件 id。
 
 ```go
 func findRepeatDocument(documents []int) int {
@@ -321,3 +319,5 @@ func findRepeatDocument(documents []int) int {
     return -1
 }
 ```
+
+由于此题的特殊限制，可以使用数组下标作为 map。

@@ -145,7 +145,7 @@ InnoDB 导致 MySQL 抖动主要的原因是脏页在刷新到磁盘时，可能
 
 ## 2 日志模块
 
-更新语句的流程会涉及到 undo log、redo log 、binlog 这三种日志：
+更新语句的流程会涉及到 undo log、redo log、binlog 这三种日志：
 
 * undo log（回滚日志）：是 InnoDB 存储引擎层生成的日志，实现了原子性，主要用于**事务回滚**和 **MVCC**
 * redo log（重做日志）：是 InnoDB 存储引擎层生成的日志，实现了持久性，主要用于掉电等**故障恢复**
@@ -182,7 +182,7 @@ redo log 可以保证即使数据库发生异常重启，之前提交的记录�
 
 ### 2.3 binlog
 
-MySQL 在完成一条更新操作后，Server 层还会生成一条 binlog，等之后事务提交的时候，会将该事物执行过程中产生的所有 binlog 统一写 入 binlog 文件。
+MySQL 在完成一条更新操作后，Server 层还会生成一条 binlog，等之后事务提交的时候，会将该事物执行过程中产生的所有 binlog 统一写入 binlog 文件。
 
 binlog 文件是记录了所有数据库表结构变更和表数据修改的日志，不会记录查询类的操作，比如 SELECT 和 SHOW 操作。
 

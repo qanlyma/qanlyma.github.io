@@ -395,7 +395,7 @@ N 皇后。
 
 在这里整理几道不是二叉树的递归题目。
 
-### 3.1 [剑指 Offer 25](https://leetcode.cn/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/)
+### 3.1 [合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)
 
 合并两个排序的链表。
 

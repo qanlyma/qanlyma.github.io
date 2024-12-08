@@ -29,7 +29,7 @@ banner_img:
 
 * **拉链法**
 
-    刚刚小李和小王在索引1的位置发生了冲突，发生冲突的元素都被存储在链表中。 这样我们就可以通过索引找到小李和小王了。
+    刚刚小李和小王在索引 1 的位置发生了冲突，发生冲突的元素都被存储在链表中，这样我们就可以通过索引找到小李和小王了。
 
     ![](3.png)
 
@@ -37,13 +37,13 @@ banner_img:
 
 * **线性探测法**
 
-    使用线性探测法，一定要保证 tableSize 大于 dataSize。 我们需要依靠哈希表中的空位来解决碰撞问题。例如冲突的位置放了小李，那么就向下找一个空位放置小王的信息。
+    使用线性探测法，一定要保证 tableSize 大于 dataSize。我们需要依靠哈希表中的空位来解决碰撞问题。例如冲突的位置放了小李，那么就向下找一个空位放置小王的信息。
 
 ## 2 题目
 
-### 2.1 [leetcode 242 题](https://leetcode.cn/problems/valid-anagram/)
+### 2.1 [字母异位词](https://leetcode.cn/problems/valid-anagram/)
 
-给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+给定两个字符串 s 和 t，编写一个函数来判断 t 是否是 s 的字母异位词。
 
 ```go
 func isAnagram1(s, t string) bool {
@@ -75,9 +75,9 @@ func isAnagram2(s, t string) bool {
 }
 ```
 
-### 2.2 [leetcode 202 题](https://leetcode.cn/problems/happy-number/)
+### 2.2 [快乐数](https://leetcode.cn/problems/happy-number/)
 
-快乐数。
+编写一个算法来判断一个数 n 是不是快乐数。
 
 ```go
 func isHappy(n int) bool {
@@ -102,9 +102,9 @@ func sqSum(n int) int {
 }
 ```
 
-### 2.3 [leetcode 1 题](https://leetcode.cn/problems/two-sum/)
+### 2.3 [两数之和](https://leetcode.cn/problems/two-sum/)
 
-两数之和。
+给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值 target 的那两个整数，并返回它们的数组下标。
 
 ```go
 func twoSum(nums []int, target int) []int {
@@ -120,11 +120,9 @@ func twoSum(nums []int, target int) []int {
 }
 ```
 
-### 2.4 [leetcode 15 题](https://leetcode.cn/problems/3sum/)
+### 2.4 [三数之和](https://leetcode.cn/problems/3sum/)
 
-三数之和。
-
-此题使用哈希表去重非常困难，建议使用双指针。
+给你一个整数数组 nums，判断是否存在三元组满足 `nums[i] + nums[j] + nums[k] == 0`。请你返回所有和为 0 且不重复的三元组。
 
 ```go
 func threeSum(nums []int) [][]int {
@@ -162,6 +160,6 @@ func threeSum(nums []int) [][]int {
 }
 ```
 
-### 2.5 [leetcode 454 题](https://leetcode.cn/problems/4sum-ii/)
+此题使用哈希表去重非常困难，建议使用双指针。
 
-四数之和。
+### 2.5 [四数之和](https://leetcode.cn/problems/4sum-ii/)

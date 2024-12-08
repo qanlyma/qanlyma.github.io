@@ -75,9 +75,9 @@ func removeElements(head *ListNode, val int) *ListNode {
 
 ## 2 题目
 
-### 2.1 [leetcode 24 题](https://leetcode.cn/problems/swap-nodes-in-pairs/)
+### 2.1 [两两交换](https://leetcode.cn/problems/swap-nodes-in-pairs/)
 
-两两交换链表中的节点。
+给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题。
 
 ```go
 func swapPairs(head *ListNode) *ListNode {
@@ -95,9 +95,9 @@ func swapPairs(head *ListNode) *ListNode {
 }
 ```
 
-### 2.2 [leetcode 19 题](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+### 2.2 [删除结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
 
-删除倒数第 N 个节点。
+给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
 
 ```go
 func removeNthFromEnd(head *ListNode, n int) *ListNode {
@@ -117,7 +117,7 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 }
 ```
 
-### 2.3 [leetcode 160 题](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
+### 2.3 [相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
 
 给你两个单链表的头节点 headA 和 headB，请你找出并返回两个单链表相交的起始节点。
 
@@ -170,7 +170,7 @@ func getIntersectionNode2(headA, headB *ListNode) *ListNode {
 }
 ```
 
-### 2.4 [leetcode 142 题](https://leetcode.cn/problems/linked-list-cycle-ii/)
+### 2.4 [环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)
 
 判断链表中是否有环，返回链表开始入环的第一个节点。
 
@@ -192,11 +192,9 @@ func detectCycle(head *ListNode) *ListNode {
 }
 ```
 
-### 2.5 [leetcode 206 题](https://leetcode.cn/problems/reverse-linked-list/)
+### 2.5 [反转链表](https://leetcode.cn/problems/reverse-linked-list/)
 
-反转链表。
-
-注意申明 pre 的时候不可以用 `pre := &ListNode{}`，否则其值是 0 而不是 nil。
+给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
 
 ```go
 func reverseList(head *ListNode) *ListNode {
@@ -213,9 +211,9 @@ func reverseList(head *ListNode) *ListNode {
 }
 ```
 
-### 2.5 [leetcode 146 题](https://leetcode.cn/problems/lru-cache/)
+注意申明 pre 的时候不可以用 `pre := &ListNode{}`，否则其值是 0 而不是 nil。
 
-LRU 缓存。
+### 2.6 [LRU 缓存](https://leetcode.cn/problems/lru-cache/)
 
 哈希表 + 双向链表。
 

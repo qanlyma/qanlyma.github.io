@@ -45,7 +45,7 @@ banner_img:
 
 ## byte
 
-[]byte → string: `str := string([]byte)`
+* []byte → string: `str := string([]byte)`
 
 ## bool
 

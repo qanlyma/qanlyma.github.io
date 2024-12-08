@@ -27,7 +27,7 @@ Dynamic Programming，简称 DP，如果某一问题有很多重叠子问题，�
 
 ![](1.png)
 
-#### 01 背包
+#### 1.2.1 0-1 背包
 
 有 n 件物品和一个最多能背重量为 w 的背包。第 i 件物品的重量是 weight[i]，得到的价值是 value[i]。每件物品只能用一次，求解将哪些物品装入背包里物品价值总和最大。
 
@@ -70,13 +70,13 @@ func bag_problem1(weight, value []int, bagweight int) int {
 }
 ```
 
-#### 滚动数组
+#### 1.2.2 滚动数组
 
 滚动数组可以把二维 dp 降为一维 dp。
 
-在使用二维数组的时候，递推公式：dp[i][j] = max(dp[i-1][j], dp[i-1][j-weight[i]] + value[i])
+在使用二维数组的时候，递推公式：`dp[i][j] = max(dp[i-1][j], dp[i-1][j-weight[i]] + value[i])`
 
-其实可以发现如果把 dp[i-1] 那一层拷贝到 dp[i] 上，表达式完全可以是：dp[i][j] = max(dp[i][j], dp[i][j - weight[i]] + value[i])
+其实可以发现如果把 dp[i-1] 那一层拷贝到 dp[i] 上，表达式完全可以是：`dp[i][j] = max(dp[i][j], dp[i][j - weight[i]] + value[i])`
 
 与其把 dp[i-1] 这一层拷贝到 dp[i] 上，不如只用一个一维数组了，只用 dp[j]。
 
@@ -101,9 +101,9 @@ func bag_problem2(weight, value []int, bagWeight int) int {
 }
 ```
 
-#### 完全背包
+#### 1.2.3 完全背包
 
-01 背包和完全背包唯一不同就是体现在遍历顺序上，01 背包内嵌的循环是从大到小遍历，为了保证每个物品仅被添加一次。而完全背包的物品是可以添加多次的，所以要从小到大去遍历。
+0-1 背包和完全背包唯一不同就是体现在遍历顺序上，0-1 背包内嵌的循环是从大到小遍历，为了保证每个物品仅被添加一次。而完全背包的物品是可以添加多次的，所以要从小到大去遍历。
 
 物品和背包先遍历哪个都可以。
 
@@ -222,11 +222,11 @@ func integerBreak(n int) int {
 
 ```go
 func numTrees(n int) int {
-    dp := make([]int, n+1)
-    dp[0], dp[1] = 1, 1
-    for i := 2; i <= n; i++ {
-        for j := 0; j < i; j++ {
-            dp[i] += dp[i-j-1] * dp[j]
+    dp := make([]int, n + 1)
+    dp[0] = 1
+    for i := 1; i <= n; i++ {
+        for j := 0; j <= i-1; j++ {
+            dp[i] += dp[j] * dp[i-j-1]
         }
     }
     return dp[n]
@@ -238,22 +238,43 @@ func numTrees(n int) int {
 给你一个只包含正整数的非空数组 nums。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
 
 ```go
-func canPartition(nums []int) bool {
-    var sum int
+func canPartition1(nums []int) bool {
+    var sum, target int
     for _, v := range nums {
         sum += v
     }
-    if sum%2 != 0 {
+    if sum % 2 != 0 {
         return false
-    }
-    target := sum / 2
-    dp := make([]int, target+1)
+    } 
+    target = sum / 2
+
+    dp := make([]int, target + 1) // dp[j]: 容量为 j 的背包最多装多少
     for i := 0; i < len(nums); i++ {
         for j := target; j >= nums[i]; j-- {
-            dp[j] = max(dp[j-nums[i]]+nums[i], dp[j])
+            dp[j] = max(dp[j], dp[j-nums[i]] + nums[i])
         }
     }
-    return target == dp[target]
+    return dp[target] == target
+}
+
+func canPartition2(nums []int) bool {
+    var sum, target int
+    for _, v := range nums {
+        sum += v
+    }
+    if sum % 2 != 0 {
+        return false
+    } 
+    target = sum / 2
+
+    dp := make([]bool, target + 1) // dp[j]: 能否找到和为 j 的数
+    dp[0] = true
+    for i := 0; i < len(nums); i++ {
+        for j := target; j >= nums[i]; j-- {
+            dp[j] = dp[j] || dp[j-nums[i]]
+        }
+    }
+    return dp[target]
 }
 ```
 
