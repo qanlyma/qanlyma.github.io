@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://qanlyma.github.io/Note-MySQL/9.png">
 <meta property="og:image" content="https://qanlyma.github.io/Note-MySQL/10.png">
 <meta property="article:published_time" content="2023-08-07T06:44:23.000Z">
-<meta property="article:modified_time" content="2024-11-18T14:23:31.874Z">
+<meta property="article:modified_time" content="2024-12-01T11:08:46.206Z">
 <meta property="article:author" content="Qanly">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://qanlyma.github.io/Note-MySQL/1.png">
@@ -370,7 +370,7 @@
 </ul>
 <h4 id="MySQL-抖⼀下是什么意思？"><a href="#MySQL-抖⼀下是什么意思？" class="headerlink" title="MySQL 抖⼀下是什么意思？"></a>MySQL 抖⼀下是什么意思？</h4><p>InnoDB 导致 MySQL 抖动主要的原因是脏页在刷新到磁盘时，可能会给数据库带来性能开销，导致数据库操作出现了短暂的性能下降或响应变慢的情况。所以，当查询语句在需要内存的时候可能要求淘汰⼀个脏页，或由于刷脏页时会占用大量 IO 资源并影响到了更新语句，都可能是造成业务端感知 MySQL 抖了⼀下的原因。</p>
 <p>在开启了慢 SQL 监控后，如果发现偶尔会出现一些用时稍长的 SQL，就需要调大 Buffer Pool 空间或 redo log 日志的大小。</p>
-<h2 id="2-日志模块"><a href="#2-日志模块" class="headerlink" title="2 日志模块"></a>2 日志模块</h2><p>更新语句的流程会涉及到 undo log、redo log 、binlog 这三种日志：</p>
+<h2 id="2-日志模块"><a href="#2-日志模块" class="headerlink" title="2 日志模块"></a>2 日志模块</h2><p>更新语句的流程会涉及到 undo log、redo log、binlog 这三种日志：</p>
 <ul>
 <li>undo log（回滚日志）：是 InnoDB 存储引擎层生成的日志，实现了原子性，主要用于<strong>事务回滚</strong>和 <strong>MVCC</strong></li>
 <li>redo log（重做日志）：是 InnoDB 存储引擎层生成的日志，实现了持久性，主要用于掉电等<strong>故障恢复</strong></li>
@@ -392,7 +392,7 @@
 <li>事务提交之前发生了崩溃，重启后会通过 undo log 回滚事务</li>
 <li>事务提交之后发生了崩溃，重启后会通过 redo log 恢复事务</li>
 </ul>
-<h3 id="2-3-binlog"><a href="#2-3-binlog" class="headerlink" title="2.3 binlog"></a>2.3 binlog</h3><p>MySQL 在完成一条更新操作后，Server 层还会生成一条 binlog，等之后事务提交的时候，会将该事物执行过程中产生的所有 binlog 统一写 入 binlog 文件。</p>
+<h3 id="2-3-binlog"><a href="#2-3-binlog" class="headerlink" title="2.3 binlog"></a>2.3 binlog</h3><p>MySQL 在完成一条更新操作后，Server 层还会生成一条 binlog，等之后事务提交的时候，会将该事物执行过程中产生的所有 binlog 统一写入 binlog 文件。</p>
 <p>binlog 文件是记录了所有数据库表结构变更和表数据修改的日志，不会记录查询类的操作，比如 SELECT 和 SHOW 操作。</p>
 <p><strong>redo log 与 binlog 的区别</strong>：</p>
 <ul>
@@ -805,7 +805,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Algorithm-io/" title="「算」 14. 输入输出">
+                      <a href="/Algorithm-acm/" title="「算」 14. 输入输出">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">「算」 14. 输入输出</span>
                         <span class="visible-mobile">上一篇</span>
